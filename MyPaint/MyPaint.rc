@@ -1,0 +1,626 @@
+// Microsoft Visual C++ generated resource script.
+//
+#pragma code_page(65001)
+
+#include "resource.h"
+
+#define APSTUDIO_READONLY_SYMBOLS
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 2 resource.
+//
+#ifndef APSTUDIO_INVOKED
+#include "targetver.h"
+#endif
+#include "afxres.h"
+#include "verrsrc.h"
+
+/////////////////////////////////////////////////////////////////////////////
+#undef APSTUDIO_READONLY_SYMBOLS
+
+/////////////////////////////////////////////////////////////////////////////
+// Русский (Россия) resources
+
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_RUS)
+LANGUAGE LANG_RUSSIAN, SUBLANG_DEFAULT
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Icon
+//
+
+// Icon with lowest ID value placed first to ensure application icon
+// remains consistent on all systems.
+IDR_MAINFRAME           ICON                    "res\\Icon.ico"
+
+IDR_MyPaintTYPE         ICON                    "res\\MyPaintDoc.ico"
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Bitmap
+//
+
+IDR_MAINFRAME           BITMAP                  "res\\Toolbar.bmp"
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Toolbar
+//
+
+IDR_MAINFRAME TOOLBAR 16, 15
+BEGIN
+    BUTTON      ID_FILE_NEW
+    BUTTON      ID_FILE_OPEN
+    BUTTON      ID_FILE_SAVE
+    SEPARATOR
+    BUTTON      ID_EDIT_CUT
+    BUTTON      ID_EDIT_COPY
+    BUTTON      ID_EDIT_PASTE
+    SEPARATOR
+    BUTTON      ID_RECT
+    BUTTON      ID_ELLIPSE
+    BUTTON      ID_TRIANGLE
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Menu
+//
+
+IDR_MAINFRAME MENU
+BEGIN
+    POPUP "&Файл"
+    BEGIN
+        MENUITEM "Созд&ать\tCtrl+N",            ID_FILE_NEW
+        MENUITEM "&Открыть...\tCtrl+O",         ID_FILE_OPEN
+        MENUITEM "Со&хранить\tCtrl+S",          ID_FILE_SAVE
+        MENUITEM "Сохранить &как...",           ID_FILE_SAVE_AS
+        MENUITEM SEPARATOR
+        MENUITEM "&Печать...\tCtrl+P",          ID_FILE_PRINT
+        MENUITEM "Пред&варительный просмотр",   ID_FILE_PRINT_PREVIEW
+        MENUITEM "Нас&тройка печати...",        ID_FILE_PRINT_SETUP
+        MENUITEM SEPARATOR
+        MENUITEM "Отправит&ь...",               ID_FILE_SEND_MAIL
+        MENUITEM SEPARATOR
+        MENUITEM "Последний файл",              ID_FILE_MRU_FILE1, GRAYED
+        MENUITEM SEPARATOR
+        MENUITEM "В&ыход",                      ID_APP_EXIT
+    END
+    POPUP "&Правка"
+    BEGIN
+        MENUITEM "&Отменить\tCtrl+Z",           ID_EDIT_UNDO
+        MENUITEM SEPARATOR
+        MENUITEM "&Вырезать\tCtrl+X",           ID_EDIT_CUT
+        MENUITEM "&Копировать\tCtrl+C",         ID_EDIT_COPY
+        MENUITEM "Вст&авить\tCtrl+V",           ID_EDIT_PASTE
+    END
+    POPUP "&Вид"
+    BEGIN
+        MENUITEM "&Панель инструментов",        ID_VIEW_TOOLBAR
+        MENUITEM "&Строка состояния",           ID_VIEW_STATUS_BAR
+    END
+    POPUP "&Справка"
+    BEGIN
+        MENUITEM "&Сведения о MyPaint...",      ID_APP_ABOUT
+    END
+    POPUP "Рисование"
+    BEGIN
+        MENUITEM "Цвета  контура",              ID_PEN_COLOR
+        MENUITEM "Цвет заливки",                ID_BRUSH_COLOR
+        MENUITEM "Толщина",                     ID_WIDTH
+        MENUITEM "Контур",                      ID_PEN_STYLE
+        MENUITEM "Заливка",                     ID_BRUSH_STYLE
+    END
+END
+
+IDR_MENU1 MENU
+BEGIN
+    POPUP "ContextMenu"
+    BEGIN
+        MENUITEM "Delete",                      ID_CONTEXTMENU_DELETE
+        MENUITEM "Rotate",                      ID_CONTEXTMENU_ROTATE
+        MENUITEM "Edit",                        ID_CONTEXTMENU_EDIT
+        MENUITEM "Normalize",                   ID_CONTEXTMENU_NORMALIZE
+        POPUP "Connect"
+        BEGIN
+            MENUITEM "Line",                        ID_CONNECT_LINE
+            MENUITEM "Right arrow",                 ID_CONNECT_RIGHTARROW
+            MENUITEM "Left arrow",                  ID_CONNECT_LEFTARROW
+            MENUITEM "Biderectional arrow",         ID_CONNECT_BIDERECTIONALARROW
+        END
+        MENUITEM SEPARATOR
+        MENUITEM "Properties",                  ID_CONTEXTMENU_PROPERTIES
+    END
+END
+
+IDR_MENU2 MENU
+BEGIN
+    POPUP "lineMenu"
+    BEGIN
+        MENUITEM "Delete",                      ID_LINEMENU_DELETE
+        MENUITEM SEPARATOR
+        MENUITEM "Properties",                  ID_LINEMENU_PROPERTIES
+    END
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Accelerator
+//
+
+IDR_MAINFRAME ACCELERATORS
+BEGIN
+    "N",            ID_FILE_NEW,            VIRTKEY, CONTROL
+    "O",            ID_FILE_OPEN,           VIRTKEY, CONTROL
+    "S",            ID_FILE_SAVE,           VIRTKEY, CONTROL
+    "P",            ID_FILE_PRINT,          VIRTKEY, CONTROL
+    "Z",            ID_EDIT_UNDO,           VIRTKEY, CONTROL
+    "X",            ID_EDIT_CUT,            VIRTKEY, CONTROL
+    "C",            ID_EDIT_COPY,           VIRTKEY, CONTROL
+    "V",            ID_EDIT_PASTE,          VIRTKEY, CONTROL
+    VK_BACK,        ID_EDIT_UNDO,           VIRTKEY, ALT
+    VK_DELETE,      ID_EDIT_CUT,            VIRTKEY, SHIFT
+    VK_INSERT,      ID_EDIT_COPY,           VIRTKEY, CONTROL
+    VK_INSERT,      ID_EDIT_PASTE,          VIRTKEY, SHIFT
+    VK_F6,          ID_NEXT_PANE,           VIRTKEY 
+    VK_F6,          ID_PREV_PANE,           VIRTKEY, SHIFT
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Dialog
+//
+
+IDD_ABOUTBOX DIALOGEX 0, 0, 170, 62
+STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "О MyPaint"
+FONT 8, "MS Shell Dlg", 0, 0, 0x1
+BEGIN
+    ICON            IDR_MAINFRAME,IDC_STATIC,14,14,21,20
+    LTEXT           "MyPaint, версия 1.0",IDC_STATIC,42,14,114,8,SS_NOPREFIX
+    LTEXT           "(C) 2019 г.",IDC_STATIC,42,26,114,8
+    DEFPUSHBUTTON   "ОК",IDOK,113,41,50,14,WS_GROUP
+END
+
+IDD_DIALOG_WIDTH DIALOGEX 0, 0, 263, 109
+STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "Выбор ширины"
+FONT 8, "MS Shell Dlg", 400, 0, 0x1
+BEGIN
+    DEFPUSHBUTTON   "Применить",IDOK,127,88,50,14
+    PUSHBUTTON      "Отмена",IDCANCEL,206,88,50,14
+    LTEXT           "Ширина контура",IDC_STATIC,39,46,56,8
+    COMBOBOX        IDC_COMBO_WIDTH,158,44,76,30,CBS_DROPDOWNLIST | CBS_DISABLENOSCROLL | WS_VSCROLL | WS_TABSTOP
+END
+
+IDD_DIALOG_PEN_STYLE DIALOGEX 0, 0, 263, 115
+STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "Стиль контура"
+FONT 8, "MS Shell Dlg", 400, 0, 0x1
+BEGIN
+    DEFPUSHBUTTON   "Применить",IDAPPLY,129,94,50,14
+    PUSHBUTTON      "Отмена",IDCANCEL,206,94,50,14
+    LTEXT           "Стиль контура",IDC_STATIC,33,47,50,8
+    COMBOBOX        IDC_COMBO_PEN_STYLE,154,45,82,30,CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP
+END
+
+IDD_DIALOG_BRUSH_STYLE DIALOGEX 0, 0, 294, 113
+STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "Стиль заливки"
+FONT 8, "MS Shell Dlg", 400, 0, 0x1
+BEGIN
+    DEFPUSHBUTTON   "Применить",IDAPPLY,167,92,50,14
+    PUSHBUTTON      "Отмена",IDCANCEL,237,92,50,14
+    LTEXT           "Стиль заливки",IDC_STATIC,46,41,50,8
+    COMBOBOX        IDC_COMBO_BRUSH_STYLE,135,39,141,30,CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP
+END
+
+IDD_DIALOG_PROPERTIES DIALOGEX 0, 0, 517, 202
+STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "Свойства"
+FONT 8, "MS Shell Dlg", 400, 0, 0x1
+BEGIN
+    DEFPUSHBUTTON   "Применить",IDOK,158,181,50,14
+    PUSHBUTTON      "Отмена",IDCANCEL,329,181,50,14
+    LTEXT           "Название",IDC_STATIC,55,22,33,8
+    EDITTEXT        IDC_EDIT_NAME,125,19,99,14,ES_AUTOHSCROLL
+    LTEXT           "ID",IDC_STATIC,303,22,8,8
+    EDITTEXT        IDC_EDIT_ID,371,19,97,14,ES_AUTOHSCROLL | ES_NUMBER
+    LTEXT           "Координаты первой вершины(Х)",IDC_STATIC,16,45,111,8
+    LTEXT           "Координаты первой вершины (Y)",IDC_STATIC,251,45,113,8
+    LTEXT           "Координаты второй вершины (Х)",IDC_STATIC,15,66,113,8
+    LTEXT           "Координаты второй вершины(Y)",IDC_STATIC,252,66,110,8
+    EDITTEXT        IDC_EDIT_FIRST_POINT_X,141,42,66,14,ES_AUTOHSCROLL
+    EDITTEXT        IDC_EDIT_FIRST_POINT_Y,383,42,71,14,ES_AUTOHSCROLL
+    EDITTEXT        IDC_EDIT_SECOND_POINT_X,141,63,66,14,ES_AUTOHSCROLL
+    EDITTEXT        IDC_EDIT_SECOND_POINT_Y,383,63,71,14,ES_AUTOHSCROLL
+    LTEXT           "Координаты третей вершины (Х)(для треугольников)",IDC_STATIC,14,81,122,18
+    LTEXT           "Координаты третей вершины (Y)(для треугольников)",IDC_STATIC,251,82,112,16
+    EDITTEXT        IDC_EDIT_THIRD_POINT_X,141,83,66,14,ES_AUTOHSCROLL
+    EDITTEXT        IDC_EDIT_THIRD_POINT_Y,385,83,66,14,ES_AUTOHSCROLL
+    LTEXT           "Ширина контура",IDC_STATIC,43,108,56,8
+    LTEXT           "Стиль контура",IDC_STATIC,282,108,50,8
+    COMBOBOX        IDC_COMBO_WIDTH,150,106,48,30,CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP
+    COMBOBOX        IDC_COMBO_PEN_STYLE,394,106,48,30,CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP
+    LTEXT           "Стиль заливки",IDC_STATIC,46,131,50,8
+    COMBOBOX        IDC_COMBO_BRUSH_STYLE,150,129,48,30,CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP
+    PUSHBUTTON      "Цвет контура",IDC_BUTTON_PEN_COLOR,393,128,50,14
+    PUSHBUTTON      "Цвет заливки",IDC_BUTTON_BRUSH_COLOR,244,145,50,14
+END
+
+IDD_DIALOG_LINE_PROPERTIES DIALOGEX 0, 0, 600, 202
+STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "Свойства"
+FONT 8, "MS Shell Dlg", 400, 0, 0x1
+BEGIN
+    DEFPUSHBUTTON   "Применить",IDOK,165,181,50,14
+    PUSHBUTTON      "Отмена",IDCANCEL,437,181,50,14
+    LTEXT           "Название",IDC_STATIC,37,35,33,8
+    EDITTEXT        IDC_EDIT_NAME,136,32,91,14,ES_AUTOHSCROLL
+    LTEXT           "ID",IDC_STATIC,301,35,8,8
+    EDITTEXT        IDC_EDIT_ID,430,32,93,14,ES_AUTOHSCROLL
+    COMBOBOX        IDC_COMBO_WIDTH,151,82,48,30,CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP
+    COMBOBOX        IDC_COMBO_STYLE,454,82,48,30,CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP
+    PUSHBUTTON      "Цвет линии",IDC_BUTTON_COLOR,285,134,50,14
+    LTEXT           "Ширина линии",IDC_STATIC,37,84,50,8
+    LTEXT           "Стиль линии",IDC_STATIC,294,84,43,8
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Version
+//
+
+VS_VERSION_INFO VERSIONINFO
+ FILEVERSION 1,0,0,1
+ PRODUCTVERSION 1,0,0,1
+ FILEFLAGSMASK 0x3fL
+#ifdef _DEBUG
+ FILEFLAGS 0x1L
+#else
+ FILEFLAGS 0x0L
+#endif
+ FILEOS 0x40004L
+ FILETYPE 0x1L
+ FILESUBTYPE 0x0L
+BEGIN
+    BLOCK "StringFileInfo"
+    BEGIN
+        BLOCK "041904B0"
+        BEGIN
+            VALUE "CompanyName", "TODO: <название компании>"
+            VALUE "FileDescription", "MyPaint"
+            VALUE "FileVersion", "1.0.0.1"
+            VALUE "InternalName", "MyPaint.exe"
+            VALUE "LegalCopyright", "TODO: (c) <название компании>.  Все права защищены."
+            VALUE "OriginalFilename", "MyPaint.exe"
+            VALUE "ProductName", "TODO: <Название продукта>"
+            VALUE "ProductVersion", "1.0.0.1"
+        END
+    END
+    BLOCK "VarFileInfo"
+    BEGIN
+        VALUE "Translation", 0x419, 1200
+    END
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// DESIGNINFO
+//
+
+#ifdef APSTUDIO_INVOKED
+GUIDELINES DESIGNINFO
+BEGIN
+    IDD_ABOUTBOX, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 163
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 55
+    END
+
+    IDD_DIALOG_WIDTH, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 256
+        BOTTOMMARGIN, 102
+        HORZGUIDE, 50
+    END
+
+    IDD_DIALOG_PEN_STYLE, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 256
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 108
+        HORZGUIDE, 51
+    END
+
+    IDD_DIALOG_BRUSH_STYLE, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 287
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 106
+        HORZGUIDE, 45
+    END
+
+    IDD_DIALOG_PROPERTIES, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 510
+        VERTGUIDE, 71
+        VERTGUIDE, 174
+        VERTGUIDE, 307
+        VERTGUIDE, 418
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 195
+        HORZGUIDE, 26
+        HORZGUIDE, 49
+        HORZGUIDE, 70
+        HORZGUIDE, 90
+        HORZGUIDE, 112
+        HORZGUIDE, 135
+    END
+
+    IDD_DIALOG_LINE_PROPERTIES, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 593
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 195
+        HORZGUIDE, 39
+        HORZGUIDE, 88
+        HORZGUIDE, 141
+    END
+END
+#endif    // APSTUDIO_INVOKED
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// AFX_DIALOG_LAYOUT
+//
+
+IDD_DIALOG_WIDTH AFX_DIALOG_LAYOUT
+BEGIN
+    0
+END
+
+IDD_DIALOG_PEN_STYLE AFX_DIALOG_LAYOUT
+BEGIN
+    0
+END
+
+IDD_DIALOG_BRUSH_STYLE AFX_DIALOG_LAYOUT
+BEGIN
+    0
+END
+
+IDD_DIALOG_PROPERTIES AFX_DIALOG_LAYOUT
+BEGIN
+    0
+END
+
+IDD_DIALOG_LINE_PROPERTIES AFX_DIALOG_LAYOUT
+BEGIN
+    0
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// String Table
+//
+
+STRINGTABLE
+BEGIN
+    IDP_OLE_INIT_FAILED     "Не удалось выполнить инициализацию OLE.  Убедитесь в том, что используются правильные версии библиотек OLE."
+END
+
+STRINGTABLE
+BEGIN
+    IDR_MAINFRAME           "MyPaint\n\nMyPaint\n\n\nMyPaint.Document\nMyPaint.Document"
+END
+
+STRINGTABLE
+BEGIN
+    AFX_IDS_APP_TITLE       "MyPaint"
+    AFX_IDS_IDLEMESSAGE     "Готово"
+END
+
+STRINGTABLE
+BEGIN
+    ID_INDICATOR_EXT        "EXT"
+    ID_INDICATOR_CAPS       "CAP"
+    ID_INDICATOR_NUM        "NUM"
+    ID_INDICATOR_SCRL       "SCRL"
+    ID_INDICATOR_OVR        "OVR"
+    ID_INDICATOR_REC        "REC"
+END
+
+STRINGTABLE
+BEGIN
+    ID_FILE_NEW             "Создание нового документа\nСоздать"
+    ID_FILE_OPEN            "Открытие существующего документа\nОткрыть"
+    ID_FILE_CLOSE           "Закрытие активного документа\nЗакрыть"
+    ID_FILE_SAVE            "Сохранение активного документа\nСохранить"
+    ID_FILE_SAVE_AS         "Сохранение активного документа под новым именем\nСохранить как"
+    ID_FILE_PAGE_SETUP      "Изменение параметров печати\nПараметры страницы"
+    ID_FILE_PRINT_SETUP     "Изменение принтера и параметров печати\nНастройка печати"
+    ID_FILE_PRINT           "Печать активного документа\nПечать"
+    ID_FILE_PRINT_DIRECT    "Печать активного документа с использованием текущих параметров\nБыстрая печать"
+    ID_FILE_PRINT_PREVIEW   "Просмотр документа в полностраничном режиме\nПредварительный просмотр"
+    ID_FILE_SEND_MAIL       "Отправка активного документа по электронной почте\nОтправить почту"
+END
+
+STRINGTABLE
+BEGIN
+    ID_APP_ABOUT            "Вывод сведений о программе, ее версии и авторских правах\nО программе"
+    ID_APP_EXIT             "Завершение работы приложения с запросом на сохранение документов\nВыход"
+END
+
+STRINGTABLE
+BEGIN
+    ID_FILE_MRU_FILE1       "Открытие данного документа"
+    ID_FILE_MRU_FILE2       "Открытие данного документа"
+    ID_FILE_MRU_FILE3       "Открытие данного документа"
+    ID_FILE_MRU_FILE4       "Открытие данного документа"
+    ID_FILE_MRU_FILE5       "Открытие данного документа"
+    ID_FILE_MRU_FILE6       "Открытие данного документа"
+    ID_FILE_MRU_FILE7       "Открытие данного документа"
+    ID_FILE_MRU_FILE8       "Открытие данного документа"
+    ID_FILE_MRU_FILE9       "Открытие данного документа"
+    ID_FILE_MRU_FILE10      "Открытие данного документа"
+    ID_FILE_MRU_FILE11      "Открытие данного документа"
+    ID_FILE_MRU_FILE12      "Открытие данного документа"
+    ID_FILE_MRU_FILE13      "Открытие данного документа"
+    ID_FILE_MRU_FILE14      "Открытие данного документа"
+    ID_FILE_MRU_FILE15      "Открытие данного документа"
+    ID_FILE_MRU_FILE16      "Открытие данного документа"
+END
+
+STRINGTABLE
+BEGIN
+    ID_NEXT_PANE            "Переход к следующей области окна\nСледующая область"
+    ID_PREV_PANE            "Возврат к предыдущей области окна\nПредыдущая область"
+END
+
+STRINGTABLE
+BEGIN
+    ID_WINDOW_SPLIT         "Разделение активного окна на области\nРазделить"
+END
+
+STRINGTABLE
+BEGIN
+    ID_EDIT_CLEAR           "Удаление выделенного фрагмента\nУдалить"
+    ID_EDIT_CLEAR_ALL       "Полное удаление содержимого документа\nУдалить все"
+    ID_EDIT_COPY            "Копирование выделенного фрагмента в буфер обмена\nКопировать"
+    ID_EDIT_CUT             "Удаление выделенного фрагмента в буфер обмена\nВырезать"
+    ID_EDIT_FIND            "Поиск указанного текста\nНайти"
+    ID_EDIT_PASTE           "Вставка содержимого буфера обмена\nВставить"
+    ID_EDIT_REPEAT          "Повторение последнего действия\nПовторить"
+    ID_EDIT_REPLACE         "Замена заданного текста другим текстом\nЗаменить"
+    ID_EDIT_SELECT_ALL      "Выделение всего документа\nВыделить все"
+    ID_EDIT_UNDO            "Отмена последнего действия\nОтменить"
+    ID_EDIT_REDO            "Повторное выполнение последнего отмененного действия\nВернуть"
+END
+
+STRINGTABLE
+BEGIN
+    ID_VIEW_TOOLBAR         "Отображение или скрытие панели инструментов\nПанель инструментов"
+    ID_VIEW_STATUS_BAR      "Показать или скрыть строку состояния\n Переключение строки состояния"
+END
+
+STRINGTABLE
+BEGIN
+    AFX_IDS_SCSIZE          "Изменение размера окна"
+    AFX_IDS_SCMOVE          "Изменение положения окна"
+    AFX_IDS_SCMINIMIZE      "Свертывание окна в значок"
+    AFX_IDS_SCMAXIMIZE      "Развертывание окна до полного размера"
+    AFX_IDS_SCNEXTWINDOW    "Переход к следующему окну документа"
+    AFX_IDS_SCPREVWINDOW    "Переход к предыдущему окну документа"
+    AFX_IDS_SCCLOSE         "Закрытие активного окна с запросом на сохранение документов"
+END
+
+STRINGTABLE
+BEGIN
+    AFX_IDS_SCRESTORE       "Восстановление исходных размеров окна"
+    AFX_IDS_SCTASKLIST      "Переход к списку задач"
+END
+
+STRINGTABLE
+BEGIN
+    AFX_IDS_PREVIEW_CLOSE   "Выход из режима предварительного просмотра\nОтменить просмотр"
+END
+
+#endif    // Русский (Россия) resources
+/////////////////////////////////////////////////////////////////////////////
+
+
+/////////////////////////////////////////////////////////////////////////////
+// Английский (США) resources
+
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ENU)
+LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
+
+#ifdef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// TEXTINCLUDE
+//
+
+1 TEXTINCLUDE 
+BEGIN
+    "resource.h\0"
+END
+
+2 TEXTINCLUDE 
+BEGIN
+    "#ifndef APSTUDIO_INVOKED\r\n"
+    "#include ""targetver.h""\r\n"
+    "#endif\r\n"
+    "#include ""afxres.h""\r\n"
+    "#include ""verrsrc.h""\r\n"
+    "\0"
+END
+
+3 TEXTINCLUDE 
+BEGIN
+    "#define _AFX_NO_OLE_RESOURCES\r\n"
+    "#define _AFX_NO_TRACKER_RESOURCES\r\n"
+    "#define _AFX_NO_PROPERTY_RESOURCES\r\n"
+    "\r\n"
+    "#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_RUS)\r\n"
+    "LANGUAGE 25, 1\r\n"
+    "#include ""res\\MyPaint.rc2""  // Г‘в‚¬ГђВµГ‘ВЃГ‘Ж’Г‘в‚¬Г‘ВЃГ‘вЂ№, ГђВЅГђВµ Г‘в‚¬ГђВµГђВґГђВ°ГђВєГ‘вЂљГђВёГ‘в‚¬Г‘Ж’ГђВµГђВјГ‘вЂ№ГђВµ ГђВІ Microsoft Visual C++\r\n"
+    "#include ""l.RUS\\afxres.rc""      // ГђВЎГ‘вЂљГђВ°ГђВЅГђВґГђВ°Г‘в‚¬Г‘вЂљГђВЅГ‘вЂ№ГђВµ ГђВєГђВѕГђВјГђВїГђВѕГђВЅГђВµГђВЅГ‘вЂљГ‘вЂ№\r\n"
+    "#include ""l.RUS\\afxprint.rc""    // Г‘в‚¬ГђВµГ‘ВЃГ‘Ж’Г‘в‚¬Г‘ВЃГ‘вЂ№ ГђВґГђВ»Г‘ВЏ ГђВїГђВµГ‘вЂЎГђВ°Г‘вЂљГђВё/ГђВїГ‘в‚¬ГђВµГђВґГђВІГђВ°Г‘в‚¬ГђВёГ‘вЂљГђВµГђВ»Г‘Е’ГђВЅГђВѕГђВіГђВѕ ГђВїГ‘в‚¬ГђВѕГ‘ВЃГђВјГђВѕГ‘вЂљГ‘в‚¬ГђВ°\r\n"
+    "#endif\r\n"
+    "\0"
+END
+
+#endif    // APSTUDIO_INVOKED
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Cursor
+//
+
+IDC_CURSOR1             CURSOR                  "C:\\Users\\theti\\Downloads\\windows_10_logo_cursors\\Windows 10 Logo Cursors\\Windows 10 Logo White\\Hand.cur"
+
+IDC_CURSOR2             CURSOR                  "res\\Cross.cur"
+
+#endif    // Английский (США) resources
+/////////////////////////////////////////////////////////////////////////////
+
+
+
+#ifndef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 3 resource.
+//
+#define _AFX_NO_OLE_RESOURCES
+#define _AFX_NO_TRACKER_RESOURCES
+#define _AFX_NO_PROPERTY_RESOURCES
+
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_RUS)
+LANGUAGE 25, 1
+#include "res\MyPaint.rc2"  // Ã‘â‚¬ÃÂµÃ‘ÂÃ‘Æ’Ã‘â‚¬Ã‘ÂÃ‘â€¹, ÃÂ½ÃÂµ Ã‘â‚¬ÃÂµÃÂ´ÃÂ°ÃÂºÃ‘â€šÃÂ¸Ã‘â‚¬Ã‘Æ’ÃÂµÃÂ¼Ã‘â€¹ÃÂµ ÃÂ² Microsoft Visual C++
+#include "l.RUS\afxres.rc"      // ÃÂ¡Ã‘â€šÃÂ°ÃÂ½ÃÂ´ÃÂ°Ã‘â‚¬Ã‘â€šÃÂ½Ã‘â€¹ÃÂµ ÃÂºÃÂ¾ÃÂ¼ÃÂ¿ÃÂ¾ÃÂ½ÃÂµÃÂ½Ã‘â€šÃ‘â€¹
+#include "l.RUS\afxprint.rc"    // Ã‘â‚¬ÃÂµÃ‘ÂÃ‘Æ’Ã‘â‚¬Ã‘ÂÃ‘â€¹ ÃÂ´ÃÂ»Ã‘Â ÃÂ¿ÃÂµÃ‘â€¡ÃÂ°Ã‘â€šÃÂ¸/ÃÂ¿Ã‘â‚¬ÃÂµÃÂ´ÃÂ²ÃÂ°Ã‘â‚¬ÃÂ¸Ã‘â€šÃÂµÃÂ»Ã‘Å’ÃÂ½ÃÂ¾ÃÂ³ÃÂ¾ ÃÂ¿Ã‘â‚¬ÃÂ¾Ã‘ÂÃÂ¼ÃÂ¾Ã‘â€šÃ‘â‚¬ÃÂ°
+#endif
+
+/////////////////////////////////////////////////////////////////////////////
+#endif    // not APSTUDIO_INVOKED
+
