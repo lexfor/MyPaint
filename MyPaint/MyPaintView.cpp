@@ -15,6 +15,7 @@
 #include "CMyPaintWidthDialog.h"
 #include "CMyPaintPenStyleDialog.h"
 #include "CMyPaintBrushStyleDialog.h"
+#include "CMyPaintListViewDialog.h"
 #include <afxdlgs.h>
 #include "algorithm"
 
@@ -57,6 +58,7 @@ BEGIN_MESSAGE_MAP(CMyPaintView, CView)
 	ON_COMMAND(ID_LINEMENU_DELETE, &CMyPaintView::OnLinemenuDelete)
 	ON_COMMAND(ID_CONTEXTMENU_PROPERTIES, &CMyPaintView::OnContextmenuProperties)
 	ON_COMMAND(ID_LINEMENU_PROPERTIES, &CMyPaintView::OnLinemenuProperties)
+	ON_COMMAND(ID_LISTVIEW, &CMyPaintView::OnListview)
 END_MESSAGE_MAP()
 
 // Создание или уничтожение CMyPaintView
@@ -99,18 +101,20 @@ BOOL CMyPaintView::PreCreateWindow(CREATESTRUCT& cs)
 
 void CMyPaintView::OnDraw(CDC* /*pDC*/)
 {
+	CMyPaintDoc* pDoc = GetDocument();
+	ASSERT_VALID(pDoc);
 	CClientDC dc(this);
-	for (size_t i = 0; i < figure_.size(); i++) {
+	for (size_t i = 0; i < pDoc->figure_.size(); i++) {
 		if (i == current_ && rotation_) {
 			continue;
 		}
-		figure_[i]->draw(dc, m_hWnd);
+		pDoc->figure_[i]->draw(dc, m_hWnd);
 	}
 	if (rotation_) {
-			figure_[current_]->drawTempFigure(dc, m_hWnd);
+		pDoc->figure_[current_]->drawTempFigure(dc, m_hWnd);
 	}
-	for (size_t i = 0; i < connections_.size(); i++) {
-		connections_[i].draw(dc);
+	for (size_t i = 0; i < pDoc->connections_.size(); i++) {
+		pDoc->connections_[i].draw(dc);
 	}
 }
 
@@ -160,49 +164,41 @@ CMyPaintDoc* CMyPaintView::GetDocument() const // встроена неотла�
 
 void CMyPaintView::OnLButtonDown(UINT nFlags, CPoint point)
 {
+	CMyPaintDoc* pDoc = GetDocument();
+	ASSERT_VALID(pDoc);
 	CClientDC dc(this);
 	if (figureDraw_ != figureDrawEnum::nothing) {
 		SetCapture();
-		CRect rectSize(point, point);
-		CString str("Figure");
-		str.Format(_T("Figure%i"), figureID_);
-		CMyPaintFigure* ptr;
 		switch (figureDraw_)
 		{
 		case figureDrawEnum::rectDraw:
-			ptr = new CMyPaintRect(dc, figureID_, str, penWidth_, currentPenColor_, penStyle_, currentBrushColor_, brushStyle_, 0, rectSize);
-			figure_.push_back(ptr);
-			current_ = figure_.size() - 1;
+			current_ = pDoc->CreateRect(point);
 			actionFlag_ = actionFlagEnum::draw;
 			break;
 		case figureDrawEnum::ellipseDraw:
-			ptr = new CMyPaintEllipse(dc, figureID_, str, penWidth_, currentPenColor_, penStyle_, currentBrushColor_, brushStyle_, 0, rectSize);
-			figure_.push_back(ptr);
-			current_ = figure_.size() - 1;
+			current_ = pDoc->CreateEllipse(point);
 			actionFlag_ = actionFlagEnum::draw;
 			break;
 		case figureDrawEnum::triangleDraw:
 			if (clickCount_ == 0) {
-				ptr = new CMyPaintTriangle(dc, figureID_, str, penWidth_, currentPenColor_, penStyle_, currentBrushColor_, brushStyle_, 0, point, point, point);
-				figure_.push_back(ptr);
-				current_ = figure_.size() - 1;
+				current_ = pDoc->CreateTriangle(point);
 				actionFlag_ = actionFlagEnum::draw;
 			}
 			if (clickCount_ == 2) {
 				actionFlag_ = actionFlagEnum::nothing;
 				clickCount_ = 0;
 			}
-			figure_[current_]->setCoordinates(point, true);
+			pDoc->figure_[current_]->setCoordinates(point, true);
 			break;
 		default:
 			break;
 		}
 		figureID_++;
-		figure_[current_]->draw(dc, m_hWnd);
+		pDoc->figure_[current_]->draw(dc, m_hWnd);
 	}
 	if (actionFlag_ == actionFlagEnum::rotate) {
-		figure_[current_]->makeTempCoordinatesNull();
-		InvalidateRect(figure_[current_]->getCoordinates(), true);
+		pDoc->figure_[current_]->makeTempCoordinatesNull();
+		InvalidateRect(pDoc->figure_[current_]->getCoordinates(), true);
 		rotatePoint_[0] = point;
 		rotation_ = true;
 		return;
@@ -227,50 +223,52 @@ void CMyPaintView::OnLButtonDown(UINT nFlags, CPoint point)
 
 void CMyPaintView::OnMouseMove(UINT nFlags, CPoint point)
 {
+	CMyPaintDoc* pDoc = GetDocument();
+	ASSERT_VALID(pDoc);
 	CClientDC dc(this);
 	if (actionFlag_ == actionFlagEnum::draw) {
-		InvalidateRect(figure_[current_]->getCoordinates(), true);
-		figure_[current_]->setCoordinates(point, false);
-		figure_[current_]->draw(dc, m_hWnd);
+		InvalidateRect(pDoc->figure_[current_]->getCoordinates(), true);
+		pDoc->figure_[current_]->setCoordinates(point, false);
+		pDoc->figure_[current_]->draw(dc, m_hWnd);
 	}
 	if (actionFlag_ == actionFlagEnum::move) {
 		movePoint_[1] = point;
 		std::vector<int>nums;
-		InvalidateRect(figure_[current_]->getCoordinates(), true);
-		figure_[current_]->move(movePoint_);
-		figure_[current_]->draw(dc, m_hWnd);
-		nums = figure_[current_]->getConnectionID();
+		InvalidateRect(pDoc->figure_[current_]->getCoordinates(), true);
+		pDoc->figure_[current_]->move(movePoint_);
+		pDoc->figure_[current_]->draw(dc, m_hWnd);
+		nums = pDoc->figure_[current_]->getConnectionID();
 		for (size_t i = 0; i < nums.size(); i++) {
 			int key;
-			for (size_t j = 0; j < connections_.size(); j++) {
-				if (connections_[j].getID() == nums[i]) {
+			for (size_t j = 0; j < pDoc->connections_.size(); j++) {
+				if (pDoc->connections_[j].getID() == nums[i]) {
 					key = j;
 					break;
 				}
 			}
-			InvalidateRect(connections_[key].getInvalidRect());
-			if (connections_[key].getFirstFigureID() == figure_[current_]->getID()) {
-				connections_[key].moveCoordinates(movePoint_, 0);
+			InvalidateRect(pDoc->connections_[key].getInvalidRect());
+			if (pDoc->connections_[key].getFirstFigureID() == pDoc->figure_[current_]->getID()) {
+				pDoc->connections_[key].moveCoordinates(movePoint_, 0);
 			}
 			else {
-				connections_[key].moveCoordinates(movePoint_, 1);
+				pDoc->connections_[key].moveCoordinates(movePoint_, 1);
 			}
-			connections_[key].draw(dc);
+			pDoc->connections_[key].draw(dc);
 		}
 		movePoint_[0] = point;
 	}
 	if (actionFlag_ == actionFlagEnum::rotate && rotation_) {
 		rotatePoint_[1] = point;
 		std::vector<int>nums;
-		InvalidateRect(figure_[current_]->getTempCoordinates(), true);
-		figure_[current_]->rotate(rotatePoint_,false);
-		figure_[current_]->drawTempFigure(dc, m_hWnd);
-		nums = figure_[current_]->getConnectionID();
+		InvalidateRect(pDoc->figure_[current_]->getTempCoordinates(), true);
+		pDoc->figure_[current_]->rotate(rotatePoint_,false);
+		pDoc->figure_[current_]->drawTempFigure(dc, m_hWnd);
+		nums = pDoc->figure_[current_]->getConnectionID();
 	}
 	if (actionFlag_ == actionFlagEnum::edit && edit_) {
-		InvalidateRect(figure_[current_]->getCoordinates(), true);
-		figure_[current_]->edit(point,false);
-		figure_[current_]->draw(dc, m_hWnd);
+		InvalidateRect(pDoc->figure_[current_]->getCoordinates(), true);
+		pDoc->figure_[current_]->edit(point,false);
+		pDoc->figure_[current_]->draw(dc, m_hWnd);
 	}
 	CView::OnMouseMove(nFlags, point);
 }
@@ -278,11 +276,13 @@ void CMyPaintView::OnMouseMove(UINT nFlags, CPoint point)
 
 void CMyPaintView::OnLButtonUp(UINT nFlags, CPoint point)
 {
+	CMyPaintDoc* pDoc = GetDocument();
+	ASSERT_VALID(pDoc);
 	CClientDC dc(this);
 	if (actionFlag_ == actionFlagEnum::draw) {
-		InvalidateRect(figure_[current_]->getCoordinates(), true);
-		figure_[current_]->setCoordinates(point, false);
-		figure_[current_]->draw(dc, m_hWnd);
+		InvalidateRect(pDoc->figure_[current_]->getCoordinates(), true);
+		pDoc->figure_[current_]->setCoordinates(point, false);
+		pDoc->figure_[current_]->draw(dc, m_hWnd);
 		if (figureDraw_ == figureDrawEnum::triangleDraw) {
 			clickCount_++;
 		}
@@ -294,91 +294,91 @@ void CMyPaintView::OnLButtonUp(UINT nFlags, CPoint point)
 	if (actionFlag_ == actionFlagEnum::move) {
 		movePoint_[1] = point;
 		std::vector<int>nums;
-		InvalidateRect(figure_[current_]->getCoordinates(), true);
-		figure_[current_]->move(movePoint_);
-		figure_[current_]->draw(dc, m_hWnd);
+		InvalidateRect(pDoc->figure_[current_]->getCoordinates(), true);
+		pDoc->figure_[current_]->move(movePoint_);
+		pDoc->figure_[current_]->draw(dc, m_hWnd);
 		
-		nums = figure_[current_]->getConnectionID();
+		nums = pDoc->figure_[current_]->getConnectionID();
 		for (size_t i = 0; i < nums.size(); i++) {
 			int key;
-			for (size_t j = 0; j < connections_.size(); j++) {
-				if (connections_[j].getID() == nums[i]) {
+			for (size_t j = 0; j < pDoc->connections_.size(); j++) {
+				if (pDoc->connections_[j].getID() == nums[i]) {
 					key = j;
 					break;
 				}
 			}
-			InvalidateRect(connections_[key].getInvalidRect());
-			if (connections_[key].getFirstFigureID() == figure_[current_]->getID()) {
-				connections_[key].moveCoordinates(movePoint_, 0);
+			InvalidateRect(pDoc->connections_[key].getInvalidRect());
+			if (pDoc->connections_[key].getFirstFigureID() == pDoc->figure_[current_]->getID()) {
+				pDoc->connections_[key].moveCoordinates(movePoint_, 0);
 			}
 			else {
-				connections_[key].moveCoordinates(movePoint_, 1 );
+				pDoc->connections_[key].moveCoordinates(movePoint_, 1 );
 			}
-			connections_[key].draw(dc);
+			pDoc->connections_[key].draw(dc);
 		}
 		actionFlag_ = actionFlagEnum::nothing;
 	}
 	if (actionFlag_ == actionFlagEnum::rotate && rotation_) {
 		rotatePoint_[1] = point;
 		std::vector<int>nums;
-		InvalidateRect(figure_[current_]->getTempCoordinates(), true);
-		figure_[current_]->rotate(rotatePoint_,true);
-		figure_[current_]->draw(dc, m_hWnd);
-		nums = figure_[current_]->getConnectionID();
+		InvalidateRect(pDoc->figure_[current_]->getTempCoordinates(), true);
+		pDoc->figure_[current_]->rotate(rotatePoint_,true);
+		pDoc->figure_[current_]->draw(dc, m_hWnd);
+		nums = pDoc->figure_[current_]->getConnectionID();
 		for (size_t i = 0; i < nums.size(); i++) {
 			int key;
-			for (size_t j = 0; j < connections_.size(); j++) {
-				if (connections_[j].getID() == nums[i]) {
+			for (size_t j = 0; j < pDoc->connections_.size(); j++) {
+				if (pDoc->connections_[j].getID() == nums[i]) {
 					key = j;
 					break;
 				}
 			}
-			InvalidateRect(connections_[key].getInvalidRect());
-			if (connections_[key].getFirstFigureID() == figure_[current_]->getID()) {
-				connections_[key].setFirstCoordinates(figure_[current_]->getConnectCoordinate(nums[i]));
+			InvalidateRect(pDoc->connections_[key].getInvalidRect());
+			if (pDoc->connections_[key].getFirstFigureID() == pDoc->figure_[current_]->getID()) {
+				pDoc->connections_[key].setFirstCoordinates(pDoc->figure_[current_]->getConnectCoordinate(nums[i]));
 			}
 			else {
-				connections_[key].setSecondCoordinates(figure_[current_]->getConnectCoordinate(nums[i]));
+				pDoc->connections_[key].setSecondCoordinates(pDoc->figure_[current_]->getConnectCoordinate(nums[i]));
 			}	
-			connections_[key].draw(dc);
+			pDoc->connections_[key].draw(dc);
 		}
 		actionFlag_ = actionFlagEnum::nothing;
 		rotation_ = false;
-		figure_[current_]->makeTempCoordinatesNull();
+		pDoc->figure_[current_]->makeTempCoordinatesNull();
 	}
 	if (actionFlag_ == actionFlagEnum::edit && edit_) {
-		InvalidateRect(figure_[current_]->getCoordinates(), true);
-		if (figure_[current_]->edit(point,true)) {
-			figure_[current_]->draw(dc, m_hWnd);
+		InvalidateRect(pDoc->figure_[current_]->getCoordinates(), true);
+		if (pDoc->figure_[current_]->edit(point,true)) {
+			pDoc->figure_[current_]->draw(dc, m_hWnd);
 			actionFlag_ = actionFlagEnum::nothing;
 			edit_ = false;
 		}
 		else {
-			figure_[current_]->draw(dc, m_hWnd);
+			pDoc->figure_[current_]->draw(dc, m_hWnd);
 		}
 	}
 	if (actionFlag_ == actionFlagEnum::connect && connect_) {
 		if (findFigure(point)) {
-			if (figure_[current_]->getID() == connections_[currentConnection_].getFirstFigureID()) {
-				connections_.erase(connections_.begin() + currentConnection_);
+			if (pDoc->figure_[current_]->getID() == pDoc->connections_[currentConnection_].getFirstFigureID()) {
+				pDoc->connections_.erase(pDoc->connections_.begin() + currentConnection_);
 				actionFlag_ = actionFlagEnum::nothing;
 				connect_ = false;
 				return;
 			}
 			CPoint firstCenter;
 			int num;
-			for (size_t i = 0; i < figure_.size(); i++) {
-				if (figure_[i]->checkID(connections_[currentConnection_].getFirstFigureID())) {
+			for (size_t i = 0; i < pDoc->figure_.size(); i++) {
+				if (pDoc->figure_[i]->checkID(pDoc->connections_[currentConnection_].getFirstFigureID())) {
 					num = i;
 				}
 			}
-			firstCenter = figure_[num]->getCenterCoordinates();
-			connections_[currentConnection_].setSecondCoordinates(figure_[current_]->findConnectionCoordinates(firstCenter, connections_[currentConnection_].getID()));
-			connections_[currentConnection_].setSecondPlace(figure_[current_]->findConnectionPlace(connections_[currentConnection_].getID()));
-			connections_[currentConnection_].setSecondFigureID(figure_[current_]->getID());
-			connections_[currentConnection_].setFirstCoordinates(figure_[num]->findConnectionCoordinates(figure_[current_]->getCenterCoordinates(), connections_[currentConnection_].getID()));
-			connections_[currentConnection_].setFirstPlace(figure_[num]->findConnectionPlace(connections_[currentConnection_].getID()));
-			connections_[currentConnection_].draw(dc);
+			firstCenter = pDoc->figure_[num]->getCenterCoordinates();
+			pDoc->connections_[currentConnection_].setSecondCoordinates(pDoc->figure_[current_]->findConnectionCoordinates(firstCenter, pDoc->connections_[currentConnection_].getID()));
+			pDoc->connections_[currentConnection_].setSecondPlace(pDoc->figure_[current_]->findConnectionPlace(pDoc->connections_[currentConnection_].getID()));
+			pDoc->connections_[currentConnection_].setSecondFigureID(pDoc->figure_[current_]->getID());
+			pDoc->connections_[currentConnection_].setFirstCoordinates(pDoc->figure_[num]->findConnectionCoordinates(pDoc->figure_[current_]->getCenterCoordinates(), pDoc->connections_[currentConnection_].getID()));
+			pDoc->connections_[currentConnection_].setFirstPlace(pDoc->figure_[num]->findConnectionPlace(pDoc->connections_[currentConnection_].getID()));
+			pDoc->connections_[currentConnection_].draw(dc);
 			currentConnection_++;
 			actionFlag_ = actionFlagEnum::nothing;
 			connect_ = false;
@@ -411,8 +411,10 @@ void CMyPaintView::OnButtonTriangle()
 
 bool CMyPaintView::findFigure(CPoint point)
 {
-	for (size_t i = 0; i < figure_.size(); i++) {
-		if (figure_[i]->ifThisFigure(point)) {
+	CMyPaintDoc* pDoc = GetDocument();
+	ASSERT_VALID(pDoc);
+	for (size_t i = 0; i < pDoc->figure_.size(); i++) {
+		if (pDoc->figure_[i]->ifThisFigure(point)) {
 			current_ = i;
 			return true;
 		}
@@ -474,38 +476,40 @@ int CMyPaintView::OnCreate(LPCREATESTRUCT lpCreateStruct)
 
 void CMyPaintView::OnContextmenuDelete()
 {
+	CMyPaintDoc* pDoc = GetDocument();
+	ASSERT_VALID(pDoc);
 	CRect figureRect, connectionRect;
 	std::vector<int> nums;
-	int deleteID = figure_[current_]->getID();
-	figureRect = figure_[current_]->getCoordinates();
-	nums = figure_[current_]->getConnectionID();
-	figure_.erase(figure_.begin() + current_);
+	int deleteID = pDoc->figure_[current_]->getID();
+	figureRect = pDoc->figure_[current_]->getCoordinates();
+	nums = pDoc->figure_[current_]->getConnectionID();
+	pDoc->figure_.erase(pDoc->figure_.begin() + current_);
 	current_ = 0;
 	for (size_t i = 0; i < nums.size(); i++) {
 		int num;
-		for (size_t j = 0; j < connections_.size(); j++) {
-			if (nums[i] == connections_[j].getID()) {
+		for (size_t j = 0; j < pDoc->connections_.size(); j++) {
+			if (nums[i] == pDoc->connections_[j].getID()) {
 				num = j;
 				break;
 			}
 		}
-		if (connections_[num].getFirstFigureID() != deleteID) {
-			for (size_t j = 0; j < figure_.size(); j++) {
-				if (figure_[j]->getID() == connections_[num].getFirstFigureID()) {
-					figure_[j]->deleteConnection(nums[i]);
-					connectionRect = connections_[num].getInvalidRect();
-					connections_.erase(connections_.begin() + num);
+		if (pDoc->connections_[num].getFirstFigureID() != deleteID) {
+			for (size_t j = 0; j < pDoc->figure_.size(); j++) {
+				if (pDoc->figure_[j]->getID() == pDoc->connections_[num].getFirstFigureID()) {
+					pDoc->figure_[j]->deleteConnection(nums[i]);
+					connectionRect = pDoc->connections_[num].getInvalidRect();
+					pDoc->connections_.erase(pDoc->connections_.begin() + num);
 					InvalidateRect(connectionRect, true);
 					break;
 				}
 			}
 		}
 		else {
-			for (size_t j = 0; j < figure_.size(); j++) {
-				if (figure_[j]->getID() == connections_[num].getSecondFigureID()) {
-					figure_[j]->deleteConnection(nums[i]);
-					connectionRect = connections_[num].getInvalidRect();
-					connections_.erase(connections_.begin() + num);
+			for (size_t j = 0; j < pDoc->figure_.size(); j++) {
+				if (pDoc->figure_[j]->getID() == pDoc->connections_[num].getSecondFigureID()) {
+					pDoc->figure_[j]->deleteConnection(nums[i]);
+					connectionRect = pDoc->connections_[num].getInvalidRect();
+					pDoc->connections_.erase(pDoc->connections_.begin() + num);
 					InvalidateRect(connectionRect, true);
 					break;
 				}
@@ -526,65 +530,69 @@ void CMyPaintView::OnContextmenuRotate()
 
 void CMyPaintView::OnContextmenuNormalize()
 {
+	CMyPaintDoc* pDoc = GetDocument();
+	ASSERT_VALID(pDoc);
 	CRect figureRect;
 	CClientDC dc(this);
 	std::vector<int>nums;
-	figureRect = figure_[current_]->getCoordinates();
-	figure_[current_]->normalize();
+	figureRect = pDoc->figure_[current_]->getCoordinates();
+	pDoc->figure_[current_]->normalize();
 	InvalidateRect(figureRect, true);
-	figure_[current_]->draw(dc, m_hWnd);
-	nums = figure_[current_]->getConnectionID();
+	pDoc->figure_[current_]->draw(dc, m_hWnd);
+	nums = pDoc->figure_[current_]->getConnectionID();
 	for (size_t i = 0; i < nums.size(); i++) {
 		int key;
-		for (size_t j = 0; j < connections_.size(); j++) {
-			if (connections_[j].getID() == nums[i]) {
+		for (size_t j = 0; j < pDoc->connections_.size(); j++) {
+			if (pDoc->connections_[j].getID() == nums[i]) {
 				key = j;
 				break;
 			}
 		} 
-		InvalidateRect(connections_[key].getInvalidRect());
-		if (connections_[key].getFirstFigureID() == figure_[current_]->getID()) {
-			connections_[key].setFirstCoordinates(figure_[current_]->getConnectCoordinate(nums[i]));
+		InvalidateRect(pDoc->connections_[key].getInvalidRect());
+		if (pDoc->connections_[key].getFirstFigureID() == pDoc->figure_[current_]->getID()) {
+			pDoc->connections_[key].setFirstCoordinates(pDoc->figure_[current_]->getConnectCoordinate(nums[i]));
 		}
 		else {
-			connections_[key].setSecondCoordinates(figure_[current_]->getConnectCoordinate(nums[i]));
+			pDoc->connections_[key].setSecondCoordinates(pDoc->figure_[current_]->getConnectCoordinate(nums[i]));
 		}
-		connections_[key].draw(dc);
+		pDoc->connections_[key].draw(dc);
 	}
 }
 
 
 void CMyPaintView::OnContextmenuEdit()
 {
+	CMyPaintDoc* pDoc = GetDocument();
+	ASSERT_VALID(pDoc);
 	actionFlag_ = actionFlagEnum::edit;
 	CRect  connectionRect;
 	std::vector<int> nums;
-	nums = figure_[current_]->getConnectionID();
+	nums = pDoc->figure_[current_]->getConnectionID();
 	for (size_t i = 0; i < nums.size(); i++) {
 		int num;
-		for (size_t j = 0; j < connections_.size(); j++) {
-			if (nums[i] == connections_[j].getID()) {
+		for (size_t j = 0; j < pDoc->connections_.size(); j++) {
+			if (nums[i] == pDoc->connections_[j].getID()) {
 				num = j;
 				break;
 			}
 		}
-		if (connections_[num].getFirstFigureID() != figure_[current_]->getID()) {
-			for (size_t j = 0; j < figure_.size(); j++) {
-				if (figure_[j]->getID() == connections_[num].getFirstFigureID()) {
-					figure_[j]->deleteConnection(nums[i]);
-					connectionRect = connections_[num].getInvalidRect();
-					connections_.erase(connections_.begin() + num);
+		if (pDoc->connections_[num].getFirstFigureID() != pDoc->figure_[current_]->getID()) {
+			for (size_t j = 0; j < pDoc->figure_.size(); j++) {
+				if (pDoc->figure_[j]->getID() == pDoc->connections_[num].getFirstFigureID()) {
+					pDoc->figure_[j]->deleteConnection(nums[i]);
+					connectionRect = pDoc->connections_[num].getInvalidRect();
+					pDoc->connections_.erase(pDoc->connections_.begin() + num);
 					InvalidateRect(connectionRect, true);
 					break;
 				}
 			}
 		}
 		else {
-			for (size_t j = 0; j < figure_.size(); j++) {
-				if (figure_[j]->getID() == connections_[num].getSecondFigureID()) {
-					figure_[j]->deleteConnection(nums[i]);
-					connectionRect = connections_[num].getInvalidRect();
-					connections_.erase(connections_.begin() + num);
+			for (size_t j = 0; j < pDoc->figure_.size(); j++) {
+				if (pDoc->figure_[j]->getID() == pDoc->connections_[num].getSecondFigureID()) {
+					pDoc->figure_[j]->deleteConnection(nums[i]);
+					connectionRect = pDoc->connections_[num].getInvalidRect();
+					pDoc->connections_.erase(pDoc->connections_.begin() + num);
 					InvalidateRect(connectionRect, true);
 					break;
 				}
@@ -596,44 +604,52 @@ void CMyPaintView::OnContextmenuEdit()
 
 void CMyPaintView::OnConnectLine()
 {
+	CMyPaintDoc* pDoc = GetDocument();
+	ASSERT_VALID(pDoc);
 	CPoint point;
-	CString str("Figure");
-	str.Format(_T("Figure%i"), figureID_);
-	CMyPaintConnection connection_(figureID_++,str,penWidth_,currentPenColor_,penStyle_,1,0,figure_[current_]->getID(),point);
-	connections_.push_back(connection_);
+	CString str;
+	str.Format(_T("Line%i"), figureID_);
+	CMyPaintConnection connection_(figureID_++,str,penWidth_,currentPenColor_,penStyle_,1,0, pDoc->figure_[current_]->getID(),point);
+	pDoc->connections_.push_back(connection_);
 	actionFlag_ = actionFlagEnum::connect;
 }
 
 
 void CMyPaintView::OnConnectRightarrow()
 {
+	CMyPaintDoc* pDoc = GetDocument();
+	ASSERT_VALID(pDoc);
 	CPoint point;
-	CString str("Figure");
-	str.Format(_T("Figure%i"), figureID_);
-	CMyPaintConnection connection_(figureID_++, str, penWidth_, currentPenColor_, penStyle_, 2, 0, figure_[current_]->getID(), point);
-	connections_.push_back(connection_);
+	CString str;
+	str.Format(_T("Right arrow%i"), figureID_);
+	CMyPaintConnection connection_(figureID_++, str, penWidth_, currentPenColor_, penStyle_, 2, 0, pDoc->figure_[current_]->getID(), point);
+	pDoc->connections_.push_back(connection_);
 	actionFlag_ = actionFlagEnum::connect;
 }
 
 
 void CMyPaintView::OnConnectLeftarrow()
 {
+	CMyPaintDoc* pDoc = GetDocument();
+	ASSERT_VALID(pDoc);
 	CPoint point;
-	CString str("Figure");
-	str.Format(_T("Figure%i"), figureID_);
-	CMyPaintConnection connection_(figureID_++, str, penWidth_, currentPenColor_, penStyle_, 3, 0, figure_[current_]->getID(), point);
-	connections_.push_back(connection_);
+	CString str;
+	str.Format(_T("Left arrow%i"), figureID_);
+	CMyPaintConnection connection_(figureID_++, str, penWidth_, currentPenColor_, penStyle_, 3, 0, pDoc->figure_[current_]->getID(), point);
+	pDoc->connections_.push_back(connection_);
 	actionFlag_ = actionFlagEnum::connect;
 }
 
 
 void CMyPaintView::OnConnectBiderectionalarrow()
 {
+	CMyPaintDoc* pDoc = GetDocument();
+	ASSERT_VALID(pDoc);
 	CPoint point;
-	CString str("Figure");
-	str.Format(_T("Figure%i"), figureID_);
-	CMyPaintConnection connection_(figureID_++, str, penWidth_, currentPenColor_, penStyle_, 4, 0, figure_[current_]->getID(), point);
-	connections_.push_back(connection_);
+	CString str;
+	str.Format(_T("Biderectional arrow%i"), figureID_);
+	CMyPaintConnection connection_(figureID_++, str, penWidth_, currentPenColor_, penStyle_, 4, 0, pDoc->figure_[current_]->getID(), point);
+	pDoc->connections_.push_back(connection_);
 	actionFlag_ = actionFlagEnum::connect;
 }
 
@@ -695,8 +711,10 @@ void CMyPaintView::OnBrushStyle()
 }
 
 bool CMyPaintView::findConnection(CPoint point) {
-	for (size_t i = 0; i < connections_.size(); i++) {
-		connections_[i].ifThisConnection(point);
+	CMyPaintDoc* pDoc = GetDocument();
+	ASSERT_VALID(pDoc);
+	for (size_t i = 0; i < pDoc->connections_.size(); i++) {
+		pDoc->connections_[i].ifThisConnection(point);
 		currentConnection_ = i;
 		return true;
 	}
@@ -706,89 +724,107 @@ bool CMyPaintView::findConnection(CPoint point) {
 
 void CMyPaintView::OnLinemenuDelete()
 {
+	CMyPaintDoc* pDoc = GetDocument();
+	ASSERT_VALID(pDoc);
 	CRect rect;
-	for (size_t i = 0; i < figure_.size(); i++) {
-		if (figure_[i]->getID() == connections_[currentConnection_].getFirstFigureID()) {
-			figure_[i]->deleteConnection(connections_[currentConnection_].getID());
+	for (size_t i = 0; i < pDoc->figure_.size(); i++) {
+		if (pDoc->figure_[i]->getID() == pDoc->connections_[currentConnection_].getFirstFigureID()) {
+			pDoc->figure_[i]->deleteConnection(pDoc->connections_[currentConnection_].getID());
 			continue;
 		}
-		if (figure_[i]->getID() == connections_[currentConnection_].getSecondFigureID()) {
-			figure_[i]->deleteConnection(connections_[currentConnection_].getID());
+		if (pDoc->figure_[i]->getID() == pDoc->connections_[currentConnection_].getSecondFigureID()) {
+			pDoc->figure_[i]->deleteConnection(pDoc->connections_[currentConnection_].getID());
 		}
 	}
-	rect = connections_[currentConnection_].getInvalidRect();
-	connections_.erase(connections_.begin() + currentConnection_);
+	rect = pDoc->connections_[currentConnection_].getInvalidRect();
+	pDoc->connections_.erase(pDoc->connections_.begin() + currentConnection_);
 	InvalidateRect(rect, true);
 }
 
 
 void CMyPaintView::OnContextmenuProperties()
 {
+	CMyPaintDoc* pDoc = GetDocument();
+	ASSERT_VALID(pDoc);
 	CClientDC dc(this);
 	std::vector<int> ids;
 	std::vector<CString>names;
 	std::map<int, CPoint>nums;
 	CRect rect;
-	for (size_t i = 0; i < figure_.size(); i++) {
+	for (size_t i = 0; i < pDoc->figure_.size(); i++) {
 		if (current_ == i) {
 			continue;
 		}
-		ids.push_back(figure_[i]->getID());
-		names.push_back(figure_[i]->getName());
+		ids.push_back(pDoc->figure_[i]->getID());
+		names.push_back(pDoc->figure_[i]->getName());
 	}
-	for (size_t i = 0; i < connections_.size(); i++) {
+	for (size_t i = 0; i < pDoc->connections_.size(); i++) {
 		if (currentConnection_ == i) {
 			continue;
 		}
-		ids.push_back(connections_[i].getID());
-		names.push_back(connections_[i].getName());
+		ids.push_back(pDoc->connections_[i].getID());
+		names.push_back(pDoc->connections_[i].getName());
 	}
-	rect = figure_[current_]->getCoordinates();
-	figure_[current_]->properties(ids,names);
+	rect = pDoc->figure_[current_]->getCoordinates();
+	pDoc->figure_[current_]->properties(ids,names);
 	InvalidateRect(rect, true);
-	nums = figure_[current_]->getConnectionCoordinates();
-	for (auto i = 0; i < connections_.size(); i++) {
+	nums = pDoc->figure_[current_]->getConnectionCoordinates();
+	for (auto i = 0; i < pDoc->connections_.size(); i++) {
 		for (auto it = nums.begin(); it != nums.end(); it++) {
-			if (connections_[i].getID() == it->first) {
-				rect = connections_[i].getInvalidRect();
-				if (connections_[i].getFirstFigureID() == figure_[current_]->getID()) {
-					connections_[i].setFirstCoordinates(it->second);
+			if (pDoc->connections_[i].getID() == it->first) {
+				rect = pDoc->connections_[i].getInvalidRect();
+				if (pDoc->connections_[i].getFirstFigureID() == pDoc->figure_[current_]->getID()) {
+					pDoc->connections_[i].setFirstCoordinates(it->second);
 				}
 				else {
-					connections_[i].setSecondCoordinates(it->second);
+					pDoc->connections_[i].setSecondCoordinates(it->second);
 				}
 				InvalidateRect(rect, true);
-				connections_[i].draw(dc);
+				pDoc->connections_[i].draw(dc);
 			}
 		}
 	}
-	figure_[current_]->draw(dc, m_hWnd);
+	pDoc->figure_[current_]->draw(dc, m_hWnd);
 }
 
 
 void CMyPaintView::OnLinemenuProperties()
 {
+	CMyPaintDoc* pDoc = GetDocument();
+	ASSERT_VALID(pDoc);
 	CClientDC dc(this);
 	std::vector<int> ids;
 	std::vector<CString>names;
 	CRect rect;
-	for (size_t i = 0; i < figure_.size(); i++) {
+	for (size_t i = 0; i < pDoc->figure_.size(); i++) {
 		if (current_ == i) {
 			continue;
 		}
-		ids.push_back(figure_[i]->getID());
-		names.push_back(figure_[i]->getName());
+		ids.push_back(pDoc->figure_[i]->getID());
+		names.push_back(pDoc->figure_[i]->getName());
 	}
-	for (size_t i = 0; i < connections_.size(); i++) {
+	for (size_t i = 0; i < pDoc->connections_.size(); i++) {
 		if (currentConnection_ == i) {
 			continue;
 		}
-		ids.push_back(connections_[i].getID());
-		names.push_back(connections_[i].getName());
+		ids.push_back(pDoc->connections_[i].getID());
+		names.push_back(pDoc->connections_[i].getName());
 	}
-	rect = connections_[currentConnection_].getInvalidRect();
-	connections_[currentConnection_].properties(ids, names);
+	rect = pDoc->connections_[currentConnection_].getInvalidRect();
+	pDoc->connections_[currentConnection_].properties(ids, names);
 	InvalidateRect(rect, true);
-	connections_[currentConnection_].draw(dc);
+	pDoc->connections_[currentConnection_].draw(dc);
+}
+
+
+
+void CMyPaintView::OnListview()
+{
+	CMyPaintDoc* pDoc = GetDocument();
+	ASSERT_VALID(pDoc);
+	CMyPaintListViewDialog dlg;
+	dlg.getFigure(pDoc->figure_);
+	dlg.getConnections(pDoc->connections_);
+	dlg.DoModal();
 }
 

@@ -284,3 +284,88 @@ void CMyPaintConnection::properties(std::vector<int> ids, std::vector<CString> n
 	penStyle_ = dlg.getStyle();
 	penColor_ = dlg.getColor();
 }
+
+
+int CMyPaintConnection::getWidth() {
+	return penWidth_;
+}
+
+int CMyPaintConnection::getStyle() {
+	return penStyle_;
+}
+
+COLORREF CMyPaintConnection::getColor() {
+	return penColor_;
+}
+
+int CMyPaintConnection::getConnectionType(){
+	switch (connectionType_)
+	{
+	case CMyPaintConnection::connectionTypeEnum::line:
+		return 1;
+		break;
+	case CMyPaintConnection::connectionTypeEnum::rightArrow:
+		return 2;
+		break;
+	case CMyPaintConnection::connectionTypeEnum::leftArrow:
+		return 3;
+		break;
+	case CMyPaintConnection::connectionTypeEnum::biDirectional:
+		return 4;
+		break;
+	default:
+		break;
+	}
+}
+
+
+int CMyPaintConnection::getFirstConnectionPlace() {
+	switch (connectionPlace_[0])
+	{
+	case CMyPaintConnection::connectionPlaceEnum::top:
+		return 1;
+		break;
+	case CMyPaintConnection::connectionPlaceEnum::right:
+		return 2;
+		break;
+	case CMyPaintConnection::connectionPlaceEnum::bottom:
+		return 3;
+		break;
+	case CMyPaintConnection::connectionPlaceEnum::left:
+		return 4;
+		break;
+	default:
+		break;
+	}
+}
+
+
+int CMyPaintConnection::getSecondConnectionPlace() {
+	switch (connectionPlace_[1])
+	{
+	case CMyPaintConnection::connectionPlaceEnum::top:
+		return 1;
+		break;
+	case CMyPaintConnection::connectionPlaceEnum::right:
+		return 2;
+		break;
+	case CMyPaintConnection::connectionPlaceEnum::bottom:
+		return 3;
+		break;
+	case CMyPaintConnection::connectionPlaceEnum::left:
+		return 4;
+		break;
+	default:
+		break;
+	}
+}
+
+
+CPoint CMyPaintConnection::getFirstCoordinate() {
+	return connectionCoordinates_[0];
+}
+
+
+CPoint CMyPaintConnection::getSecondCoordinate() {
+	return connectionCoordinates_[1];
+}

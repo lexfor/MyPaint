@@ -114,6 +114,10 @@ BEGIN
         MENUITEM "Контур",                      ID_PEN_STYLE
         MENUITEM "Заливка",                     ID_BRUSH_STYLE
     END
+    POPUP "Listview"
+    BEGIN
+        MENUITEM "Показать",                    ID_LISTVIEW
+    END
 END
 
 IDR_MENU1 MENU
@@ -271,6 +275,15 @@ BEGIN
     LTEXT           "Стиль линии",IDC_STATIC,294,84,43,8
 END
 
+IDD_DIALOG_LISTVIEW DIALOGEX 0, 0, 701, 239
+STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "Listview"
+FONT 8, "MS Shell Dlg", 400, 0, 0x1
+BEGIN
+    DEFPUSHBUTTON   "ОК",IDOK,644,218,50,14
+    CONTROL         "",IDC_LIST_VIEW,"SysListView32",LVS_REPORT | LVS_ALIGNLEFT | WS_BORDER | WS_TABSTOP,7,7,687,208
+END
+
 
 /////////////////////////////////////////////////////////////////////////////
 //
@@ -381,6 +394,14 @@ BEGIN
         HORZGUIDE, 88
         HORZGUIDE, 141
     END
+
+    IDD_DIALOG_LISTVIEW, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 694
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 232
+    END
 END
 #endif    // APSTUDIO_INVOKED
 
@@ -415,6 +436,11 @@ BEGIN
     0
 END
 
+IDD_DIALOG_LISTVIEW AFX_DIALOG_LAYOUT
+BEGIN
+    0
+END
+
 
 /////////////////////////////////////////////////////////////////////////////
 //
@@ -428,7 +454,7 @@ END
 
 STRINGTABLE
 BEGIN
-    IDR_MAINFRAME           "MyPaint\n\nMyPaint\n\n\nMyPaint.Document\nMyPaint.Document"
+    IDR_MAINFRAME           "MyPaint\n\nMyPaint\nMyPaint Files (*.myp)\n.myp\nMyPaint.Document\nMyPaint.Document"
 END
 
 STRINGTABLE

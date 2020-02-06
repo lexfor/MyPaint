@@ -31,5 +31,13 @@ public:
 	bool ifThisConnection(CPoint);
 	CString getName();
 	void properties(std::vector<int>,std::vector<CString>);
+	int getWidth();
+	int getStyle();
+	COLORREF getColor();
+	int getConnectionType();
+	int getFirstConnectionPlace();
+	int getSecondConnectionPlace();
+	CPoint getFirstCoordinate();
+	CPoint getSecondCoordinate();
 };
 

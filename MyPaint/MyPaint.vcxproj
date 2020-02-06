@@ -192,6 +192,7 @@
     <ClInclude Include="CMyPaintEllipse.h" />
     <ClInclude Include="CMyPaintFigure.h" />
     <ClInclude Include="CMyPaintLinePropertiesDialog.h" />
+    <ClInclude Include="CMyPaintListViewDialog.h" />
     <ClInclude Include="CMyPaintPenStyleDialog.h" />
     <ClInclude Include="CMyPaintPropertiesDialog.h" />
     <ClInclude Include="CMyPaintRect.h" />
@@ -212,6 +213,7 @@
     <ClCompile Include="CMyPaintEllipse.cpp" />
     <ClCompile Include="CMyPaintFigure.cpp" />
     <ClCompile Include="CMyPaintLinePropertiesDialog.cpp" />
+    <ClCompile Include="CMyPaintListViewDialog.cpp" />
     <ClCompile Include="CMyPaintPenStyleDialog.cpp" />
     <ClCompile Include="CMyPaintPropertiesDialog.cpp" />
     <ClCompile Include="CMyPaintRect.cpp" />

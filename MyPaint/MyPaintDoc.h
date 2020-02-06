@@ -4,7 +4,11 @@
 
 
 #pragma once
-
+#include <vector>
+#include "CMyPaintEllipse.h"
+#include "CMyPaintRect.h"
+#include "CMyPaintTriangle.h"
+#include "CMyPaintConnection.h"
 
 class CMyPaintDoc : public CDocument
 {
@@ -33,6 +37,9 @@ public:
 #ifdef _DEBUG
 	virtual void AssertValid() const;
 	virtual void Dump(CDumpContext& dc) const;
+	int CreateEllipse(CPoint point);
+	int CreateRect(CPoint point);
+	int CreateTriangle(CPoint point);
 #endif
 
 protected:
@@ -45,4 +52,15 @@ protected:
 	// Вспомогательная функция, задающая содержимое поиска для обработчика поиска
 	void SetSearchContent(const CString& value);
 #endif // SHARED_HANDLERS
+public:
+	std::vector<CMyPaintFigure*>figure_;
+	std::vector<CMyPaintConnection> connections_;
+private:
+	int id_;
+	COLORREF penColor_;
+	COLORREF brushColor_;
+	COLORREF customColors[16];
+	int penWidth_;
+	int penStyle_;
+	int brushStyle_;
 };

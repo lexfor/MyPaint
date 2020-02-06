@@ -2,7 +2,7 @@
 #include "CMyPaintRect.h"
 CMyPaintRect::CMyPaintRect() : CMyPaintFigure()
 {}
-CMyPaintRect::CMyPaintRect(CClientDC& dc, unsigned int id, CString name, int penWidth, COLORREF penColor, int penStyle, COLORREF brushColor, int brushStyle, unsigned int rotateCount, CRect rectCoordinates) : CMyPaintFigure(dc,id, name, penWidth, penColor, penStyle, brushColor, brushStyle, rotateCount)
+CMyPaintRect::CMyPaintRect( unsigned int id, CString name, int penWidth, COLORREF penColor, int penStyle, COLORREF brushColor, int brushStyle, CRect rectCoordinates) : CMyPaintFigure(id, name, penWidth, penColor, penStyle, brushColor, brushStyle)
 {
 	rectCoordinates_[0].x = rectCoordinates.left;
 	rectCoordinates_[0].y = rectCoordinates.top;
@@ -220,24 +220,24 @@ void CMyPaintRect::normalize() {
 		if (abs(diffrence.x) > abs(diffrence.y) ) {
 			rectCoordinates_[2].x = rectCoordinates_[0].x - diffrence.y;
 			rectCoordinates_[2].y = rectCoordinates_[0].y + diffrence.y;
-			ChangeOtherCoordinates();
+			changeOtherCoordinates();
 		}
 		else {
 			rectCoordinates_[2].x = rectCoordinates_[0].x + diffrence.x;
 			rectCoordinates_[2].y = rectCoordinates_[0].y - diffrence.x;
-			ChangeOtherCoordinates();
+			changeOtherCoordinates();
 		}
 	}
 	if ((diffrence.x >= 0 && diffrence.y >= 0) || (diffrence.x < 0 && diffrence.y < 0)) {
 		if (abs(diffrence.x) > abs(diffrence.y)) {
 			rectCoordinates_[2].x = rectCoordinates_[0].x + diffrence.y;
 			rectCoordinates_[2].y = rectCoordinates_[0].y + diffrence.y;
-			ChangeOtherCoordinates();
+			changeOtherCoordinates();
 		}
 		else {
 			rectCoordinates_[2].x = rectCoordinates_[0].x + diffrence.x;
 			rectCoordinates_[2].y = rectCoordinates_[0].y + diffrence.x;
-			ChangeOtherCoordinates();
+			changeOtherCoordinates();
 		}
 	}
 	findCenterCoordinates();
@@ -317,7 +317,7 @@ CRect CMyPaintRect::getTempCoordinates() {
 	return rect;
 }
 
-void CMyPaintRect::ChangeOtherCoordinates()
+void CMyPaintRect::changeOtherCoordinates()
 {
 	rectCoordinates_[1].x = rectCoordinates_[2].x;
 	rectCoordinates_[1].y = rectCoordinates_[0].y;
@@ -457,7 +457,7 @@ void CMyPaintRect::properties(std::vector<int>ids, std::vector<CString> names) {
 	brushStyle_ = dlg.getBrushStyle();
 	penColor_ = dlg.getPenColor();
 	brushColor_ = dlg.getBrushColor();
-	ChangeOtherCoordinates();
+	changeOtherCoordinates();
 	auto it = connectionsCoordinates_.begin();
 	for (auto i = 0; i < place.size(); i++, it++) {
 		switch (place[i])
@@ -482,4 +482,31 @@ void CMyPaintRect::properties(std::vector<int>ids, std::vector<CString> names) {
 			break;
 		}
 	}
+}
+
+CPoint CMyPaintRect::getFirstCoordinate() {
+	return rectCoordinates_[0];
+}
+
+CPoint CMyPaintRect::getSecondCoordinate() {
+	return rectCoordinates_[2];
+}
+
+CPoint CMyPaintRect::getThirdCoordinate() {
+	return rectCoordinates_[2];
+}
+
+int CMyPaintRect::getFigureType() {
+	return 2;
+}
+
+void CMyPaintRect::setFirstCoordinate(CPoint point) {
+	rectCoordinates_[0] = point;
+}
+
+void CMyPaintRect::setSecondCoordinate(CPoint point) {
+	rectCoordinates_[2] = point;
+}
+
+void CMyPaintRect::setThirdCoordinate(CPoint point) {
 }

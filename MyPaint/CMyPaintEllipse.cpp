@@ -2,7 +2,7 @@
 #include "CMyPaintEllipse.h"
 CMyPaintEllipse::CMyPaintEllipse():CMyPaintFigure()
 {}
-CMyPaintEllipse::CMyPaintEllipse(CClientDC& dc, unsigned int id, CString name, int penWidth, COLORREF penColor, int penStyle, COLORREF brushColor, int brushStyle, unsigned int rotateCount, CRect ellipseCoordinates) : CMyPaintFigure(dc,id,name,penWidth,penColor,penStyle,brushColor,brushStyle,rotateCount)
+CMyPaintEllipse::CMyPaintEllipse( unsigned int id, CString name, int penWidth, COLORREF penColor, int penStyle, COLORREF brushColor, int brushStyle, CRect ellipseCoordinates) : CMyPaintFigure(id,name,penWidth,penColor,penStyle,brushColor,brushStyle)
 {
 	ellipseCoordinates_[0].x = ellipseCoordinates.left;
 	ellipseCoordinates_[0].y = ellipseCoordinates.top;
@@ -225,24 +225,24 @@ void CMyPaintEllipse::normalize() {
 		if (abs(diffrence.x) > abs(diffrence.y)) {
 			ellipseCoordinates_[2].x = ellipseCoordinates_[0].x - diffrence.y;
 			ellipseCoordinates_[2].y = ellipseCoordinates_[0].y + diffrence.y;
-			ChangeOtherCoordinates();
+			changeOtherCoordinates();
 		}
 		else {
 			ellipseCoordinates_[2].x = ellipseCoordinates_[0].x + diffrence.x;
 			ellipseCoordinates_[2].y = ellipseCoordinates_[0].y - diffrence.x;
-			ChangeOtherCoordinates();
+			changeOtherCoordinates();
 		}
 	}
 	if ((diffrence.x >= 0 && diffrence.y >= 0) || (diffrence.x < 0 && diffrence.y < 0)) {
 		if (abs(diffrence.x) > abs(diffrence.y)) {
 			ellipseCoordinates_[2].x = ellipseCoordinates_[0].x + diffrence.y;
 			ellipseCoordinates_[2].y = ellipseCoordinates_[0].y + diffrence.y;
-			ChangeOtherCoordinates();
+			changeOtherCoordinates();
 		}
 		else {
 			ellipseCoordinates_[2].x = ellipseCoordinates_[0].x + diffrence.x;
 			ellipseCoordinates_[2].y = ellipseCoordinates_[0].y + diffrence.x;
-			ChangeOtherCoordinates();
+			changeOtherCoordinates();
 		}
 	}
 	findCenterCoordinates();
@@ -322,7 +322,7 @@ CRect CMyPaintEllipse::getTempCoordinates() {
 	}
 	return rect;
 }
-void CMyPaintEllipse::ChangeOtherCoordinates()
+void CMyPaintEllipse::changeOtherCoordinates()
 {
 	ellipseCoordinates_[1].x = ellipseCoordinates_[2].x;
 	ellipseCoordinates_[1].y = ellipseCoordinates_[0].y;
@@ -462,7 +462,7 @@ void CMyPaintEllipse::properties(std::vector<int>ids, std::vector<CString> names
 	brushStyle_ = dlg.getBrushStyle();
 	penColor_ = dlg.getPenColor();
 	brushColor_ = dlg.getBrushColor();
-	ChangeOtherCoordinates();
+	changeOtherCoordinates();
 	auto it = connectionsCoordinates_.begin();
 	for (auto i = 0; i < place.size(); i++, it++) {
 		switch (place[i])
@@ -487,4 +487,32 @@ void CMyPaintEllipse::properties(std::vector<int>ids, std::vector<CString> names
 			break;
 		}
 	}
+}
+
+
+CPoint CMyPaintEllipse::getFirstCoordinate() {
+	return ellipseCoordinates_[0];
+}
+
+CPoint CMyPaintEllipse::getSecondCoordinate() {
+	return ellipseCoordinates_[2];
+}
+
+CPoint CMyPaintEllipse::getThirdCoordinate() {
+	return ellipseCoordinates_[2];
+}
+
+int CMyPaintEllipse::getFigureType() {
+	return 1;
+}
+
+void CMyPaintEllipse::setFirstCoordinate(CPoint point) {
+	ellipseCoordinates_[0] = point;
+}
+
+void CMyPaintEllipse::setSecondCoordinate(CPoint point) {
+	ellipseCoordinates_[2] = point;
+}
+
+void CMyPaintEllipse::setThirdCoordinate(CPoint point) {
 }

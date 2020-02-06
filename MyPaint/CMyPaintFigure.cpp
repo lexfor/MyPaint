@@ -1,16 +1,16 @@
 #include "pch.h"
 #include "CMyPaintFigure.h"
-CMyPaintFigure::CMyPaintFigure() : id_(0), name_("Figure"), penWidth_(1), penColor_(RGB(0, 0, 0)), penStyle_(1), brushColor_(RGB(0, 0, 0)), brushStyle_(1), rotateCount_(0)
+CMyPaintFigure::CMyPaintFigure() : id_(0), name_("Figure"), penWidth_(1), penColor_(RGB(0, 0, 0)), penStyle_(1), brushColor_(RGB(0, 0, 0)), brushStyle_(1)
 {
 	rotationCos_ = 0;
 	rotationSin_ = 0;
 }
-CMyPaintFigure::CMyPaintFigure(CClientDC&  dc,unsigned int id, CString name) : id_(id), name_(name), penWidth_(1), penColor_(RGB(0, 0, 0)), penStyle_(1), brushColor_(RGB(0, 0, 0)), brushStyle_(1), rotateCount_(0)
+CMyPaintFigure::CMyPaintFigure(CClientDC&  dc,unsigned int id, CString name) : id_(id), name_(name), penWidth_(1), penColor_(RGB(0, 0, 0)), penStyle_(1), brushColor_(RGB(0, 0, 0)), brushStyle_(1)
 {
 	rotationCos_ = 0;
 	rotationSin_ = 0;
 }
-CMyPaintFigure::CMyPaintFigure(CClientDC& dc, unsigned int id, CString name, int penWidth, COLORREF penColor, int penStyle, COLORREF brushColor, int brushStyle, unsigned int rotateCount) : id_(id), name_(name), penWidth_(penWidth), penColor_(penColor), penStyle_(penStyle), brushColor_(brushColor), brushStyle_(brushStyle), rotateCount_(rotateCount)
+CMyPaintFigure::CMyPaintFigure( unsigned int id, CString name, int penWidth, COLORREF penColor, int penStyle, COLORREF brushColor, int brushStyle) : id_(id), name_(name), penWidth_(penWidth), penColor_(penColor), penStyle_(penStyle), brushColor_(brushColor), brushStyle_(brushStyle)
 {
 	rotationCos_ = 0;
 	rotationSin_ = 0;
@@ -44,4 +44,48 @@ CString CMyPaintFigure::getName() {
 
 std::map<int, CPoint> CMyPaintFigure::getConnectionCoordinates() {
 	return connectionsCoordinates_;
+}
+
+int CMyPaintFigure::getWidth() {
+	return penWidth_;
+}
+
+
+int CMyPaintFigure::getPenStyle() {
+	return penStyle_;
+}
+
+int CMyPaintFigure::getBrushStyle() {
+	return brushStyle_;
+}
+COLORREF CMyPaintFigure::getPenColor() {
+	return penColor_;
+}
+COLORREF CMyPaintFigure::getBrushColor() {
+	return brushColor_;
+}
+void CMyPaintFigure::setID(int id) {
+	id_ = id;
+}
+
+void CMyPaintFigure::setName(CString name) {
+	name_ = name;
+}
+void CMyPaintFigure::setWidth(int width) {
+	penWidth_ = width;
+}
+void CMyPaintFigure::setPenColor(COLORREF penColor) {
+	penColor_ = penColor;
+}
+void CMyPaintFigure::setPenStyle(int penStyle) {
+	penStyle_ = penStyle;
+}
+void CMyPaintFigure::setBrushColor(COLORREF brushColor) {
+	brushColor_ = brushColor;
+}
+void CMyPaintFigure::setBrushStyle(int brushStyle) {
+	brushStyle_ = brushStyle;
+}
+void CMyPaintFigure::addConnectionCoordinate(std::pair<int, CPoint> Pair) {
+	connectionsCoordinates_.insert(Pair);
 }

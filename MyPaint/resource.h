@@ -15,6 +15,7 @@
 #define IDR_MENU2                       322
 #define IDD_DIALOG_PROPERTIES           323
 #define IDD_DIALOG_LINE_PROPERTIES      325
+#define IDD_DIALOG_LISTVIEW             327
 #define IDC_COMBO_WIDTH                 1005
 #define IDC_COMBO_PEN_STYLE             1008
 #define IDAPPLY                         1009
@@ -30,8 +31,8 @@
 #define IDC_BUTTON_PEN_COLOR            1023
 #define IDC_BUTTON_BRUSH_COLOR          1024
 #define IDC_COMBO_STYLE                 1028
-#define IDC_BUTTON1                     1029
 #define IDC_BUTTON_COLOR                1029
+#define IDC_LIST_VIEW                   1034
 #define ID_RECT                         32771
 #define ID_ELLIPSE                      32772
 #define ID_TRIANGLE                     32773
@@ -59,14 +60,17 @@
 #define ID_BRUSH_STYLE                  32795
 #define ID_LINEMENU_DELETE              32796
 #define ID_LINEMENU_PROPERTIES          32797
+#define ID_LISTVIEW_32798               32798
+#define ID_LISTVIEW                     32799
+#define ID_LISTVIEW_DGDG                32800
 
 // Next default values for new objects
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
-#define _APS_NEXT_RESOURCE_VALUE        327
-#define _APS_NEXT_COMMAND_VALUE         32798
-#define _APS_NEXT_CONTROL_VALUE         1030
+#define _APS_NEXT_RESOURCE_VALUE        331
+#define _APS_NEXT_COMMAND_VALUE         32801
+#define _APS_NEXT_CONTROL_VALUE         1036
 #define _APS_NEXT_SYMED_VALUE           310
 #endif
 #endif

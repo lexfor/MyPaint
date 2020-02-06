@@ -4,7 +4,7 @@ CMyPaintTriangle::CMyPaintTriangle() : triangleCoordinates_(), CMyPaintFigure()
 {
 	clickCount_ = clickCountEnum_::firstClick;
 }
-CMyPaintTriangle::CMyPaintTriangle(CClientDC& dc, unsigned int id, CString name, int penWidth, COLORREF penColor, int penStyle, COLORREF brushColor, int brushStyle, unsigned int rotateCount, CPoint FirstPoint,CPoint SecondPoint,CPoint ThirdPoint) :  CMyPaintFigure(dc,id, name, penWidth, penColor, penStyle, brushColor, brushStyle, rotateCount)
+CMyPaintTriangle::CMyPaintTriangle( unsigned int id, CString name, int penWidth, COLORREF penColor, int penStyle, COLORREF brushColor, int brushStyle, CPoint FirstPoint,CPoint SecondPoint,CPoint ThirdPoint) :  CMyPaintFigure(id, name, penWidth, penColor, penStyle, brushColor, brushStyle)
 {
 	triangleCoordinates_[0] = FirstPoint;
 	triangleCoordinates_[1] = SecondPoint;
@@ -440,4 +440,35 @@ void CMyPaintTriangle::properties(std::vector<int>ids, std::vector<CString> name
 			break;
 		}
 	}
+}
+
+CPoint CMyPaintTriangle::getFirstCoordinate() {
+	return triangleCoordinates_[0];
+}
+
+CPoint CMyPaintTriangle::getSecondCoordinate() {
+	return triangleCoordinates_[1];
+}
+
+CPoint CMyPaintTriangle::getThirdCoordinate() {
+	return triangleCoordinates_[2];
+}
+
+int CMyPaintTriangle::getFigureType() {
+	return 3;
+}
+
+void CMyPaintTriangle::setFirstCoordinate(CPoint point) {
+	triangleCoordinates_[0] = point;
+}
+
+void CMyPaintTriangle::setSecondCoordinate(CPoint point) {
+	triangleCoordinates_[1] = point;
+}
+
+void CMyPaintTriangle::setThirdCoordinate(CPoint point) {
+	triangleCoordinates_[2] = point;
+}
+void CMyPaintTriangle ::changeOtherCoordinates() {
+
 }

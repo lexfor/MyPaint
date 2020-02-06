@@ -49,8 +49,8 @@ public:
 	afx_msg void OnLButtonDown(UINT nFlags, CPoint point);
 	afx_msg void OnMouseMove(UINT nFlags, CPoint point);
 private:
-	std::vector<CMyPaintFigure*> figure_;
-	std::vector<CMyPaintConnection>connections_;
+	//std::vector<CMyPaintFigure*> figure_;
+	//std::vector<CMyPaintConnection>connections_;
 	unsigned int figureID_;
 	int current_;
 	int currentConnection_;
@@ -99,6 +99,7 @@ public:
 	afx_msg void OnLinemenuDelete();
 	afx_msg void OnContextmenuProperties();
 	afx_msg void OnLinemenuProperties();
+	afx_msg void OnListview();
 };
 
 #ifndef _DEBUG  // версия отладки в MyPaintView.cpp

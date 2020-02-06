@@ -8,6 +8,8 @@
 // и поиска; позволяет совместно использовать код документа в данным проекте.
 #ifndef SHARED_HANDLERS
 #include "MyPaint.h"
+
+#include <map>
 #endif
 
 #include "MyPaintDoc.h"
@@ -32,7 +34,15 @@ END_MESSAGE_MAP()
 
 CMyPaintDoc::CMyPaintDoc() noexcept
 {
-	// TODO: добавьте код для одноразового вызова конструктора
+	id_ = 0;
+	penColor_ = RGB(0, 0, 0);
+	brushColor_ = RGB(0, 0, 0);
+	for (int i = 0; i < 16; i++) {
+		customColors[i] = RGB(16 * i, 16 * i, 16 * i);
+	}
+	penWidth_ = 1;
+	penStyle_ = PS_SOLID;
+	brushStyle_ = 0;
 
 }
 
@@ -58,13 +68,153 @@ BOOL CMyPaintDoc::OnNewDocument()
 
 void CMyPaintDoc::Serialize(CArchive& ar)
 {
+	std::map<int, CPoint> connectionCoordinate_;
+	int figureSize_,connectionSize_,figureType_,id_,width_,penStyle_,brushStyle_,connectionType_,connectionPlace_[2],figureID_[2], connectionCoordinateSize_,key;
+	COLORREF penColor_, brushColor_;
+	CString name_;
+	CPoint figureCoordinate[3],connectionCoordinate[2],point;
+
 	if (ar.IsStoring())
 	{
-		// TODO: добавьте код сохранения
+		ar << figure_.size();
+		for (auto i = 0; i < figure_.size(); i++) {
+			connectionCoordinate_ = figure_[i]->getConnectionCoordinates();
+			ar << figure_[i]->getFigureType();
+			ar << figure_[i]->getFirstCoordinate();
+			ar << figure_[i]->getSecondCoordinate();
+			ar << figure_[i]->getThirdCoordinate();
+			ar << figure_[i]->getID();
+			ar << figure_[i]->getName();
+			ar << figure_[i]->getWidth();
+			ar << figure_[i]->getPenColor();
+			ar << figure_[i]->getPenStyle();
+			ar << figure_[i]->getBrushStyle();
+			ar << figure_[i]->getBrushColor();
+			ar << connectionCoordinate_.size();
+			for (auto it = connectionCoordinate_.begin(); it != connectionCoordinate_.end(); it++) {
+				ar << it->first;
+				ar << it->second;
+			}
+		}
+		ar << connections_.size();
+		for (auto i = 0; i < connections_.size(); i++) {
+			ar << connections_[i].getConnectionType();
+			ar << connections_[i].getFirstConnectionPlace();
+			ar << connections_[i].getSecondConnectionPlace();
+			ar << connections_[i].getFirstFigureID();
+			ar << connections_[i].getSecondFigureID();
+			ar << connections_[i].getFirstCoordinate();
+			ar << connections_[i].getSecondCoordinate();
+			ar << connections_[i].getID();
+			ar << connections_[i].getName();
+			ar << connections_[i].getWidth();
+			ar << connections_[i].getColor();
+			ar << connections_[i].getStyle();
+		}
 	}
 	else
 	{
-		// TODO: добавьте код загрузки
+		ar >> figureSize_;
+		for (auto i = 0; i < figureSize_; i++) {
+			CMyPaintFigure* ptr;
+			ar >> figureType_;
+			ar >> figureCoordinate[0];
+			ar >> figureCoordinate[1];
+			ar >> figureCoordinate[2];
+			ar >> id_;
+			ar >> name_;
+			ar >> width_;
+			ar >> penColor_;
+			ar >> penStyle_;
+			ar >> brushStyle_;
+			ar >> brushColor_;
+			switch (figureType_)
+			{
+			case 1:
+				ptr = new CMyPaintEllipse;
+				ptr->setFirstCoordinate(figureCoordinate[0]);
+				ptr->setSecondCoordinate(figureCoordinate[1]);
+				ptr->changeOtherCoordinates();
+				ptr->setID(id_);
+				ptr->setName(name_);
+				ptr->setWidth(width_);
+				ptr->setPenColor(penColor_);
+				ptr->setPenStyle(penStyle_);
+				ptr->setBrushStyle(brushStyle_);
+				ptr->setBrushColor(brushColor_);
+				ar >> connectionCoordinateSize_;
+				for (auto j = 0; j < connectionCoordinateSize_; j++) {
+					ar >> key;
+					ar >> point;
+					std::pair<int, CPoint> Pair(key, point);
+					ptr->addConnectionCoordinate(Pair);
+				}
+				break;	
+			case 2:
+				ptr = new CMyPaintRect;
+				ptr->setFirstCoordinate(figureCoordinate[0]);
+				ptr->setSecondCoordinate(figureCoordinate[1]);
+				ptr->changeOtherCoordinates();
+				ptr->setID(id_);
+				ptr->setName(name_);
+				ptr->setWidth(width_);
+				ptr->setPenColor(penColor_);
+				ptr->setPenStyle(penStyle_);
+				ptr->setBrushStyle(brushStyle_);
+				ptr->setBrushColor(brushColor_);
+				ar >> connectionCoordinateSize_;
+				for (auto j = 0; j < connectionCoordinateSize_; j++) {
+					ar >> key;
+					ar >> point;
+					std::pair<int, CPoint> Pair(key, point);
+					ptr->addConnectionCoordinate(Pair);
+				}
+				break;
+			case 3:
+				ptr = new CMyPaintTriangle;
+				ptr->setFirstCoordinate(figureCoordinate[0]);
+				ptr->setSecondCoordinate(figureCoordinate[1]);
+				ptr->setThirdCoordinate(figureCoordinate[2]);
+				ptr->setID(id_);
+				ptr->setName(name_);
+				ptr->setWidth(width_);
+				ptr->setPenColor(penColor_);
+				ptr->setPenStyle(penStyle_);
+				ptr->setBrushStyle(brushStyle_);
+				ptr->setBrushColor(brushColor_);
+				ar >> connectionCoordinateSize_;
+				for (auto j = 0; j < connectionCoordinateSize_; j++) {
+					ar >> key;
+					ar >> point;
+					std::pair<int, CPoint> Pair(key, point);
+					ptr->addConnectionCoordinate(Pair);
+				}
+				break;
+			default:
+				break;
+			}
+			figure_.push_back(ptr);
+		}
+		ar >> connectionSize_;
+		for (auto i = 0; i < connectionSize_; i++) {
+			ar >> connectionType_;
+			ar >> connectionPlace_[0];
+			ar >> connectionPlace_[1];
+			ar >> figureID_[0];
+			ar >> figureID_[1];
+			ar >> connectionCoordinate[0];
+			ar >> connectionCoordinate[1];
+			ar >> id_;
+			ar >> name_;
+			ar >> width_;
+			ar >> penColor_;
+			ar >> penStyle_;
+			CMyPaintConnection con(id_,name_,width_,penColor_,penStyle_,connectionType_,connectionPlace_[0],figureID_[0],connectionCoordinate[0]);
+			con.setSecondPlace(connectionPlace_[1]);
+			con.setSecondFigureID(figureID_[1]);
+			con.setSecondCoordinates(connectionCoordinate[1]);
+			connections_.push_back(con);
+		}
 	}
 }
 
@@ -136,5 +286,36 @@ void CMyPaintDoc::Dump(CDumpContext& dc) const
 }
 #endif //_DEBUG
 
+int CMyPaintDoc :: CreateEllipse(CPoint point) {
+	CRect rectSize(point, point);
+	CString str("Figure");
+	str.Format(_T("Figure%i"), id_);
+	CMyPaintFigure* ptr;
+	ptr = new CMyPaintEllipse(id_, str, penWidth_, penColor_, penStyle_,brushColor_, brushStyle_, rectSize);
+	figure_.push_back(ptr);
+	id_++;
+	return figure_.size() - 1;
+}
 
+int CMyPaintDoc::CreateRect(CPoint point) {
+	CRect rectSize(point, point);
+	CString str("Figure");
+	str.Format(_T("Figure%i"), id_);
+	CMyPaintFigure* ptr;
+	ptr = new CMyPaintRect(id_, str, penWidth_, penColor_, penStyle_, brushColor_, brushStyle_, rectSize);
+	figure_.push_back(ptr);
+	id_++;
+	return figure_.size() - 1;
+}
+
+
+int CMyPaintDoc::CreateTriangle(CPoint point) {
+	CString str("Figure");
+	str.Format(_T("Figure%i"), id_);
+	CMyPaintFigure* ptr;
+	ptr = new CMyPaintTriangle(id_, str, penWidth_, penColor_, penStyle_, brushColor_, brushStyle_, point,point,point);
+	figure_.push_back(ptr);
+	id_++;
+	return figure_.size() - 1;
+}
 // Команды CMyPaintDoc

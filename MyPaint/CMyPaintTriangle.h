@@ -10,7 +10,7 @@ private:
 		enum class clickCountEnum_{firstClick,secondClick,thirdClick}clickCount_;
 public:
 	CMyPaintTriangle();
-	CMyPaintTriangle(CClientDC& , unsigned int, CString, int, COLORREF, int, COLORREF, int, unsigned int,CPoint,CPoint,CPoint);
+	CMyPaintTriangle( unsigned int, CString, int, COLORREF, int, COLORREF, int,CPoint,CPoint,CPoint);
 	void draw(CClientDC&,HWND&)override;
 	void setCoordinates(CPoint,bool)override;
 	void findCenterCoordinates();
@@ -29,5 +29,13 @@ public:
 	std::vector<int> getConnectionID()override;
 	void deleteConnection(int)override;
 	void properties(std::vector<int>, std::vector<CString>)override;
+	CPoint getFirstCoordinate()override;
+	CPoint getSecondCoordinate()override;
+	CPoint getThirdCoordinate()override;
+	int getFigureType()override;
+	void setFirstCoordinate(CPoint)override;
+	void setSecondCoordinate(CPoint)override;
+	void setThirdCoordinate(CPoint)override;
+	void changeOtherCoordinates()override;
 };
 

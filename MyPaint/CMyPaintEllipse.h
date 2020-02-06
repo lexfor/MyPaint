@@ -9,7 +9,7 @@ private:
 	CPoint tempEllipse_[4];
 public:
 	CMyPaintEllipse();
-	CMyPaintEllipse(CClientDC& , unsigned int, CString, int, COLORREF, int, COLORREF, int, unsigned int,CRect);
+	CMyPaintEllipse( unsigned int, CString, int, COLORREF, int, COLORREF, int,CRect);
 	void draw( CClientDC&,HWND&)override;
 	void setCoordinates(CPoint,bool)override;
 	void findCenterCoordinates();
@@ -20,7 +20,7 @@ public:
 	void normalize()override;
 	void drawTempFigure(CClientDC&, HWND&)override;
 	CRect getTempCoordinates()override;
-	void ChangeOtherCoordinates();
+	void changeOtherCoordinates()override;
 	bool edit(CPoint,bool)override;
 	void makeTempCoordinatesNull()override;
 	CPoint getCenterCoordinates()override;
@@ -29,5 +29,12 @@ public:
 	std::vector<int> getConnectionID()override;
 	void deleteConnection(int)override;
 	void properties(std::vector<int>,std::vector<CString>)override;
+	CPoint getFirstCoordinate()override;
+	CPoint getSecondCoordinate()override;
+	CPoint getThirdCoordinate()override;
+	int getFigureType()override;
+	void setFirstCoordinate(CPoint)override;
+	void setSecondCoordinate(CPoint)override;
+	void setThirdCoordinate(CPoint)override;
 };
 
