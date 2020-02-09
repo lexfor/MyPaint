@@ -62,6 +62,7 @@ BEGIN
     BUTTON      ID_RECT
     BUTTON      ID_ELLIPSE
     BUTTON      ID_TRIANGLE
+    BUTTON      ID_LINE
 END
 
 

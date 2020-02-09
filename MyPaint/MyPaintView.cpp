@@ -59,6 +59,7 @@ BEGIN_MESSAGE_MAP(CMyPaintView, CView)
 	ON_COMMAND(ID_CONTEXTMENU_PROPERTIES, &CMyPaintView::OnContextmenuProperties)
 	ON_COMMAND(ID_LINEMENU_PROPERTIES, &CMyPaintView::OnLinemenuProperties)
 	ON_COMMAND(ID_LISTVIEW, &CMyPaintView::OnListview)
+	ON_COMMAND(ID_LINE, &CMyPaintView::OnLine)
 END_MESSAGE_MAP()
 
 // Создание или уничтожение CMyPaintView
@@ -828,3 +829,10 @@ void CMyPaintView::OnListview()
 	dlg.DoModal();
 }
 
+
+
+void CMyPaintView::OnLine()
+{
+	figureDraw_ = figureDrawEnum::lineDraw;
+	cursor_ = false;
+}

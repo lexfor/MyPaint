@@ -59,7 +59,7 @@ private:
 	bool edit_;
 	bool connect_;
 	enum class actionFlagEnum{draw,move,rotate,edit,connect,nothing}actionFlag_;
-	enum class figureDrawEnum{rectDraw,ellipseDraw,triangleDraw,nothing}figureDraw_;
+	enum class figureDrawEnum{rectDraw,ellipseDraw,triangleDraw,lineDraw,nothing}figureDraw_;
 	CPoint movePoint_[2];
 	CPoint rotatePoint_[2];
 	COLORREF currentPenColor_;
@@ -100,6 +100,7 @@ public:
 	afx_msg void OnContextmenuProperties();
 	afx_msg void OnLinemenuProperties();
 	afx_msg void OnListview();
+	afx_msg void OnLine();
 };
 
 #ifndef _DEBUG  // версия отладки в MyPaintView.cpp

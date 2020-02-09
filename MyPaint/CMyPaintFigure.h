@@ -18,6 +18,7 @@ public:
 	CMyPaintFigure();
 	CMyPaintFigure(CClientDC &,unsigned int, CString);
 	CMyPaintFigure(unsigned int, CString, int, COLORREF, int, COLORREF, int);
+	CMyPaintFigure(unsigned int, CString, int, COLORREF, int);
 	virtual CRect getCoordinates() = 0;
 	virtual void draw(CClientDC&,HWND&) = 0;
 	virtual bool ifThisFigure(CPoint) = 0;

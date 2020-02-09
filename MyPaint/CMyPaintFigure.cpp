@@ -15,6 +15,13 @@ CMyPaintFigure::CMyPaintFigure( unsigned int id, CString name, int penWidth, COL
 	rotationCos_ = 0;
 	rotationSin_ = 0;
 }
+CMyPaintFigure::CMyPaintFigure(unsigned int id, CString name, int penWidth, COLORREF penColor, int penStyle) : id_(id),name_(name),penWidth_(penWidth),penColor_(penColor),penStyle_(penStyle)
+{
+	brushColor_ = RGB(0, 0, 0);
+	brushStyle_ = 0;
+	rotationCos_ = 0;
+	rotationSin_ = 0;
+}
 bool CMyPaintFigure::checkID(unsigned int id) {
 	if (id_ == id) {
 		return true;

@@ -57,10 +57,7 @@ void CMyPaintEllipse::draw( CClientDC &dc,HWND& m_HWND) {
 		CBrush* oldBrush = (CBrush*)dc.SelectObject(&hBrush);
 		dc.Ellipse(ellipseCoordinates_[0].x, ellipseCoordinates_[0].y, ellipseCoordinates_[2].x, ellipseCoordinates_[2].y);
 	}
-	//dc.SetMapMode(MM_TEXT);
 	dc.Ellipse(ellipseCoordinates_[0].x, ellipseCoordinates_[0].y, ellipseCoordinates_[2].x, ellipseCoordinates_[2].y);
-	//dc.Arc(ellipseCoordinates_[0].x, ellipseCoordinates_[0].y, ellipseCoordinates_[2].x, ellipseCoordinates_[2].y, ellipseCoordinates_[0].x, ellipseCenter_.y, ellipseCoordinates_[2].x,ellipseCenter_.y);
-	//dc.Arc(ellipseCoordinates_[0].x, ellipseCoordinates_[0].y, ellipseCoordinates_[2].x, ellipseCoordinates_[2].y, ellipseCoordinates_[2].x, ellipseCenter_.y, ellipseCoordinates_[0].x, ellipseCenter_.y);
 }
 void CMyPaintEllipse::setCoordinates(CPoint point,bool isClickEnd) {
 	ellipseCoordinates_[1].x = point.x;
@@ -143,9 +140,9 @@ void  CMyPaintEllipse::move(CPoint* movePoint) {
 	CPoint diff;
 	diff.x = movePoint[1].x - movePoint[0].x;
 	diff.y = movePoint[1].y - movePoint[0].y;
-	for (size_t i = 0; i < 4; i++) {
-		ellipseCoordinates_[i].x += diff.x;
-		ellipseCoordinates_[i].y += diff.y;
+	for (auto &i : ellipseCoordinates_) {
+		i.x += diff.x;
+		i.y += diff.y;
 	}
 	for (auto it = connectionsCoordinates_.begin(); it != connectionsCoordinates_.end();it++) {
 		it->second.x += diff.x;
@@ -169,7 +166,6 @@ void CMyPaintEllipse::rotate(CPoint* rotatePoint,bool realCoordinates) {
 		for (size_t i = 0; i < 4; i++) {
 			ellipseCoordinates_[i].x = (tempEllipse_[i].x - ellipseCenter_.x) * Rcos - (tempEllipse_[i].y - ellipseCenter_.y) * Rsin + ellipseCenter_.x;
 			ellipseCoordinates_[i].y = (tempEllipse_[i].y - ellipseCenter_.y) * Rcos + (tempEllipse_[i].x - ellipseCenter_.x) * Rsin + ellipseCenter_.y;
-			//makeTempCoordinatesNull();
 		}
 	}
 	else {
@@ -281,11 +277,11 @@ void CMyPaintEllipse::normalize() {
 	}
 }
 void CMyPaintEllipse::drawTempFigure(CClientDC& dc, HWND& m_HWND) {
+	CPen Pen(penStyle_, penWidth_, penColor_);
+	CPen* oldPen = (CPen*)dc.SelectObject(&Pen);
 	HBRUSH hBrush = (HBRUSH)GetStockObject(HOLLOW_BRUSH);
 	HGDIOBJ hOldBush = SelectObject(dc, hBrush);
-	dc.SetMapMode(MM_TEXT);
-	dc.Arc(tempEllipse_[0].x, tempEllipse_[0].y, tempEllipse_[2].x, tempEllipse_[2].y, tempEllipse_[0].x, ellipseCenter_.y, tempEllipse_[2].x, ellipseCenter_.y);
-	dc.Arc(tempEllipse_[0].x, tempEllipse_[0].y, tempEllipse_[2].x, tempEllipse_[2].y, tempEllipse_[2].x, ellipseCenter_.y, tempEllipse_[0].x, ellipseCenter_.y);
+	dc.Ellipse(ellipseCoordinates_[0].x, ellipseCoordinates_[0].y, ellipseCoordinates_[2].x, ellipseCoordinates_[2].y);
 }
 CRect CMyPaintEllipse::getTempCoordinates() {
 	CRect rect;
