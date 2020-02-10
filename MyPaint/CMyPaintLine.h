@@ -9,7 +9,7 @@ private:
 	CPoint tempLineCoordinates_[2];
 public:
 	CMyPaintLine();
-	CMyPaintLine(unsigned int, CString,int, COLORREF,int ,CPoint*);
+	CMyPaintLine(unsigned int, CString,int, COLORREF,int ,CPoint,CPoint);
 	void draw(CClientDC&, HWND&)override;
 	void setCoordinates(CPoint, bool)override;
 	void findCenterCoordinates();
@@ -24,6 +24,10 @@ public:
 	bool edit(CPoint, bool)override;
 	void makeTempCoordinatesNull()override;
 	CPoint getCenterCoordinates()override;
+	CPoint findConnectionCoordinates(CPoint, int)override;
+	int findConnectionPlace(int)override;
+	std::vector<int> getConnectionID()override;
+	void deleteConnection(int)override;
 	void properties(std::vector<int>, std::vector<CString>)override;
 	CPoint getFirstCoordinate()override;
 	CPoint getSecondCoordinate()override;

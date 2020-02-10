@@ -459,6 +459,7 @@ void CMyPaintEllipse::properties(std::vector<int>ids, std::vector<CString> names
 	penColor_ = dlg.getPenColor();
 	brushColor_ = dlg.getBrushColor();
 	changeOtherCoordinates();
+	findCenterCoordinates();
 	auto it = connectionsCoordinates_.begin();
 	for (auto i = 0; i < place.size(); i++, it++) {
 		switch (place[i])

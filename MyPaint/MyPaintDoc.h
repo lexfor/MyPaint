@@ -9,6 +9,7 @@
 #include "CMyPaintRect.h"
 #include "CMyPaintTriangle.h"
 #include "CMyPaintConnection.h"
+#include "CMyPaintLine.h"
 
 class CMyPaintDoc : public CDocument
 {
@@ -37,9 +38,20 @@ public:
 #ifdef _DEBUG
 	virtual void AssertValid() const;
 	virtual void Dump(CDumpContext& dc) const;
+	void setWidth(int);
+	int getWidth();
+	void setPenStyle(int);
+	int getPenStyle();
+	void setPenColor(COLORREF);
+	COLORREF getPenColor();
+	void setBrushStyle(int);
+	int getBrushStyle();
+	void setBrushColor(COLORREF);
+	COLORREF getBrushColor();
 	int CreateEllipse(CPoint point);
 	int CreateRect(CPoint point);
 	int CreateTriangle(CPoint point);
+	int CreateLine(CPoint point);
 #endif
 
 protected:

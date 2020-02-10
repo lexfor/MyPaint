@@ -246,6 +246,8 @@ void CMyPaintTriangle::normalize() {
 	}
 }
 void CMyPaintTriangle::drawTempFigure(CClientDC& dc, HWND& m_HWND) {
+	CPen Pen(penStyle_, penWidth_, penColor_);
+	CPen* oldPen = (CPen*)dc.SelectObject(&Pen);
 	HBRUSH hBrush = (HBRUSH)GetStockObject(HOLLOW_BRUSH);
 	HGDIOBJ hOldBush = SelectObject(dc, hBrush);
 	dc.Polygon(tempTriangle_, 3);
@@ -420,6 +422,7 @@ void CMyPaintTriangle::properties(std::vector<int>ids, std::vector<CString> name
 	brushStyle_ = dlg.getBrushStyle();
 	penColor_ = dlg.getPenColor();
 	brushColor_ = dlg.getBrushColor();
+	findCenterCoordinates();
 	auto it = connectionsCoordinates_.begin();
 	for (auto i = 0; i < place.size(); i++, it++) {
 		switch (place[i])

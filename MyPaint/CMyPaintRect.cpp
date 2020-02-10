@@ -277,6 +277,8 @@ void CMyPaintRect::normalize() {
 	}
 }
 void CMyPaintRect::drawTempFigure(CClientDC& dc, HWND& m_HWND) {
+	CPen Pen(penStyle_, penWidth_, penColor_);
+	CPen* oldPen = (CPen*)dc.SelectObject(&Pen);
 	HBRUSH hBrush = (HBRUSH)GetStockObject(HOLLOW_BRUSH);
 	HGDIOBJ hOldBush = SelectObject(dc, hBrush);
 	dc.Polygon(tempRect_, 4);
@@ -458,6 +460,7 @@ void CMyPaintRect::properties(std::vector<int>ids, std::vector<CString> names) {
 	penColor_ = dlg.getPenColor();
 	brushColor_ = dlg.getBrushColor();
 	changeOtherCoordinates();
+	findCenterCoordinates();
 	auto it = connectionsCoordinates_.begin();
 	for (auto i = 0; i < place.size(); i++, it++) {
 		switch (place[i])

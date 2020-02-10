@@ -202,16 +202,16 @@ void CMyPaintConnection::setFirstCoordinates(CPoint firstCoordinates) {
 void CMyPaintConnection::setFirstPlace(int firstPlace) {
 	switch (firstPlace) {
 	case 1:
-		connectionPlace_[1] = connectionPlaceEnum::top;
+		connectionPlace_[0] = connectionPlaceEnum::top;
 		break;
 	case 2:
-		connectionPlace_[1] = connectionPlaceEnum::right;
+		connectionPlace_[0] = connectionPlaceEnum::right;
 		break;
 	case 3:
-		connectionPlace_[1] = connectionPlaceEnum::bottom;
+		connectionPlace_[0] = connectionPlaceEnum::bottom;
 		break;
 	case 4:
-		connectionPlace_[1] = connectionPlaceEnum::left;
+		connectionPlace_[0] = connectionPlaceEnum::left;
 		break;
 	default:
 		break;

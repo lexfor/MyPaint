@@ -170,6 +170,11 @@ void CMyPaintView::OnLButtonDown(UINT nFlags, CPoint point)
 	CClientDC dc(this);
 	if (figureDraw_ != figureDrawEnum::nothing) {
 		SetCapture();
+		pDoc->setWidth(penWidth_);
+		pDoc->setPenStyle(penStyle_);
+		pDoc->setPenColor(currentPenColor_);
+		pDoc->setBrushStyle(brushStyle_);
+		pDoc->setBrushColor(currentBrushColor_);
 		switch (figureDraw_)
 		{
 		case figureDrawEnum::rectDraw:
@@ -191,6 +196,9 @@ void CMyPaintView::OnLButtonDown(UINT nFlags, CPoint point)
 			}
 			pDoc->figure_[current_]->setCoordinates(point, true);
 			break;
+		case figureDrawEnum::lineDraw:
+			current_ = pDoc->CreateLine(point);
+			actionFlag_ = actionFlagEnum::draw;
 		default:
 			break;
 		}
@@ -657,58 +665,79 @@ void CMyPaintView::OnConnectBiderectionalarrow()
 
 void CMyPaintView::OnPenColor()
 {
+	CMyPaintDoc* pDoc = GetDocument();
+	ASSERT_VALID(pDoc);
 	CColorDialog dlg;
+	currentPenColor_ = pDoc->getPenColor();
 	dlg.m_cc.rgbResult = currentPenColor_;
 	dlg.m_cc.lpCustColors = customColors;
 	dlg.DoModal();
 	currentPenColor_ = dlg.m_cc.rgbResult;
-	//Invalidate();
+	pDoc->setPenColor(currentPenColor_);
 }
 
 
 void CMyPaintView::OnBrushColor()
 {
+	CMyPaintDoc* pDoc = GetDocument();
+	ASSERT_VALID(pDoc);
 	CColorDialog dlg;
+	currentBrushColor_ = pDoc->getBrushColor();
 	dlg.m_cc.rgbResult = currentBrushColor_;
 	dlg.m_cc.lpCustColors = customColors;
 	dlg.DoModal();
 	currentBrushColor_ = dlg.m_cc.rgbResult;
+	pDoc->setBrushColor(currentBrushColor_);
 	//Invalidate();
 }
 
 
 void CMyPaintView::OnWidth()
 {
+	CMyPaintDoc* pDoc = GetDocument();
+	ASSERT_VALID(pDoc);
 	CMyPaintWidthDialog dlg;
+	penWidth_ = pDoc->getWidth();
 	dlg.setCurrentWidth(penWidth_);
 	dlg.DoModal();
 	penWidth_ = dlg.getCurrentWidth();
 	if (penWidth_ > 1 && penStyle_ > 0) {
 		AfxMessageBox(L"Данная ширина не совместима с выбранным стилем");
 		penStyle_ = 0;
+		pDoc->setPenStyle(penStyle_);
 	}
+	pDoc->setWidth(penWidth_);
 }
 
 
 void CMyPaintView::OnPenStyle()
 {
+	CMyPaintDoc* pDoc = GetDocument();
+	ASSERT_VALID(pDoc);
 	CMyPaintPenStyleDialog dlg;
+	penStyle_ = pDoc->getPenStyle();
 	dlg.setPenStyle(penStyle_);
 	dlg.DoModal();
 	penStyle_ = dlg.getPenStyle();
 	if (penWidth_ > 1 && penStyle_ > 0) {
 		AfxMessageBox(L"Данный стиль не совместим с выбранной шириной");
 		penWidth_ = 1;
+		pDoc->setWidth(penWidth_);
 	}
+	pDoc->setPenStyle(penStyle_);
 }
 
 
 void CMyPaintView::OnBrushStyle()
 {
+	CMyPaintDoc* pDoc = GetDocument();
+	ASSERT_VALID(pDoc);
 	CMyPaintBrushStyleDialog dlg;
+	brushStyle_ = pDoc->getBrushStyle();
 	dlg.setBrushStyle(brushStyle_);
 	dlg.DoModal();
 	brushStyle_ = dlg.getBrushStyle();
+	pDoc->setBrushStyle(brushStyle_);
 }
 
 bool CMyPaintView::findConnection(CPoint point) {

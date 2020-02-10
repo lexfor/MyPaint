@@ -318,4 +318,57 @@ int CMyPaintDoc::CreateTriangle(CPoint point) {
 	id_++;
 	return figure_.size() - 1;
 }
+
+void CMyPaintDoc::setWidth(int width) {
+	penWidth_ = width;
+}
+
+int CMyPaintDoc::getWidth() {
+	return penWidth_;
+}
+
+void CMyPaintDoc::setPenStyle(int penStyle) {
+	penStyle_ = penStyle;
+}
+
+int CMyPaintDoc::getPenStyle() {
+	return penStyle_;
+}
+
+void CMyPaintDoc::setPenColor(COLORREF penColor) {
+	penColor_ = penColor;
+}
+
+COLORREF CMyPaintDoc::getPenColor() {
+	return penColor_;
+}
+
+void CMyPaintDoc::setBrushStyle(int brushStyle) {
+	brushStyle_ = brushStyle;
+}
+
+int CMyPaintDoc::getBrushStyle() {
+	return brushStyle_;
+}
+
+void CMyPaintDoc::setBrushColor(COLORREF brushColor) {
+	brushColor_ = brushColor;
+}
+
+COLORREF CMyPaintDoc::getBrushColor() {
+	return brushColor_;
+}
+
+int CMyPaintDoc::CreateLine(CPoint point) {
+	CString str("Figure");
+	str.Format(_T("Figure%i"), id_);
+	CMyPaintFigure* ptr;
+	CPoint arrPoint[2];
+	arrPoint[0] = point;
+	arrPoint[1] = point;
+	ptr = new CMyPaintLine(id_, str, penWidth_, penColor_, penStyle_,point,point);
+	figure_.push_back(ptr);
+	id_++;
+	return figure_.size() - 1;
+}
 // Команды CMyPaintDoc

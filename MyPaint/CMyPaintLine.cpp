@@ -3,10 +3,10 @@
 CMyPaintLine::CMyPaintLine() : CMyPaintFigure()
 {}
 
-CMyPaintLine::CMyPaintLine(unsigned int id, CString name, int penWidth, COLORREF penColor, int penStyle,CPoint coordinates[2]) : CMyPaintFigure(id,name,penWidth,penColor,penStyle)
+CMyPaintLine::CMyPaintLine(unsigned int id, CString name, int penWidth, COLORREF penColor, int penStyle,CPoint firstPoint,CPoint secondPoint) : CMyPaintFigure(id,name,penWidth,penColor,penStyle)
 {
-	lineCoordinates_[0] = coordinates[0];
-	lineCoordinates_[1] = coordinates[1];
+	lineCoordinates_[0] = firstPoint;
+	lineCoordinates_[1] = secondPoint;
 	findCenterCoordinates();
 }
 
@@ -31,26 +31,26 @@ CRect CMyPaintLine::getCoordinates() {
 	CRect rect;
 	if (lineCoordinates_[0].x > lineCoordinates_[1].x) {
 		rect.right = lineCoordinates_[0].x + 10;
-		rect.left = lineCoordinates_[1].x + 10;
+		rect.left = lineCoordinates_[1].x - 10;
 	}
 	else {
 		rect.right = lineCoordinates_[1].x + 10;
-		rect.left = lineCoordinates_[0].x + 10;
+		rect.left = lineCoordinates_[0].x - 10;
 	}
 	if (lineCoordinates_[0].y > lineCoordinates_[1].y) {
 		rect.bottom = lineCoordinates_[0].y + 10;
-		rect.top = lineCoordinates_[1].y + 10;
+		rect.top = lineCoordinates_[1].y - 10;
 	}
 	else {
 		rect.bottom = lineCoordinates_[1].y + 10;
-		rect.top = lineCoordinates_[0].y + 10;
+		rect.top = lineCoordinates_[0].y - 10;
 	}
 	return rect;
 }
 
 bool CMyPaintLine::ifThisFigure(CPoint point) {
 	CRect rect = getCoordinates();
-	if (point.x > rect.left&& point.x < rect.right && point.y > rect.bottom&& point.y < rect.top) {
+	if (point.x > rect.left&& point.x < rect.right && point.y < rect.bottom&& point.y > rect.top) {
 		return true;
 	}
 	return false;
@@ -63,6 +63,10 @@ void CMyPaintLine::move(CPoint* movePoint) {
 	for (auto& i : lineCoordinates_) {
 		i.x += diff.x;
 		i.y += diff.y;
+	}
+	for (auto it = connectionsCoordinates_.begin(); it != connectionsCoordinates_.end(); it++) {
+		it->second.x += diff.x;
+		it->second.y += diff.y;
 	}
 	findCenterCoordinates();
 }
@@ -94,6 +98,12 @@ void CMyPaintLine::rotate(CPoint* rotatePoint, bool realCoordinates) {
 	if (realCoordinates) {
 		rotationCos_ = Rcos;
 		rotationSin_ = Rsin;
+		for (auto it = connectionsCoordinates_.begin(); it != connectionsCoordinates_.end(); it++) {
+			CPoint tempPoint;
+			tempPoint = it->second;
+			it->second.x = (tempPoint.x - lineCenter_.x) * rotationCos_ - (tempPoint.y - lineCenter_.y) * rotationSin_ + lineCenter_.x;
+			it->second.y = (tempPoint.y - lineCenter_.y) * rotationCos_ + (tempPoint.x - lineCenter_.x) * rotationSin_ + lineCenter_.y;
+		}
 	}
 }
 
@@ -121,6 +131,9 @@ void CMyPaintLine::normalize() {
 			lineCoordinates_[i].y = (tempLineCoordinates_[i].y - lineCenter_.y) * rotationCos_ + (tempLineCoordinates_[i].x - lineCenter_.x) * rotationSin_ + lineCenter_.y;
 		}
 	}
+	for (auto it = connectionsCoordinates_.begin(); it != connectionsCoordinates_.end(); it++) {
+		it->second = lineCenter_;
+	}
 }
 
 void CMyPaintLine::drawTempFigure(CClientDC& dc, HWND& m_HWND) {
@@ -134,19 +147,19 @@ CRect CMyPaintLine::getTempCoordinates() {
 	CRect rect;
 	if (tempLineCoordinates_[0].x > tempLineCoordinates_[1].x) {
 		rect.right = tempLineCoordinates_[0].x + 10;
-		rect.left = tempLineCoordinates_[1].x + 10;
+		rect.left = tempLineCoordinates_[1].x - 10;
 	}
 	else {
 		rect.right = tempLineCoordinates_[1].x + 10;
-		rect.left = tempLineCoordinates_[0].x + 10;
+		rect.left = tempLineCoordinates_[0].x - 10;
 	}
 	if (tempLineCoordinates_[0].y > tempLineCoordinates_[1].y) {
 		rect.bottom = tempLineCoordinates_[0].y + 10;
-		rect.top = tempLineCoordinates_[1].y + 10;
+		rect.top = tempLineCoordinates_[1].y - 10;
 	}
 	else {
 		rect.bottom = tempLineCoordinates_[1].y + 10;
-		rect.top = tempLineCoordinates_[0].y + 10;
+		rect.top = tempLineCoordinates_[0].y - 10;
 	}
 	return rect;
 }
@@ -195,6 +208,10 @@ void CMyPaintLine::properties(std::vector<int>ids, std::vector<CString> names) {
 	brushStyle_ = dlg.getBrushStyle();
 	penColor_ = dlg.getPenColor();
 	brushColor_ = dlg.getBrushColor();
+	findCenterCoordinates();
+	for (auto it = connectionsCoordinates_.begin(); it != connectionsCoordinates_.end(); it++) {
+		it->second = lineCenter_;
+	}
 }
 
 CPoint CMyPaintLine::getFirstCoordinate() {
@@ -210,7 +227,7 @@ CPoint CMyPaintLine::getThirdCoordinate() {
 }
 
 int CMyPaintLine::getFigureType() {
-	return 1;
+	return 4;
 }
 
 void CMyPaintLine::setFirstCoordinate(CPoint point) {
@@ -222,4 +239,24 @@ void CMyPaintLine::setSecondCoordinate(CPoint point) {
 }
 
 void CMyPaintLine::setThirdCoordinate(CPoint point) {
+}
+
+CPoint CMyPaintLine::findConnectionCoordinates(CPoint centerPoint, int connectionNum) {
+	std::pair<int, CPoint> Pair(connectionNum,lineCenter_);
+	connectionsCoordinates_.insert(Pair);
+	return lineCenter_;
+}
+int CMyPaintLine::findConnectionPlace(int key) {
+	return 1;
+}
+std::vector<int> CMyPaintLine::getConnectionID() {
+	std::vector<int> nums;
+	for (auto it = connectionsCoordinates_.begin(); it != connectionsCoordinates_.end(); it++) {
+		nums.push_back(it->first);
+	}
+	return nums;
+}
+void CMyPaintLine::deleteConnection(int key) {
+	auto it = connectionsCoordinates_.find(key);
+	connectionsCoordinates_.erase(it);
 }
