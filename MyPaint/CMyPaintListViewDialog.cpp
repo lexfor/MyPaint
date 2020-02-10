@@ -114,6 +114,9 @@ BOOL CMyPaintListViewDialog::OnInitDialog()
 		default:
 			break;
 		}
+		if (figure_[i]->getFigureType() == 4) {
+			str = "N/A";
+		}
 		listviewControl_.SetItemText(item, 4, str);
 		str.Format(_T("%i"), figure_[i]->getFirstCoordinate().x);
 		str += " , ";

@@ -190,6 +190,25 @@ void CMyPaintDoc::Serialize(CArchive& ar)
 					ptr->addConnectionCoordinate(Pair);
 				}
 				break;
+			case 4:
+				ptr = new CMyPaintLine;
+				ptr->setFirstCoordinate(figureCoordinate[0]);
+				ptr->setSecondCoordinate(figureCoordinate[1]);
+				ptr->setID(id_);
+				ptr->setName(name_);
+				ptr->setWidth(width_);
+				ptr->setPenColor(penColor_);
+				ptr->setPenStyle(penStyle_);
+				ptr->setBrushStyle(brushStyle_);
+				ptr->setBrushColor(brushColor_);
+				ar >> connectionCoordinateSize_;
+				for (auto j = 0; j < connectionCoordinateSize_; j++) {
+					ar >> key;
+					ar >> point;
+					std::pair<int, CPoint> Pair(key, point);
+					ptr->addConnectionCoordinate(Pair);
+				}
+				break;
 			default:
 				break;
 			}
