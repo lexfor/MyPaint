@@ -16,14 +16,14 @@ protected: // создать только из сериализации
 	CMyPaintView() noexcept;
 	DECLARE_DYNCREATE(CMyPaintView)
 
-// Атрибуты
+	// Атрибуты
 public:
 	CMyPaintDoc* GetDocument() const;
 
-// Операции
+	// Операции
 public:
 
-// Переопределение
+	// Переопределение
 public:
 	virtual void OnDraw(CDC* pDC);  // переопределено для отрисовки этого представления
 	virtual BOOL PreCreateWindow(CREATESTRUCT& cs);
@@ -32,7 +32,7 @@ protected:
 	virtual void OnBeginPrinting(CDC* pDC, CPrintInfo* pInfo);
 	virtual void OnEndPrinting(CDC* pDC, CPrintInfo* pInfo);
 
-// Реализация
+	// Реализация
 public:
 	virtual ~CMyPaintView();
 #ifdef _DEBUG
@@ -42,7 +42,7 @@ public:
 
 protected:
 
-// Созданные функции схемы сообщений
+	// Созданные функции схемы сообщений
 protected:
 	DECLARE_MESSAGE_MAP()
 public:
@@ -58,8 +58,8 @@ private:
 	bool rotation_;
 	bool edit_;
 	bool connect_;
-	enum class actionFlagEnum{draw,move,rotate,edit,connect,nothing}actionFlag_;
-	enum class figureDrawEnum{rectDraw,ellipseDraw,triangleDraw,lineDraw,nothing}figureDraw_;
+	enum class actionFlagEnum { draw, move, rotate, edit, connect, nothing }actionFlag_;
+	enum class figureDrawEnum { rectDraw, ellipseDraw, triangleDraw, lineDraw, nothing }figureDraw_;
 	CPoint movePoint_[2];
 	CPoint rotatePoint_[2];
 	COLORREF currentPenColor_;
@@ -78,7 +78,7 @@ public:
 	void OnButtonRect();
 	void OnButtonEllipse();
 	void OnButtonTriangle();
-	bool findFigure(CPoint );
+	bool findFigure(CPoint);
 	afx_msg BOOL OnSetCursor(CWnd* pWnd, UINT nHitTest, UINT message);
 	afx_msg void OnRButtonUp(UINT nFlags, CPoint point);
 	afx_msg int OnCreate(LPCREATESTRUCT lpCreateStruct);
@@ -101,10 +101,12 @@ public:
 	afx_msg void OnLinemenuProperties();
 	afx_msg void OnListview();
 	afx_msg void OnLine();
+	afx_msg void OnPaint();
 };
 
 #ifndef _DEBUG  // версия отладки в MyPaintView.cpp
 inline CMyPaintDoc* CMyPaintView::GetDocument() const
-   { return reinterpret_cast<CMyPaintDoc*>(m_pDocument); }
+{
+	return reinterpret_cast<CMyPaintDoc*>(m_pDocument);
+}
 #endif
-

@@ -220,20 +220,20 @@ void CMyPaintConnection::setFirstPlace(int firstPlace) {
 CRect CMyPaintConnection::getInvalidRect() {
 	CRect rect;
 	if (connectionCoordinates_[0].x < connectionCoordinates_[1].x) {
-		rect.left = connectionCoordinates_[0].x - 20;
-		rect.right = connectionCoordinates_[1].x + 20;
+		rect.left = connectionCoordinates_[0].x - 40;
+		rect.right = connectionCoordinates_[1].x + 40;
 	}
 	else {
-		rect.left = connectionCoordinates_[1].x - 20;
-		rect.right = connectionCoordinates_[0].x + 20;
+		rect.left = connectionCoordinates_[1].x - 40;
+		rect.right = connectionCoordinates_[0].x + 40;
 	}
 	if (connectionCoordinates_[0].y < connectionCoordinates_[1].y) {
-		rect.top = connectionCoordinates_[0].y - 20;
-		rect.bottom = connectionCoordinates_[1].y + 20;
+		rect.top = connectionCoordinates_[0].y - 40;
+		rect.bottom = connectionCoordinates_[1].y + 40;
 	}
 	else {
-		rect.top = connectionCoordinates_[1].y - 20;
-		rect.bottom = connectionCoordinates_[0].y + 20;
+		rect.top = connectionCoordinates_[1].y - 40;
+		rect.bottom = connectionCoordinates_[0].y + 40;
 	}
 	return rect;
 }
@@ -368,4 +368,131 @@ CPoint CMyPaintConnection::getFirstCoordinate() {
 
 CPoint CMyPaintConnection::getSecondCoordinate() {
 	return connectionCoordinates_[1];
+}
+
+void CMyPaintConnection::drawInMemory(HDC hdc) {
+	CPoint arrowPoint[4], diffrence, linePoint, TempPoint;
+	double arrowSin, arrowCos, radius;
+	bool isChange = false;
+	CPen Pen(penStyle_, penWidth_, penColor_);
+	CPen* oldPen = (CPen*)SelectObject(hdc ,&Pen);
+	switch (connectionType_) {
+	case connectionTypeEnum::line:
+		Polyline(hdc,connectionCoordinates_, 2);
+		break;
+	case connectionTypeEnum::rightArrow:
+		if (connectionCoordinates_[0].x < connectionCoordinates_[1].x) {
+			TempPoint = connectionCoordinates_[0];
+			connectionCoordinates_[0] = connectionCoordinates_[1];
+			connectionCoordinates_[1] = TempPoint;
+			isChange = true;
+		}
+		diffrence.x = connectionCoordinates_[0].x - connectionCoordinates_[1].x;
+		diffrence.y = connectionCoordinates_[0].y - connectionCoordinates_[1].y;
+		radius = sqrt(pow(diffrence.x, 2) + pow(diffrence.y, 2));
+		arrowCos = diffrence.x / radius;
+		arrowSin = diffrence.y / radius;
+		linePoint.x = connectionCoordinates_[1].x + radius;
+		linePoint.y = connectionCoordinates_[1].y;
+		arrowPoint[0].x = linePoint.x - 20;
+		arrowPoint[0].y = linePoint.y + 20;
+		arrowPoint[1].x = linePoint.x - 20;
+		arrowPoint[1].y = linePoint.y - 20;
+		arrowPoint[2].x = (arrowPoint[0].x - connectionCoordinates_[1].x) * arrowCos - (arrowPoint[0].y - connectionCoordinates_[1].y) * arrowSin + connectionCoordinates_[1].x;
+		arrowPoint[2].y = (arrowPoint[0].y - connectionCoordinates_[1].y) * arrowCos + (arrowPoint[0].x - connectionCoordinates_[1].x) * arrowSin + connectionCoordinates_[1].y;
+		arrowPoint[3].x = (arrowPoint[1].x - connectionCoordinates_[1].x) * arrowCos - (arrowPoint[1].y - connectionCoordinates_[1].y) * arrowSin + connectionCoordinates_[1].x;
+		arrowPoint[3].y = (arrowPoint[1].y - connectionCoordinates_[1].y) * arrowCos + (arrowPoint[1].x - connectionCoordinates_[1].x) * arrowSin + connectionCoordinates_[1].y;
+		arrowPoint[0] = connectionCoordinates_[0];
+		arrowPoint[1] = arrowPoint[2];
+		Polygon(hdc, connectionCoordinates_, 2);
+		Polygon(hdc, arrowPoint, 2);
+		arrowPoint[1] = arrowPoint[3];
+		Polygon(hdc, arrowPoint, 2);
+		if (isChange) {
+			TempPoint = connectionCoordinates_[0];
+			connectionCoordinates_[0] = connectionCoordinates_[1];
+			connectionCoordinates_[1] = TempPoint;
+			isChange = false;
+		}
+		break;
+	case connectionTypeEnum::leftArrow:
+		if (connectionCoordinates_[0].x < connectionCoordinates_[1].x) {
+			TempPoint = connectionCoordinates_[0];
+			connectionCoordinates_[0] = connectionCoordinates_[1];
+			connectionCoordinates_[1] = TempPoint;
+			isChange = true;
+		}
+		diffrence.x = connectionCoordinates_[1].x - connectionCoordinates_[0].x;
+		diffrence.y = connectionCoordinates_[1].y - connectionCoordinates_[0].y;
+		radius = sqrt(pow(diffrence.x, 2) + pow(diffrence.y, 2));
+		arrowCos = diffrence.x / radius;
+		arrowSin = diffrence.y / radius;
+		linePoint.x = connectionCoordinates_[0].x + radius;
+		linePoint.y = connectionCoordinates_[0].y;
+		arrowPoint[0].x = linePoint.x - 20;
+		arrowPoint[0].y = linePoint.y + 20;
+		arrowPoint[1].x = linePoint.x - 20;
+		arrowPoint[1].y = linePoint.y - 20;
+		arrowPoint[2].x = (arrowPoint[0].x - connectionCoordinates_[0].x) * arrowCos - (arrowPoint[0].y - connectionCoordinates_[0].y) * arrowSin + connectionCoordinates_[0].x;
+		arrowPoint[2].y = (arrowPoint[0].y - connectionCoordinates_[0].y) * arrowCos + (arrowPoint[0].x - connectionCoordinates_[0].x) * arrowSin + connectionCoordinates_[0].y;
+		arrowPoint[3].x = (arrowPoint[1].x - connectionCoordinates_[0].x) * arrowCos - (arrowPoint[1].y - connectionCoordinates_[0].y) * arrowSin + connectionCoordinates_[0].x;
+		arrowPoint[3].y = (arrowPoint[1].y - connectionCoordinates_[0].y) * arrowCos + (arrowPoint[1].x - connectionCoordinates_[0].x) * arrowSin + connectionCoordinates_[0].y;
+		Polygon(hdc, connectionCoordinates_, 2);
+		arrowPoint[0] = connectionCoordinates_[1];
+		arrowPoint[1] = arrowPoint[2];
+		Polygon(hdc, arrowPoint, 2);
+		arrowPoint[1] = arrowPoint[3];
+		Polygon(hdc, arrowPoint, 2);
+		if (isChange) {
+			TempPoint = connectionCoordinates_[0];
+			connectionCoordinates_[0] = connectionCoordinates_[1];
+			connectionCoordinates_[1] = TempPoint;
+			isChange = false;
+		}
+		break;
+	case connectionTypeEnum::biDirectional:
+		diffrence.x = connectionCoordinates_[0].x - connectionCoordinates_[1].x;
+		diffrence.y = connectionCoordinates_[0].y - connectionCoordinates_[1].y;
+		radius = sqrt(pow(diffrence.x, 2) + pow(diffrence.y, 2));
+		arrowCos = diffrence.x / radius;
+		arrowSin = diffrence.y / radius;
+		linePoint.x = connectionCoordinates_[1].x + radius;
+		linePoint.y = connectionCoordinates_[1].y;
+		arrowPoint[0].x = linePoint.x - 20;
+		arrowPoint[0].y = linePoint.y + 20;
+		arrowPoint[1].x = linePoint.x - 20;
+		arrowPoint[1].y = linePoint.y - 20;
+		arrowPoint[2].x = (arrowPoint[0].x - connectionCoordinates_[1].x) * arrowCos - (arrowPoint[0].y - connectionCoordinates_[1].y) * arrowSin + connectionCoordinates_[1].x;
+		arrowPoint[2].y = (arrowPoint[0].y - connectionCoordinates_[1].y) * arrowCos + (arrowPoint[0].x - connectionCoordinates_[1].x) * arrowSin + connectionCoordinates_[1].y;
+		arrowPoint[3].x = (arrowPoint[1].x - connectionCoordinates_[1].x) * arrowCos - (arrowPoint[1].y - connectionCoordinates_[1].y) * arrowSin + connectionCoordinates_[1].x;
+		arrowPoint[3].y = (arrowPoint[1].y - connectionCoordinates_[1].y) * arrowCos + (arrowPoint[1].x - connectionCoordinates_[1].x) * arrowSin + connectionCoordinates_[1].y;
+		arrowPoint[0] = connectionCoordinates_[0];
+		arrowPoint[1] = arrowPoint[2];
+		Polygon(hdc, connectionCoordinates_, 2);
+		Polygon(hdc, arrowPoint, 2);
+		arrowPoint[1] = arrowPoint[3];
+		Polygon(hdc, arrowPoint, 2);
+		diffrence.x = connectionCoordinates_[1].x - connectionCoordinates_[0].x;
+		diffrence.y = connectionCoordinates_[1].y - connectionCoordinates_[0].y;
+		radius = sqrt(pow(diffrence.x, 2) + pow(diffrence.y, 2));
+		arrowCos = diffrence.x / radius;
+		arrowSin = diffrence.y / radius;
+		linePoint.x = connectionCoordinates_[0].x + radius;
+		linePoint.y = connectionCoordinates_[0].y;
+		arrowPoint[0].x = linePoint.x - 20;
+		arrowPoint[0].y = linePoint.y + 20;
+		arrowPoint[1].x = linePoint.x - 20;
+		arrowPoint[1].y = linePoint.y - 20;
+		arrowPoint[2].x = (arrowPoint[0].x - connectionCoordinates_[0].x) * arrowCos - (arrowPoint[0].y - connectionCoordinates_[0].y) * arrowSin + connectionCoordinates_[0].x;
+		arrowPoint[2].y = (arrowPoint[0].y - connectionCoordinates_[0].y) * arrowCos + (arrowPoint[0].x - connectionCoordinates_[0].x) * arrowSin + connectionCoordinates_[0].y;
+		arrowPoint[3].x = (arrowPoint[1].x - connectionCoordinates_[0].x) * arrowCos - (arrowPoint[1].y - connectionCoordinates_[0].y) * arrowSin + connectionCoordinates_[0].x;
+		arrowPoint[3].y = (arrowPoint[1].y - connectionCoordinates_[0].y) * arrowCos + (arrowPoint[1].x - connectionCoordinates_[0].x) * arrowSin + connectionCoordinates_[0].y;
+		Polygon(hdc, connectionCoordinates_, 2);
+		arrowPoint[0] = connectionCoordinates_[1];
+		arrowPoint[1] = arrowPoint[2];
+		Polygon(hdc, arrowPoint, 2);
+		arrowPoint[1] = arrowPoint[3];
+		Polygon(hdc, arrowPoint, 2);
+		break;
+	}
 }

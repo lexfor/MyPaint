@@ -75,4 +75,6 @@ private:
 	int penWidth_;
 	int penStyle_;
 	int brushStyle_;
+public:
+	virtual void DeleteContents();
 };

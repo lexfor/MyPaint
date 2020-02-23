@@ -513,3 +513,49 @@ void CMyPaintRect::setSecondCoordinate(CPoint point) {
 
 void CMyPaintRect::setThirdCoordinate(CPoint point) {
 }
+
+void CMyPaintRect::drawInMemory(HDC hdc) {
+	CPen Pen(penStyle_, penWidth_, penColor_);
+	CPen* oldPen = (CPen*)SelectObject(hdc, &Pen); //(CPen*)dc.SelectObject(&Pen);
+	if (brushStyle_ == 0) {
+		HBRUSH hBrush = (HBRUSH)GetStockObject(HOLLOW_BRUSH);
+		HGDIOBJ hOldBush = SelectObject(hdc, hBrush);
+		Rectangle(hdc, rectCoordinates_[0].x, rectCoordinates_[0].y, rectCoordinates_[2].x, rectCoordinates_[2].y);
+	}
+	if (brushStyle_ == 1) {
+		CBrush hBrush(brushColor_);
+		CBrush* oldBrush = (CBrush*)SelectObject(hdc, &hBrush);
+		Rectangle(hdc, rectCoordinates_[0].x, rectCoordinates_[0].y, rectCoordinates_[2].x, rectCoordinates_[2].y);
+	}
+	if (brushStyle_ == 2) {
+		CBrush hBrush(HS_BDIAGONAL, brushColor_);
+		CBrush* oldBrush = (CBrush*)SelectObject(hdc, &hBrush);
+		Rectangle(hdc, rectCoordinates_[0].x, rectCoordinates_[0].y, rectCoordinates_[2].x, rectCoordinates_[2].y);
+	}
+	if (brushStyle_ == 3) {
+		CBrush hBrush(HS_CROSS, brushColor_);
+		CBrush* oldBrush = (CBrush*)SelectObject(hdc, &hBrush);
+		Rectangle(hdc, rectCoordinates_[0].x, rectCoordinates_[0].y, rectCoordinates_[2].x, rectCoordinates_[2].y);
+	}
+	if (brushStyle_ == 4) {
+		CBrush hBrush(HS_DIAGCROSS, brushColor_);
+		CBrush* oldBrush = (CBrush*)SelectObject(hdc, &hBrush);
+		Rectangle(hdc, rectCoordinates_[0].x, rectCoordinates_[0].y, rectCoordinates_[2].x, rectCoordinates_[2].y);
+	}
+	if (brushStyle_ == 5) {
+		CBrush hBrush(HS_FDIAGONAL, brushColor_);
+		CBrush* oldBrush = (CBrush*)SelectObject(hdc, &hBrush);
+		Rectangle(hdc, rectCoordinates_[0].x, rectCoordinates_[0].y, rectCoordinates_[2].x, rectCoordinates_[2].y);
+	}
+	if (brushStyle_ == 6) {
+		CBrush hBrush(HS_HORIZONTAL, brushColor_);
+		CBrush* oldBrush = (CBrush*)SelectObject(hdc, &hBrush);
+		Rectangle(hdc, rectCoordinates_[0].x, rectCoordinates_[0].y, rectCoordinates_[2].x, rectCoordinates_[2].y);
+	}
+	if (brushStyle_ == 7) {
+		CBrush hBrush(HS_VERTICAL, brushColor_);
+		CBrush* oldBrush = (CBrush*)SelectObject(hdc, &hBrush);
+		Rectangle(hdc, rectCoordinates_[0].x, rectCoordinates_[0].y, rectCoordinates_[2].x, rectCoordinates_[2].y);
+	}
+	Rectangle(hdc, rectCoordinates_[0].x, rectCoordinates_[0].y, rectCoordinates_[2].x, rectCoordinates_[2].y);
+}

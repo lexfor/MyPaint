@@ -36,5 +36,6 @@ public:
 	void setFirstCoordinate(CPoint)override;
 	void setSecondCoordinate(CPoint)override;
 	void setThirdCoordinate(CPoint)override;
+	void drawInMemory(HDC)override;
 };
 

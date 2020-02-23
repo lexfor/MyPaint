@@ -64,4 +64,5 @@ public:
 	virtual void setThirdCoordinate(CPoint) = 0;
 	void addConnectionCoordinate(std::pair<int,CPoint>);
 	virtual void changeOtherCoordinates() = 0;
+	virtual void drawInMemory(HDC) = 0;
 };

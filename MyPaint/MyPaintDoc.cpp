@@ -391,3 +391,11 @@ int CMyPaintDoc::CreateLine(CPoint point) {
 	return figure_.size() - 1;
 }
 // Команды CMyPaintDoc
+
+
+void CMyPaintDoc::DeleteContents()
+{
+	figure_.clear();
+	connections_.clear();
+	CDocument::DeleteContents();
+}

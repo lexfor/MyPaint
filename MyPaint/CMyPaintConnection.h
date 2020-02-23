@@ -39,5 +39,6 @@ public:
 	int getSecondConnectionPlace();
 	CPoint getFirstCoordinate();
 	CPoint getSecondCoordinate();
+	void drawInMemory(HDC);
 };
 

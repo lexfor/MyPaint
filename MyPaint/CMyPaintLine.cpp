@@ -260,3 +260,9 @@ void CMyPaintLine::deleteConnection(int key) {
 	auto it = connectionsCoordinates_.find(key);
 	connectionsCoordinates_.erase(it);
 }
+
+void CMyPaintLine::drawInMemory(HDC hdc) {
+	CPen Pen(penStyle_, penWidth_, penColor_);
+	CPen* oldPen = (CPen*)SelectObject(hdc,&Pen);
+	Polygon(hdc, lineCoordinates_, 2);
+}

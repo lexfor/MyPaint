@@ -475,3 +475,48 @@ void CMyPaintTriangle::setThirdCoordinate(CPoint point) {
 void CMyPaintTriangle ::changeOtherCoordinates() {
 
 }
+
+void CMyPaintTriangle::drawInMemory(HDC hdc) {
+	CPen Pen(penStyle_, penWidth_, penColor_);
+	CPen* oldPen = (CPen*)SelectObject(hdc,&Pen);
+	if (brushStyle_ == 0) {
+		HBRUSH hBrush = (HBRUSH)GetStockObject(HOLLOW_BRUSH);
+		HGDIOBJ hOldBush = SelectObject(hdc, hBrush);
+		Polygon(hdc,triangleCoordinates_, 3);
+	}
+	if (brushStyle_ == 1) {
+		HBRUSH hBrush = CreateSolidBrush(brushColor_);
+		HGDIOBJ hOldBush = SelectObject(hdc, hBrush);
+		Polygon(hdc, triangleCoordinates_, 3);
+	}
+	if (brushStyle_ == 2) {
+		CBrush hBrush(HS_BDIAGONAL, brushColor_);
+		HGDIOBJ hOldBush = SelectObject(hdc, hBrush);
+		Polygon(hdc, triangleCoordinates_, 3);
+	}
+	if (brushStyle_ == 3) {
+		CBrush hBrush(HS_CROSS, brushColor_);
+		HGDIOBJ hOldBush = SelectObject(hdc, hBrush);
+		Polygon(hdc, triangleCoordinates_, 3);
+	}
+	if (brushStyle_ == 4) {
+		CBrush hBrush(HS_DIAGCROSS, brushColor_);
+		HGDIOBJ hOldBush = SelectObject(hdc, hBrush);
+		Polygon(hdc, triangleCoordinates_, 3);
+	}
+	if (brushStyle_ == 5) {
+		CBrush hBrush(HS_FDIAGONAL, brushColor_);
+		HGDIOBJ hOldBush = SelectObject(hdc, hBrush);
+		Polygon(hdc, triangleCoordinates_, 3);
+	}
+	if (brushStyle_ == 6) {
+		CBrush hBrush(HS_HORIZONTAL, brushColor_);
+		HGDIOBJ hOldBush = SelectObject(hdc, hBrush);
+		Polygon(hdc, triangleCoordinates_, 3);
+	}
+	if (brushStyle_ == 7) {
+		CBrush hBrush(HS_VERTICAL, brushColor_);
+		HGDIOBJ hOldBush = SelectObject(hdc, hBrush);
+		Polygon(hdc, triangleCoordinates_, 3);
+	}
+}
