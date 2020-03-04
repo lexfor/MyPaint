@@ -5,17 +5,17 @@ CMyPaintFigure::CMyPaintFigure() : id_(0), name_("Figure"), penWidth_(1), penCol
 	rotationCos_ = 0;
 	rotationSin_ = 0;
 }
-CMyPaintFigure::CMyPaintFigure(CClientDC&  dc,unsigned int id, CString name) : id_(id), name_(name), penWidth_(1), penColor_(RGB(0, 0, 0)), penStyle_(1), brushColor_(RGB(0, 0, 0)), brushStyle_(1)
+CMyPaintFigure::CMyPaintFigure(CClientDC& dc, unsigned int id, CString name) : id_(id), name_(name), penWidth_(1), penColor_(RGB(0, 0, 0)), penStyle_(1), brushColor_(RGB(0, 0, 0)), brushStyle_(1)
 {
 	rotationCos_ = 0;
 	rotationSin_ = 0;
 }
-CMyPaintFigure::CMyPaintFigure( unsigned int id, CString name, int penWidth, COLORREF penColor, int penStyle, COLORREF brushColor, int brushStyle) : id_(id), name_(name), penWidth_(penWidth), penColor_(penColor), penStyle_(penStyle), brushColor_(brushColor), brushStyle_(brushStyle)
+CMyPaintFigure::CMyPaintFigure(unsigned int id, CString name, int penWidth, COLORREF penColor, int penStyle, COLORREF brushColor, int brushStyle) : id_(id), name_(name), penWidth_(penWidth), penColor_(penColor), penStyle_(penStyle), brushColor_(brushColor), brushStyle_(brushStyle)
 {
 	rotationCos_ = 0;
 	rotationSin_ = 0;
 }
-CMyPaintFigure::CMyPaintFigure(unsigned int id, CString name, int penWidth, COLORREF penColor, int penStyle) : id_(id),name_(name),penWidth_(penWidth),penColor_(penColor),penStyle_(penStyle)
+CMyPaintFigure::CMyPaintFigure(unsigned int id, CString name, int penWidth, COLORREF penColor, int penStyle) : id_(id), name_(name), penWidth_(penWidth), penColor_(penColor), penStyle_(penStyle)
 {
 	brushColor_ = RGB(0, 0, 0);
 	brushStyle_ = 0;

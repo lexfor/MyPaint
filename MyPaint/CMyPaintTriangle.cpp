@@ -4,7 +4,7 @@ CMyPaintTriangle::CMyPaintTriangle() : triangleCoordinates_(), CMyPaintFigure()
 {
 	clickCount_ = clickCountEnum_::firstClick;
 }
-CMyPaintTriangle::CMyPaintTriangle( unsigned int id, CString name, int penWidth, COLORREF penColor, int penStyle, COLORREF brushColor, int brushStyle, CPoint FirstPoint,CPoint SecondPoint,CPoint ThirdPoint) :  CMyPaintFigure(id, name, penWidth, penColor, penStyle, brushColor, brushStyle)
+CMyPaintTriangle::CMyPaintTriangle(unsigned int id, CString name, int penWidth, COLORREF penColor, int penStyle, COLORREF brushColor, int brushStyle, CPoint FirstPoint, CPoint SecondPoint, CPoint ThirdPoint) : CMyPaintFigure(id, name, penWidth, penColor, penStyle, brushColor, brushStyle)
 {
 	triangleCoordinates_[0] = FirstPoint;
 	triangleCoordinates_[1] = SecondPoint;
@@ -12,80 +12,10 @@ CMyPaintTriangle::CMyPaintTriangle( unsigned int id, CString name, int penWidth,
 	findCenterCoordinates();
 	clickCount_ = clickCountEnum_::firstClick;
 }
-void CMyPaintTriangle::draw(CClientDC& dc,HWND& m_HWND) {
-	CPen Pen(penStyle_, penWidth_, penColor_);
-	CPen* oldPen = (CPen*)dc.SelectObject(&Pen);
-	if (brushStyle_ == 0) {
-		HBRUSH hBrush = (HBRUSH)GetStockObject(HOLLOW_BRUSH);
-		HGDIOBJ hOldBush = SelectObject(dc, hBrush);
-		dc.Polygon(triangleCoordinates_, 3);
-	}
-	if (brushStyle_ == 1) {
-		HBRUSH hBrush = CreateSolidBrush(brushColor_);
-		HGDIOBJ hOldBush = SelectObject(dc, hBrush);
-		dc.Polygon(triangleCoordinates_, 3);
-	}
-	if (brushStyle_ == 2) {
-		CBrush hBrush(HS_BDIAGONAL, brushColor_);
-		HGDIOBJ hOldBush = SelectObject(dc, hBrush);
-		dc.Polygon(triangleCoordinates_, 3);
-	}
-	if (brushStyle_ == 3) {
-		CBrush hBrush(HS_CROSS, brushColor_);
-		HGDIOBJ hOldBush = SelectObject(dc, hBrush);
-		dc.Polygon(triangleCoordinates_, 3);
-	}
-	if (brushStyle_ == 4) {
-		CBrush hBrush(HS_DIAGCROSS, brushColor_);
-		HGDIOBJ hOldBush = SelectObject(dc, hBrush);
-		dc.Polygon(triangleCoordinates_, 3);
-	}
-	if (brushStyle_ == 5) {
-		CBrush hBrush(HS_FDIAGONAL, brushColor_);
-		HGDIOBJ hOldBush = SelectObject(dc, hBrush);
-		dc.Polygon(triangleCoordinates_, 3);
-	}
-	if (brushStyle_ == 6) {
-		CBrush hBrush(HS_HORIZONTAL, brushColor_);
-		HGDIOBJ hOldBush = SelectObject(dc, hBrush);
-		dc.Polygon(triangleCoordinates_, 3);
-	}
-	if (brushStyle_ == 7) {
-		CBrush hBrush(HS_VERTICAL, brushColor_);
-		HGDIOBJ hOldBush = SelectObject(dc, hBrush);
-		dc.Polygon(triangleCoordinates_, 3);
-	}
-}
 void CMyPaintTriangle::findCenterCoordinates() {
 	triangleCenter_.x = (triangleCoordinates_[0].x + triangleCoordinates_[1].x + triangleCoordinates_[2].x) / 3;
 	triangleCenter_.y = (triangleCoordinates_[0].y + triangleCoordinates_[1].y + triangleCoordinates_[2].y) / 3;
 }
-
-CRect CMyPaintTriangle::getCoordinates() {
-	CRect rect;
-	rect.left = triangleCoordinates_[0].x;
-	rect.bottom = triangleCoordinates_[0].y;
-	rect.right = triangleCoordinates_[0].x;
-	rect.top = triangleCoordinates_[0].y;
-	for (int i = 0; i < 3; i++) {
-		if (triangleCoordinates_[i].x >= rect.right) {
-			rect.right = triangleCoordinates_[i].x + 1;
-		}
-		if (triangleCoordinates_[i].y >= rect.bottom) {
-			rect.bottom = triangleCoordinates_[i].y + 1;
-		}
-	}
-	for (int i = 0; i < 3; i++) {
-		if (triangleCoordinates_[i].x <= rect.left) {
-			rect.left	 = triangleCoordinates_[i].x - 1;
-		}
-		if (triangleCoordinates_[i].y <= rect.top) {
-			rect.top  = triangleCoordinates_[i].y - 1;
-		}
-	}
-	return rect;
-}
-
 bool CMyPaintTriangle::ifThisFigure(CPoint point) {
 	int SummOne, SummTwo, SummThree;
 	SummOne = (triangleCoordinates_[0].x - point.x) * (triangleCoordinates_[1].y - triangleCoordinates_[0].y) - (triangleCoordinates_[1].x - triangleCoordinates_[0].x) * (triangleCoordinates_[0].y - point.y);
@@ -128,7 +58,7 @@ void CMyPaintTriangle::setCoordinates(CPoint point, bool isClickEnd) {
 	}
 }
 
-void CMyPaintTriangle::move(CPoint * movePoint) {
+void CMyPaintTriangle::move(CPoint* movePoint) {
 	CPoint diff;
 	diff.x = movePoint[1].x - movePoint[0].x;
 	diff.y = movePoint[1].y - movePoint[0].y;
@@ -142,8 +72,8 @@ void CMyPaintTriangle::move(CPoint * movePoint) {
 	}
 	findCenterCoordinates();
 }
-void CMyPaintTriangle::rotate(CPoint* rotatePoint,bool realCoordinates) {
-	double resultX,resultY;
+void CMyPaintTriangle::rotate(CPoint* rotatePoint, bool realCoordinates) {
+	double resultX, resultY;
 	double radius;
 	double Rcos, Rsin;
 	resultX = rotatePoint[1].x - rotatePoint[0].x;
@@ -158,7 +88,6 @@ void CMyPaintTriangle::rotate(CPoint* rotatePoint,bool realCoordinates) {
 		for (size_t i = 0; i < 3; i++) {
 			triangleCoordinates_[i].x = (tempTriangle_[i].x - triangleCenter_.x) * Rcos - (tempTriangle_[i].y - triangleCenter_.y) * Rsin + triangleCenter_.x;
 			triangleCoordinates_[i].y = (tempTriangle_[i].y - triangleCenter_.y) * Rcos + (tempTriangle_[i].x - triangleCenter_.x) * Rsin + triangleCenter_.y;
-			//makeTempCoordinatesNull();
 		}
 	}
 	else {
@@ -245,38 +174,7 @@ void CMyPaintTriangle::normalize() {
 		}
 	}
 }
-void CMyPaintTriangle::drawTempFigure(CClientDC& dc, HWND& m_HWND) {
-	CPen Pen(penStyle_, penWidth_, penColor_);
-	CPen* oldPen = (CPen*)dc.SelectObject(&Pen);
-	HBRUSH hBrush = (HBRUSH)GetStockObject(HOLLOW_BRUSH);
-	HGDIOBJ hOldBush = SelectObject(dc, hBrush);
-	dc.Polygon(tempTriangle_, 3);
-}
-CRect CMyPaintTriangle::getTempCoordinates() {
-	CRect rect;
-	rect.left = tempTriangle_[0].x;
-	rect.bottom = tempTriangle_[0].y;
-	rect.right = tempTriangle_[0].x;
-	rect.top = tempTriangle_[0].y;
-	for (int i = 0; i < 3; i++) {
-		if (tempTriangle_[i].x >= rect.right) {
-			rect.right = tempTriangle_[i].x + 1;
-		}
-		if (tempTriangle_[i].y >= rect.bottom) {
-			rect.bottom = tempTriangle_[i].y + 1;
-		}
-	}
-	for (int i = 0; i < 3; i++) {
-		if (tempTriangle_[i].x <= rect.left) {
-			rect.left = tempTriangle_[i].x - 1;
-		}
-		if (tempTriangle_[i].y <= rect.top) {
-			rect.top = tempTriangle_[i].y - 1;
-		}
-	}
-	return rect;
-}
-bool CMyPaintTriangle::edit(CPoint editPoint,bool isEnd) {
+bool CMyPaintTriangle::edit(CPoint editPoint, bool isEnd) {
 	if (isEnd) {
 		switch (clickCount_)
 		{
@@ -318,7 +216,7 @@ void CMyPaintTriangle::makeTempCoordinatesNull() {
 CPoint CMyPaintTriangle::getCenterCoordinates() {
 	return triangleCenter_;
 }
-CPoint CMyPaintTriangle::findConnectionCoordinates(CPoint centerPoint,int connectionNum) {
+CPoint CMyPaintTriangle::findConnectionCoordinates(CPoint centerPoint, int connectionNum) {
 	CPoint arrowPoint[4];
 	double length;
 	int pointNum;
@@ -472,51 +370,134 @@ void CMyPaintTriangle::setSecondCoordinate(CPoint point) {
 void CMyPaintTriangle::setThirdCoordinate(CPoint point) {
 	triangleCoordinates_[2] = point;
 }
-void CMyPaintTriangle ::changeOtherCoordinates() {
+void CMyPaintTriangle::changeOtherCoordinates() {
 
 }
 
-void CMyPaintTriangle::drawInMemory(HDC hdc) {
+void CMyPaintTriangle::draw(HDC hdc) {
 	CPen Pen(penStyle_, penWidth_, penColor_);
-	CPen* oldPen = (CPen*)SelectObject(hdc,&Pen);
+	SelectObject(hdc, Pen);
 	if (brushStyle_ == 0) {
 		HBRUSH hBrush = (HBRUSH)GetStockObject(HOLLOW_BRUSH);
-		HGDIOBJ hOldBush = SelectObject(hdc, hBrush);
-		Polygon(hdc,triangleCoordinates_, 3);
+		SelectObject(hdc, hBrush);
+		Polygon(hdc, triangleCoordinates_, 3);
+		DeleteObject(hBrush);
 	}
 	if (brushStyle_ == 1) {
 		HBRUSH hBrush = CreateSolidBrush(brushColor_);
-		HGDIOBJ hOldBush = SelectObject(hdc, hBrush);
+		SelectObject(hdc, hBrush);
 		Polygon(hdc, triangleCoordinates_, 3);
+		DeleteObject(hBrush);
 	}
 	if (brushStyle_ == 2) {
 		CBrush hBrush(HS_BDIAGONAL, brushColor_);
-		HGDIOBJ hOldBush = SelectObject(hdc, hBrush);
+		SelectObject(hdc, hBrush);
 		Polygon(hdc, triangleCoordinates_, 3);
+		DeleteObject(hBrush);
 	}
 	if (brushStyle_ == 3) {
 		CBrush hBrush(HS_CROSS, brushColor_);
-		HGDIOBJ hOldBush = SelectObject(hdc, hBrush);
+		SelectObject(hdc, hBrush);
 		Polygon(hdc, triangleCoordinates_, 3);
+		DeleteObject(hBrush);
 	}
 	if (brushStyle_ == 4) {
 		CBrush hBrush(HS_DIAGCROSS, brushColor_);
-		HGDIOBJ hOldBush = SelectObject(hdc, hBrush);
+		SelectObject(hdc, hBrush);
 		Polygon(hdc, triangleCoordinates_, 3);
+		DeleteObject(hBrush);
 	}
 	if (brushStyle_ == 5) {
 		CBrush hBrush(HS_FDIAGONAL, brushColor_);
-		HGDIOBJ hOldBush = SelectObject(hdc, hBrush);
+		SelectObject(hdc, hBrush);
 		Polygon(hdc, triangleCoordinates_, 3);
+		DeleteObject(hBrush);
 	}
 	if (brushStyle_ == 6) {
 		CBrush hBrush(HS_HORIZONTAL, brushColor_);
-		HGDIOBJ hOldBush = SelectObject(hdc, hBrush);
+		SelectObject(hdc, hBrush);
 		Polygon(hdc, triangleCoordinates_, 3);
+		DeleteObject(hBrush);
 	}
 	if (brushStyle_ == 7) {
 		CBrush hBrush(HS_VERTICAL, brushColor_);
-		HGDIOBJ hOldBush = SelectObject(hdc, hBrush);
+		SelectObject(hdc, hBrush);
 		Polygon(hdc, triangleCoordinates_, 3);
+		DeleteObject(hBrush);
 	}
+	DeleteObject(Pen);
+}
+
+void CMyPaintTriangle::tempDraw(HDC hdc) {
+	CPen Pen(penStyle_, penWidth_, penColor_);
+	SelectObject(hdc, Pen);
+	if (brushStyle_ == 0) {
+		HBRUSH hBrush = (HBRUSH)GetStockObject(HOLLOW_BRUSH);
+		SelectObject(hdc, hBrush);
+		Polygon(hdc, tempTriangle_, 3);
+		DeleteObject(hBrush);
+	}
+	if (brushStyle_ == 1) {
+		HBRUSH hBrush = CreateSolidBrush(brushColor_);
+		SelectObject(hdc, hBrush);
+		Polygon(hdc, tempTriangle_, 3);
+		DeleteObject(hBrush);
+	}
+	if (brushStyle_ == 2) {
+		CBrush hBrush(HS_BDIAGONAL, brushColor_);
+		SelectObject(hdc, hBrush);
+		Polygon(hdc, tempTriangle_, 3);
+		DeleteObject(hBrush);
+	}
+	if (brushStyle_ == 3) {
+		CBrush hBrush(HS_CROSS, brushColor_);
+		SelectObject(hdc, hBrush);
+		Polygon(hdc, tempTriangle_, 3);
+		DeleteObject(hBrush);
+	}
+	if (brushStyle_ == 4) {
+		CBrush hBrush(HS_DIAGCROSS, brushColor_);
+		SelectObject(hdc, hBrush);
+		Polygon(hdc, tempTriangle_, 3);
+		DeleteObject(hBrush);
+	}
+	if (brushStyle_ == 5) {
+		CBrush hBrush(HS_FDIAGONAL, brushColor_);
+		SelectObject(hdc, hBrush);
+		Polygon(hdc, tempTriangle_, 3);
+		DeleteObject(hBrush);
+	}
+	if (brushStyle_ == 6) {
+		CBrush hBrush(HS_HORIZONTAL, brushColor_);
+		SelectObject(hdc, hBrush);
+		Polygon(hdc, tempTriangle_, 3);
+		DeleteObject(hBrush);
+	}
+	if (brushStyle_ == 7) {
+		CBrush hBrush(HS_VERTICAL, brushColor_);
+		SelectObject(hdc, hBrush);
+		Polygon(hdc, tempTriangle_, 3);
+		DeleteObject(hBrush);
+	}
+	DeleteObject(Pen);
+}
+
+void CMyPaintTriangle::select(HDC hdc) {
+	int selectStyle;
+	COLORREF selectColor;
+	if (penStyle_ != PS_DOT) {
+		selectStyle = PS_DOT;
+		selectColor = RGB(0, 0, 0);
+	}
+	else {
+		selectStyle = PS_SOLID;
+		selectColor = RGB(0, 0, 0);
+	}
+	CPen Pen(selectStyle, 1, selectColor);
+	SelectObject(hdc, Pen);
+	HBRUSH hBrush = (HBRUSH)GetStockObject(HOLLOW_BRUSH);
+	SelectObject(hdc, hBrush);
+	Polygon(hdc, triangleCoordinates_, 3);
+	DeleteObject(hBrush);
+	DeleteObject(Pen);
 }

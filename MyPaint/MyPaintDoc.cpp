@@ -69,10 +69,10 @@ BOOL CMyPaintDoc::OnNewDocument()
 void CMyPaintDoc::Serialize(CArchive& ar)
 {
 	std::map<int, CPoint> connectionCoordinate_;
-	int figureSize_,connectionSize_,figureType_,id_,width_,penStyle_,brushStyle_,connectionType_,connectionPlace_[2],figureID_[2], connectionCoordinateSize_,key;
+	int figureSize_, connectionSize_, figureType_, id_, width_, penStyle_, brushStyle_, connectionType_, connectionPlace_[2], figureID_[2], connectionCoordinateSize_, key;
 	COLORREF penColor_, brushColor_;
 	CString name_;
-	CPoint figureCoordinate[3],connectionCoordinate[2],point;
+	CPoint figureCoordinate[3], connectionCoordinate[2], point;
 
 	if (ar.IsStoring())
 	{
@@ -149,7 +149,7 @@ void CMyPaintDoc::Serialize(CArchive& ar)
 					std::pair<int, CPoint> Pair(key, point);
 					ptr->addConnectionCoordinate(Pair);
 				}
-				break;	
+				break;
 			case 2:
 				ptr = new CMyPaintRect;
 				ptr->setFirstCoordinate(figureCoordinate[0]);
@@ -228,7 +228,7 @@ void CMyPaintDoc::Serialize(CArchive& ar)
 			ar >> width_;
 			ar >> penColor_;
 			ar >> penStyle_;
-			CMyPaintConnection con(id_,name_,width_,penColor_,penStyle_,connectionType_,connectionPlace_[0],figureID_[0],connectionCoordinate[0]);
+			CMyPaintConnection con(id_, name_, width_, penColor_, penStyle_, connectionType_, connectionPlace_[0], figureID_[0], connectionCoordinate[0]);
 			con.setSecondPlace(connectionPlace_[1]);
 			con.setSecondFigureID(figureID_[1]);
 			con.setSecondCoordinates(connectionCoordinate[1]);
@@ -248,7 +248,7 @@ void CMyPaintDoc::OnDrawThumbnail(CDC& dc, LPRECT lprcBounds)
 	CString strText = _T("TODO: implement thumbnail drawing here");
 	LOGFONT lf;
 
-	CFont* pDefaultGUIFont = CFont::FromHandle((HFONT) GetStockObject(DEFAULT_GUI_FONT));
+	CFont* pDefaultGUIFont = CFont::FromHandle((HFONT)GetStockObject(DEFAULT_GUI_FONT));
 	pDefaultGUIFont->GetLogFont(&lf);
 	lf.lfHeight = 36;
 
@@ -279,7 +279,7 @@ void CMyPaintDoc::SetSearchContent(const CString& value)
 	}
 	else
 	{
-		CMFCFilterChunkValueImpl *pChunk = nullptr;
+		CMFCFilterChunkValueImpl* pChunk = nullptr;
 		ATLTRY(pChunk = new CMFCFilterChunkValueImpl);
 		if (pChunk != nullptr)
 		{
@@ -305,12 +305,12 @@ void CMyPaintDoc::Dump(CDumpContext& dc) const
 }
 #endif //_DEBUG
 
-int CMyPaintDoc :: CreateEllipse(CPoint point) {
+int CMyPaintDoc::CreateEllipse(CPoint point) {
 	CRect rectSize(point, point);
 	CString str("Figure");
 	str.Format(_T("Figure%i"), id_);
 	CMyPaintFigure* ptr;
-	ptr = new CMyPaintEllipse(id_, str, penWidth_, penColor_, penStyle_,brushColor_, brushStyle_, rectSize);
+	ptr = new CMyPaintEllipse(id_, str, penWidth_, penColor_, penStyle_, brushColor_, brushStyle_, rectSize);
 	figure_.push_back(ptr);
 	id_++;
 	return figure_.size() - 1;
@@ -332,7 +332,7 @@ int CMyPaintDoc::CreateTriangle(CPoint point) {
 	CString str("Figure");
 	str.Format(_T("Figure%i"), id_);
 	CMyPaintFigure* ptr;
-	ptr = new CMyPaintTriangle(id_, str, penWidth_, penColor_, penStyle_, brushColor_, brushStyle_, point,point,point);
+	ptr = new CMyPaintTriangle(id_, str, penWidth_, penColor_, penStyle_, brushColor_, brushStyle_, point, point, point);
 	figure_.push_back(ptr);
 	id_++;
 	return figure_.size() - 1;
@@ -382,20 +382,9 @@ int CMyPaintDoc::CreateLine(CPoint point) {
 	CString str("Figure");
 	str.Format(_T("Figure%i"), id_);
 	CMyPaintFigure* ptr;
-	CPoint arrPoint[2];
-	arrPoint[0] = point;
-	arrPoint[1] = point;
-	ptr = new CMyPaintLine(id_, str, penWidth_, penColor_, penStyle_,point,point);
+	ptr = new CMyPaintLine(id_, str, penWidth_, penColor_, penStyle_, point, point);
 	figure_.push_back(ptr);
 	id_++;
 	return figure_.size() - 1;
 }
 // Команды CMyPaintDoc
-
-
-void CMyPaintDoc::DeleteContents()
-{
-	figure_.clear();
-	connections_.clear();
-	CDocument::DeleteContents();
-}

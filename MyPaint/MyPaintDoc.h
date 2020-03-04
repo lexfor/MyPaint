@@ -17,13 +17,13 @@ protected: // создать только из сериализации
 	CMyPaintDoc() noexcept;
 	DECLARE_DYNCREATE(CMyPaintDoc)
 
-// Атрибуты
+	// Атрибуты
 public:
 
-// Операции
+	// Операции
 public:
 
-// Переопределение
+	// Переопределение
 public:
 	virtual BOOL OnNewDocument();
 	virtual void Serialize(CArchive& ar);
@@ -32,7 +32,7 @@ public:
 	virtual void OnDrawThumbnail(CDC& dc, LPRECT lprcBounds);
 #endif // SHARED_HANDLERS
 
-// Реализация
+	// Реализация
 public:
 	virtual ~CMyPaintDoc();
 #ifdef _DEBUG
@@ -56,7 +56,7 @@ public:
 
 protected:
 
-// Созданные функции схемы сообщений
+	// Созданные функции схемы сообщений
 protected:
 	DECLARE_MESSAGE_MAP()
 
@@ -75,6 +75,4 @@ private:
 	int penWidth_;
 	int penStyle_;
 	int brushStyle_;
-public:
-	virtual void DeleteContents();
 };

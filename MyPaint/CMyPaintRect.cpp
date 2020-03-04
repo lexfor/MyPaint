@@ -2,7 +2,7 @@
 #include "CMyPaintRect.h"
 CMyPaintRect::CMyPaintRect() : CMyPaintFigure()
 {}
-CMyPaintRect::CMyPaintRect( unsigned int id, CString name, int penWidth, COLORREF penColor, int penStyle, COLORREF brushColor, int brushStyle, CRect rectCoordinates) : CMyPaintFigure(id, name, penWidth, penColor, penStyle, brushColor, brushStyle)
+CMyPaintRect::CMyPaintRect(unsigned int id, CString name, int penWidth, COLORREF penColor, int penStyle, COLORREF brushColor, int brushStyle, CRect rectCoordinates) : CMyPaintFigure(id, name, penWidth, penColor, penStyle, brushColor, brushStyle)
 {
 	rectCoordinates_[0].x = rectCoordinates.left;
 	rectCoordinates_[0].y = rectCoordinates.top;
@@ -14,51 +14,7 @@ CMyPaintRect::CMyPaintRect( unsigned int id, CString name, int penWidth, COLORRE
 	rectCoordinates_[3].y = rectCoordinates.bottom;
 	findCenterCoordinates();
 }
-void CMyPaintRect::draw(CClientDC& dc,HWND& m_HWND) {
-	CPen Pen(penStyle_, penWidth_, penColor_);
-	CPen* oldPen = (CPen*)dc.SelectObject(&Pen);
-	if (brushStyle_ == 0) {
-		HBRUSH hBrush = (HBRUSH)GetStockObject(HOLLOW_BRUSH);
-		HGDIOBJ hOldBush = SelectObject(dc, hBrush);
-		dc.Polygon(rectCoordinates_, 4);
-	}
-	if (brushStyle_ == 1) {
-		HBRUSH hBrush = CreateSolidBrush(brushColor_);
-		HGDIOBJ hOldBush = SelectObject(dc, hBrush);
-		dc.Polygon(rectCoordinates_, 4);
-	}
-	if (brushStyle_ == 2) {
-		CBrush hBrush(HS_BDIAGONAL, brushColor_);
-		HGDIOBJ hOldBush = SelectObject(dc, hBrush);
-		dc.Polygon(rectCoordinates_, 4);
-	}
-	if (brushStyle_ == 3) {
-		CBrush hBrush(HS_CROSS, brushColor_);
-		HGDIOBJ hOldBush = SelectObject(dc, hBrush);
-		dc.Polygon(rectCoordinates_, 4);
-	}
-	if (brushStyle_ == 4) {
-		CBrush hBrush(HS_DIAGCROSS, brushColor_);
-		HGDIOBJ hOldBush = SelectObject(dc, hBrush);
-		dc.Polygon(rectCoordinates_, 4);
-	}
-	if (brushStyle_ == 5) {
-		CBrush hBrush(HS_FDIAGONAL, brushColor_);
-		HGDIOBJ hOldBush = SelectObject(dc, hBrush);
-		dc.Polygon(rectCoordinates_, 4);
-	}
-	if (brushStyle_ == 6) {
-		CBrush hBrush(HS_HORIZONTAL, brushColor_);
-		HGDIOBJ hOldBush = SelectObject(dc, hBrush);
-		dc.Polygon(rectCoordinates_, 4);
-	}
-	if (brushStyle_ == 7) {
-		CBrush hBrush(HS_VERTICAL, brushColor_);
-		HGDIOBJ hOldBush = SelectObject(dc, hBrush);
-		dc.Polygon(rectCoordinates_, 4);
-	}
-}
-void CMyPaintRect::setCoordinates(CPoint point,bool isClickEnd) {
+void CMyPaintRect::setCoordinates(CPoint point, bool isClickEnd) {
 	rectCoordinates_[1].x = point.x;
 	rectCoordinates_[1].y = rectCoordinates_[0].y;
 	rectCoordinates_[2].x = point.x;
@@ -71,42 +27,6 @@ void CMyPaintRect::setCoordinates(CPoint point,bool isClickEnd) {
 void CMyPaintRect::findCenterCoordinates() {
 	rectCenter_.x = (rectCoordinates_[0].x + rectCoordinates_[2].x) / 2;
 	rectCenter_.y = (rectCoordinates_[0].y + rectCoordinates_[2].y) / 2;
-}
-
-CRect CMyPaintRect::getCoordinates() {
-	CRect rect;
-	CPoint diffrence;
-	diffrence.y = rectCoordinates_[2].y - rectCoordinates_[0].y;
-	diffrence.x = rectCoordinates_[2].x - rectCoordinates_[0].x;
-	if ((diffrence.x > 0 && diffrence.y < 0) || (diffrence.y > 0 && diffrence.x < 0)) {
-		if (abs(diffrence.x) > abs(diffrence.y)) {
-			rect.right = rectCenter_.x + diffrence.x / 1.5;
-			rect.bottom = rectCenter_.y - diffrence.x / 1.5;
-			rect.top = rectCenter_.y + diffrence.x / 1.5;
-			rect.left = rectCenter_.x - diffrence.x / 1.5;
-		}
-		else {
-			rect.right = rectCenter_.x - diffrence.y / 1.5;
-			rect.bottom = rectCenter_.y + diffrence.y / 1.5;
-			rect.top = rectCenter_.y - diffrence.y / 1.5;
-			rect.left = rectCenter_.x + diffrence.y / 1.5;
-		}
-	}
-	if ((diffrence.x >= 0 && diffrence.y >= 0) || (diffrence.x < 0 && diffrence.y < 0)) {
-		if (abs(diffrence.x) > abs(diffrence.y)) {
-			rect.right = rectCenter_.x + diffrence.x / 1.5;
-			rect.bottom = rectCenter_.y + diffrence.x / 1.5;
-			rect.top = rectCenter_.y - diffrence.x / 1.5;
-			rect.left = rectCenter_.x - diffrence.x / 1.5;
-		}
-		else {
-			rect.right = rectCenter_.x + diffrence.y / 1.5;
-			rect.bottom = rectCenter_.y + diffrence.y / 1.5;
-			rect.top = rectCenter_.y - diffrence.y / 1.5;
-			rect.left = rectCenter_.x - diffrence.y / 1.5;
-		}
-	}
-	return rect;
 }
 
 bool CMyPaintRect::ifThisFigure(CPoint point) {
@@ -134,7 +54,7 @@ bool CMyPaintRect::ifThisFigure(CPoint point) {
 	}
 	return false;
 }
-void CMyPaintRect::move(CPoint * movePoint) {
+void CMyPaintRect::move(CPoint* movePoint) {
 	CPoint diff;
 	diff.x = movePoint[1].x - movePoint[0].x;
 	diff.y = movePoint[1].y - movePoint[0].y;
@@ -148,7 +68,7 @@ void CMyPaintRect::move(CPoint * movePoint) {
 	}
 	findCenterCoordinates();
 }
-void CMyPaintRect::rotate(CPoint* rotatePoint,bool realCoordinates) {
+void CMyPaintRect::rotate(CPoint* rotatePoint, bool realCoordinates) {
 	double resultX, resultY;
 	double radius;
 	double Rcos, Rsin;
@@ -217,7 +137,7 @@ void CMyPaintRect::normalize() {
 	diffrence.y = rectCoordinates_[2].y - rectCoordinates_[0].y;
 	diffrence.x = rectCoordinates_[2].x - rectCoordinates_[0].x;
 	if ((diffrence.x > 0 && diffrence.y < 0) || (diffrence.y > 0 && diffrence.x < 0)) {
-		if (abs(diffrence.x) > abs(diffrence.y) ) {
+		if (abs(diffrence.x) > abs(diffrence.y)) {
 			rectCoordinates_[2].x = rectCoordinates_[0].x - diffrence.y;
 			rectCoordinates_[2].y = rectCoordinates_[0].y + diffrence.y;
 			changeOtherCoordinates();
@@ -276,49 +196,6 @@ void CMyPaintRect::normalize() {
 		}
 	}
 }
-void CMyPaintRect::drawTempFigure(CClientDC& dc, HWND& m_HWND) {
-	CPen Pen(penStyle_, penWidth_, penColor_);
-	CPen* oldPen = (CPen*)dc.SelectObject(&Pen);
-	HBRUSH hBrush = (HBRUSH)GetStockObject(HOLLOW_BRUSH);
-	HGDIOBJ hOldBush = SelectObject(dc, hBrush);
-	dc.Polygon(tempRect_, 4);
-}
-CRect CMyPaintRect::getTempCoordinates() {
-	CRect rect;
-	CPoint diffrence;
-	diffrence.y = rectCoordinates_[2].y - rectCoordinates_[0].y;
-	diffrence.x = rectCoordinates_[2].x - rectCoordinates_[0].x;
-	if ((diffrence.x > 0 && diffrence.y < 0) || (diffrence.y > 0 && diffrence.x < 0)) {
-		if (abs(diffrence.x) > abs(diffrence.y)) {
-			rect.right = rectCenter_.x + diffrence.x / 1.2;
-			rect.bottom = rectCenter_.y - diffrence.x / 1.2;
-			rect.top = rectCenter_.y + diffrence.x / 1.2;
-			rect.left = rectCenter_.x - diffrence.x / 1.2;
-		}
-		else {
-			rect.right = rectCenter_.x - diffrence.y / 1.2;
-			rect.bottom = rectCenter_.y + diffrence.y / 1.2;
-			rect.top = rectCenter_.y - diffrence.y / 1.2;
-			rect.left = rectCenter_.x + diffrence.y / 1.2;
-		}
-	}
-	if ((diffrence.x >= 0 && diffrence.y >= 0) || (diffrence.x < 0 && diffrence.y < 0)) {
-		if (abs(diffrence.x) > abs(diffrence.y)) {
-			rect.right = rectCenter_.x + diffrence.x / 1.2;
-			rect.bottom = rectCenter_.y + diffrence.x / 1.2;
-			rect.top = rectCenter_.y - diffrence.x / 1.2;
-			rect.left = rectCenter_.x - diffrence.x / 1.2;
-		}
-		else {
-			rect.right = rectCenter_.x + diffrence.y / 1.2;
-			rect.bottom = rectCenter_.y + diffrence.y / 1.2;
-			rect.top = rectCenter_.y - diffrence.y / 1.2;
-			rect.left = rectCenter_.x - diffrence.y / 1.2;
-		}
-	}
-	return rect;
-}
-
 void CMyPaintRect::changeOtherCoordinates()
 {
 	rectCoordinates_[1].x = rectCoordinates_[2].x;
@@ -326,7 +203,7 @@ void CMyPaintRect::changeOtherCoordinates()
 	rectCoordinates_[3].x = rectCoordinates_[0].x;
 	rectCoordinates_[3].y = rectCoordinates_[2].y;
 }
-bool CMyPaintRect::edit(CPoint editPoint,bool isEnd) {
+bool CMyPaintRect::edit(CPoint editPoint, bool isEnd) {
 	setCoordinates(editPoint, true);
 	return true;
 }
@@ -339,7 +216,7 @@ void CMyPaintRect::makeTempCoordinatesNull() {
 CPoint CMyPaintRect::getCenterCoordinates() {
 	return rectCenter_;
 }
-CPoint CMyPaintRect::findConnectionCoordinates(CPoint centerPoint,int connectionNum) {
+CPoint CMyPaintRect::findConnectionCoordinates(CPoint centerPoint, int connectionNum) {
 	CPoint arrowPoint[4];
 	double length;
 	int pointNum;
@@ -513,49 +390,129 @@ void CMyPaintRect::setSecondCoordinate(CPoint point) {
 
 void CMyPaintRect::setThirdCoordinate(CPoint point) {
 }
-
-void CMyPaintRect::drawInMemory(HDC hdc) {
+void CMyPaintRect::draw(HDC hdc) {
 	CPen Pen(penStyle_, penWidth_, penColor_);
-	CPen* oldPen = (CPen*)SelectObject(hdc, &Pen); //(CPen*)dc.SelectObject(&Pen);
+	SelectObject(hdc, Pen);
 	if (brushStyle_ == 0) {
 		HBRUSH hBrush = (HBRUSH)GetStockObject(HOLLOW_BRUSH);
-		HGDIOBJ hOldBush = SelectObject(hdc, hBrush);
-		Rectangle(hdc, rectCoordinates_[0].x, rectCoordinates_[0].y, rectCoordinates_[2].x, rectCoordinates_[2].y);
+		SelectObject(hdc, hBrush);
+		Polygon(hdc, rectCoordinates_, 4);
+		DeleteObject(hBrush);
 	}
 	if (brushStyle_ == 1) {
-		CBrush hBrush(brushColor_);
-		CBrush* oldBrush = (CBrush*)SelectObject(hdc, &hBrush);
-		Rectangle(hdc, rectCoordinates_[0].x, rectCoordinates_[0].y, rectCoordinates_[2].x, rectCoordinates_[2].y);
+		HBRUSH hBrush = CreateSolidBrush(brushColor_);
+		SelectObject(hdc, hBrush);
+		Polygon(hdc, rectCoordinates_, 4);
+		DeleteObject(hBrush);
 	}
 	if (brushStyle_ == 2) {
 		CBrush hBrush(HS_BDIAGONAL, brushColor_);
-		CBrush* oldBrush = (CBrush*)SelectObject(hdc, &hBrush);
-		Rectangle(hdc, rectCoordinates_[0].x, rectCoordinates_[0].y, rectCoordinates_[2].x, rectCoordinates_[2].y);
+		SelectObject(hdc, hBrush);
+		Polygon(hdc, rectCoordinates_, 4);
+		DeleteObject(hBrush);
 	}
 	if (brushStyle_ == 3) {
 		CBrush hBrush(HS_CROSS, brushColor_);
-		CBrush* oldBrush = (CBrush*)SelectObject(hdc, &hBrush);
-		Rectangle(hdc, rectCoordinates_[0].x, rectCoordinates_[0].y, rectCoordinates_[2].x, rectCoordinates_[2].y);
+		SelectObject(hdc, hBrush);
+		Polygon(hdc, rectCoordinates_, 4);
+		DeleteObject(hBrush);
 	}
 	if (brushStyle_ == 4) {
 		CBrush hBrush(HS_DIAGCROSS, brushColor_);
-		CBrush* oldBrush = (CBrush*)SelectObject(hdc, &hBrush);
-		Rectangle(hdc, rectCoordinates_[0].x, rectCoordinates_[0].y, rectCoordinates_[2].x, rectCoordinates_[2].y);
+		SelectObject(hdc, hBrush);
+		Polygon(hdc, rectCoordinates_, 4);
+		DeleteObject(hBrush);
 	}
 	if (brushStyle_ == 5) {
 		CBrush hBrush(HS_FDIAGONAL, brushColor_);
-		CBrush* oldBrush = (CBrush*)SelectObject(hdc, &hBrush);
-		Rectangle(hdc, rectCoordinates_[0].x, rectCoordinates_[0].y, rectCoordinates_[2].x, rectCoordinates_[2].y);
+		SelectObject(hdc, hBrush);
+		Polygon(hdc, rectCoordinates_, 4);
+		DeleteObject(hBrush);
 	}
 	if (brushStyle_ == 6) {
 		CBrush hBrush(HS_HORIZONTAL, brushColor_);
-		CBrush* oldBrush = (CBrush*)SelectObject(hdc, &hBrush);
-		Rectangle(hdc, rectCoordinates_[0].x, rectCoordinates_[0].y, rectCoordinates_[2].x, rectCoordinates_[2].y);
+		SelectObject(hdc, hBrush);
+		Polygon(hdc, rectCoordinates_, 4);
+		DeleteObject(hBrush);
 	}
 	if (brushStyle_ == 7) {
 		CBrush hBrush(HS_VERTICAL, brushColor_);
-		CBrush* oldBrush = (CBrush*)SelectObject(hdc, &hBrush);
-		Rectangle(hdc, rectCoordinates_[0].x, rectCoordinates_[0].y, rectCoordinates_[2].x, rectCoordinates_[2].y);
+		SelectObject(hdc, hBrush);
+		Polygon(hdc, rectCoordinates_, 4);
+		DeleteObject(hBrush);
 	}
-	Rectangle(hdc, rectCoordinates_[0].x, rectCoordinates_[0].y, rectCoordinates_[2].x, rectCoordinates_[2].y);
+	DeleteObject(Pen);
+}
+
+void CMyPaintRect::tempDraw(HDC hdc) {
+	CPen Pen(penStyle_, penWidth_, penColor_);
+	SelectObject(hdc, Pen);
+	if (brushStyle_ == 0) {
+		HBRUSH hBrush = (HBRUSH)GetStockObject(HOLLOW_BRUSH);
+		SelectObject(hdc, hBrush);
+		Polygon(hdc, tempRect_, 4);
+		DeleteObject(hBrush);
+	}
+	if (brushStyle_ == 1) {
+		HBRUSH hBrush = CreateSolidBrush(brushColor_);
+		SelectObject(hdc, hBrush);
+		Polygon(hdc, tempRect_, 4);
+		DeleteObject(hBrush);
+	}
+	if (brushStyle_ == 2) {
+		CBrush hBrush(HS_BDIAGONAL, brushColor_);
+		SelectObject(hdc, hBrush);
+		Polygon(hdc, tempRect_, 4);
+		DeleteObject(hBrush);
+	}
+	if (brushStyle_ == 3) {
+		CBrush hBrush(HS_CROSS, brushColor_);
+		SelectObject(hdc, hBrush);
+		Polygon(hdc, tempRect_, 4);
+		DeleteObject(hBrush);
+	}
+	if (brushStyle_ == 4) {
+		CBrush hBrush(HS_DIAGCROSS, brushColor_);
+		SelectObject(hdc, hBrush);
+		Polygon(hdc, tempRect_, 4);
+		DeleteObject(hBrush);
+	}
+	if (brushStyle_ == 5) {
+		CBrush hBrush(HS_FDIAGONAL, brushColor_);
+		SelectObject(hdc, hBrush);
+		Polygon(hdc, tempRect_, 4);
+		DeleteObject(hBrush);
+	}
+	if (brushStyle_ == 6) {
+		CBrush hBrush(HS_HORIZONTAL, brushColor_);
+		SelectObject(hdc, hBrush);
+		Polygon(hdc, tempRect_, 4);
+		DeleteObject(hBrush);
+	}
+	if (brushStyle_ == 7) {
+		CBrush hBrush(HS_VERTICAL, brushColor_);
+		SelectObject(hdc, hBrush);
+		Polygon(hdc, tempRect_, 4);
+		DeleteObject(hBrush);
+	}
+	DeleteObject(Pen);
+}
+void CMyPaintRect::select(HDC hdc) {
+	int selectStyle;
+	COLORREF selectColor;
+	if (penStyle_ != PS_DOT) {
+		selectStyle = PS_DOT;
+		selectColor = RGB(0, 0, 0);
+	}
+	else {
+		selectStyle = PS_SOLID;
+		selectColor = RGB(0, 0, 0);
+	}
+	CPen Pen(selectStyle, 1, selectColor);
+	SelectObject(hdc, Pen);
+	HBRUSH hBrush = (HBRUSH)GetStockObject(HOLLOW_BRUSH);
+	SelectObject(hdc, hBrush);
+	Polygon(hdc, rectCoordinates_, 4);
+	DeleteObject(hBrush);
+	DeleteObject(Pen);
 }

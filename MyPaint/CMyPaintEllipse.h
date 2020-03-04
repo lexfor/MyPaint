@@ -9,26 +9,22 @@ private:
 	CPoint tempEllipse_[4];
 public:
 	CMyPaintEllipse();
-	CMyPaintEllipse(unsigned int, CString, int, COLORREF, int, COLORREF, int,CRect);
-	void draw(CClientDC&,HWND&)override;
-	void setCoordinates(CPoint,bool)override;
+	CMyPaintEllipse(unsigned int, CString, int, COLORREF, int, COLORREF, int, CRect);
+	void setCoordinates(CPoint, bool)override;
 	void findCenterCoordinates();
-	CRect getCoordinates()override;
 	bool ifThisFigure(CPoint point)override;
 	void move(CPoint*)override;
-	void rotate(CPoint*,bool)override;
+	void rotate(CPoint*, bool)override;
 	void normalize()override;
-	void drawTempFigure(CClientDC&, HWND&)override;
-	CRect getTempCoordinates()override;
 	void changeOtherCoordinates()override;
-	bool edit(CPoint,bool)override;
+	bool edit(CPoint, bool)override;
 	void makeTempCoordinatesNull()override;
 	CPoint getCenterCoordinates()override;
-	CPoint findConnectionCoordinates(CPoint,int)override;
+	CPoint findConnectionCoordinates(CPoint, int)override;
 	int findConnectionPlace(int)override;
 	std::vector<int> getConnectionID()override;
 	void deleteConnection(int)override;
-	void properties(std::vector<int>,std::vector<CString>)override;
+	void properties(std::vector<int>, std::vector<CString>)override;
 	CPoint getFirstCoordinate()override;
 	CPoint getSecondCoordinate()override;
 	CPoint getThirdCoordinate()override;
@@ -36,6 +32,8 @@ public:
 	void setFirstCoordinate(CPoint)override;
 	void setSecondCoordinate(CPoint)override;
 	void setThirdCoordinate(CPoint)override;
-	void drawInMemory(HDC)override;
+	void draw(HDC)override;
+	void tempDraw(HDC)override;
+	void select(HDC)override;
 };
 

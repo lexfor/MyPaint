@@ -1,8 +1,8 @@
 #include "pch.h"
 #include "CMyPaintEllipse.h"
-CMyPaintEllipse::CMyPaintEllipse():CMyPaintFigure()
+CMyPaintEllipse::CMyPaintEllipse() :CMyPaintFigure()
 {}
-CMyPaintEllipse::CMyPaintEllipse( unsigned int id, CString name, int penWidth, COLORREF penColor, int penStyle, COLORREF brushColor, int brushStyle, CRect ellipseCoordinates) : CMyPaintFigure(id,name,penWidth,penColor,penStyle,brushColor,brushStyle)
+CMyPaintEllipse::CMyPaintEllipse(unsigned int id, CString name, int penWidth, COLORREF penColor, int penStyle, COLORREF brushColor, int brushStyle, CRect ellipseCoordinates) : CMyPaintFigure(id, name, penWidth, penColor, penStyle, brushColor, brushStyle)
 {
 	ellipseCoordinates_[0].x = ellipseCoordinates.left;
 	ellipseCoordinates_[0].y = ellipseCoordinates.top;
@@ -14,52 +14,7 @@ CMyPaintEllipse::CMyPaintEllipse( unsigned int id, CString name, int penWidth, C
 	ellipseCoordinates_[3].y = ellipseCoordinates.bottom;
 	findCenterCoordinates();
 }
-void CMyPaintEllipse::draw( CClientDC &dc,HWND& m_HWND) {
-	CPen Pen(penStyle_, penWidth_, penColor_);
-	CPen* oldPen = (CPen*)dc.SelectObject(&Pen);
-	if (brushStyle_ == 0) {
-		HBRUSH hBrush = (HBRUSH)GetStockObject(HOLLOW_BRUSH);
-		HGDIOBJ hOldBush = SelectObject(dc, hBrush);
-		dc.Ellipse(ellipseCoordinates_[0].x, ellipseCoordinates_[0].y, ellipseCoordinates_[2].x, ellipseCoordinates_[2].y);
-	}
-	if (brushStyle_ == 1) {
-		CBrush hBrush(brushColor_);
-		CBrush* oldBrush = (CBrush*)dc.SelectObject(&hBrush);
-		dc.Ellipse(ellipseCoordinates_[0].x, ellipseCoordinates_[0].y, ellipseCoordinates_[2].x, ellipseCoordinates_[2].y);
-	}
-	if (brushStyle_ == 2) {
-		CBrush hBrush(HS_BDIAGONAL, brushColor_);
-		CBrush* oldBrush = (CBrush*)dc.SelectObject(&hBrush);
-		dc.Ellipse(ellipseCoordinates_[0].x, ellipseCoordinates_[0].y, ellipseCoordinates_[2].x, ellipseCoordinates_[2].y);
-	}
-	if (brushStyle_ == 3) {
-		CBrush hBrush(HS_CROSS, brushColor_);
-		CBrush* oldBrush = (CBrush*)dc.SelectObject(&hBrush);
-		dc.Ellipse(ellipseCoordinates_[0].x, ellipseCoordinates_[0].y, ellipseCoordinates_[2].x, ellipseCoordinates_[2].y);
-	}
-	if (brushStyle_ == 4) {
-		CBrush hBrush(HS_DIAGCROSS, brushColor_);
-		CBrush* oldBrush = (CBrush*)dc.SelectObject(&hBrush); 
-		dc.Ellipse(ellipseCoordinates_[0].x, ellipseCoordinates_[0].y, ellipseCoordinates_[2].x, ellipseCoordinates_[2].y);
-	}
-	if (brushStyle_ == 5) {
-		CBrush hBrush(HS_FDIAGONAL, brushColor_);
-		CBrush* oldBrush = (CBrush*)dc.SelectObject(&hBrush);
-		dc.Ellipse(ellipseCoordinates_[0].x, ellipseCoordinates_[0].y, ellipseCoordinates_[2].x, ellipseCoordinates_[2].y);
-	}
-	if (brushStyle_ == 6) {
-		CBrush hBrush(HS_HORIZONTAL, brushColor_);
-		CBrush* oldBrush = (CBrush*)dc.SelectObject(&hBrush);
-		dc.Ellipse(ellipseCoordinates_[0].x, ellipseCoordinates_[0].y, ellipseCoordinates_[2].x, ellipseCoordinates_[2].y);
-	}
-	if (brushStyle_ == 7) {
-		CBrush hBrush(HS_VERTICAL, brushColor_);
-		CBrush* oldBrush = (CBrush*)dc.SelectObject(&hBrush);
-		dc.Ellipse(ellipseCoordinates_[0].x, ellipseCoordinates_[0].y, ellipseCoordinates_[2].x, ellipseCoordinates_[2].y);
-	}
-	dc.Ellipse(ellipseCoordinates_[0].x, ellipseCoordinates_[0].y, ellipseCoordinates_[2].x, ellipseCoordinates_[2].y);
-}
-void CMyPaintEllipse::setCoordinates(CPoint point,bool isClickEnd) {
+void CMyPaintEllipse::setCoordinates(CPoint point, bool isClickEnd) {
 	ellipseCoordinates_[1].x = point.x;
 	ellipseCoordinates_[1].y = ellipseCoordinates_[0].y;
 	ellipseCoordinates_[2].x = point.x;
@@ -74,43 +29,6 @@ void CMyPaintEllipse::findCenterCoordinates() {
 	ellipseCenter_.y = (ellipseCoordinates_[0].y + ellipseCoordinates_[2].y) / 2;
 
 }
-
-CRect CMyPaintEllipse::getCoordinates() {
-	CRect rect;
-	CPoint diffrence;
-	diffrence.y = ellipseCoordinates_[2].y - ellipseCoordinates_[0].y;
-	diffrence.x = ellipseCoordinates_[2].x - ellipseCoordinates_[0].x;
-	if ((diffrence.x > 0 && diffrence.y < 0) || (diffrence.y > 0 && diffrence.x < 0)) {
-		if (abs(diffrence.x) > abs(diffrence.y)) {
-			rect.right = ellipseCenter_.x + diffrence.x / 1.2;
-			rect.bottom = ellipseCenter_.y - diffrence.x / 1.2;
-			rect.top = ellipseCenter_.y + diffrence.x / 1.2;
-			rect.left = ellipseCenter_.x - diffrence.x / 1.2;
-		}
-		else {
-			rect.right = ellipseCenter_.x - diffrence.y / 1.2;
-			rect.bottom = ellipseCenter_.y + diffrence.y / 1.2;
-			rect.top = ellipseCenter_.y - diffrence.y / 1.2;
-			rect.left = ellipseCenter_.x + diffrence.y / 1.2;
-		}
-	}
-	if ((diffrence.x >= 0 && diffrence.y >= 0) || (diffrence.x < 0 && diffrence.y < 0)) {
-		if (abs(diffrence.x) > abs(diffrence.y)) {
-			rect.right = ellipseCenter_.x + diffrence.x / 1.2;
-			rect.bottom = ellipseCenter_.y + diffrence.x / 1.2;
-			rect.top = ellipseCenter_.y - diffrence.x / 1.2;
-			rect.left = ellipseCenter_.x - diffrence.x / 1.2;
-		}
-		else {
-			rect.right = ellipseCenter_.x + diffrence.y / 1.2;
-			rect.bottom = ellipseCenter_.y + diffrence.y / 1.2;
-			rect.top = ellipseCenter_.y - diffrence.y / 1.2;
-			rect.left = ellipseCenter_.x - diffrence.y / 1.2;
-		}
-	}
-	return rect;
-}
-
 bool CMyPaintEllipse::ifThisFigure(CPoint point) {
 	double MaxX, MaxY, MinX, MinY;
 	MinX = ellipseCoordinates_[0].x;
@@ -140,17 +58,17 @@ void  CMyPaintEllipse::move(CPoint* movePoint) {
 	CPoint diff;
 	diff.x = movePoint[1].x - movePoint[0].x;
 	diff.y = movePoint[1].y - movePoint[0].y;
-	for (auto &i : ellipseCoordinates_) {
+	for (auto& i : ellipseCoordinates_) {
 		i.x += diff.x;
 		i.y += diff.y;
 	}
-	for (auto it = connectionsCoordinates_.begin(); it != connectionsCoordinates_.end();it++) {
+	for (auto it = connectionsCoordinates_.begin(); it != connectionsCoordinates_.end(); it++) {
 		it->second.x += diff.x;
 		it->second.y += diff.y;
 	}
 	findCenterCoordinates();
 }
-void CMyPaintEllipse::rotate(CPoint* rotatePoint,bool realCoordinates) {
+void CMyPaintEllipse::rotate(CPoint* rotatePoint, bool realCoordinates) {
 	double resultX, resultY;
 	double radius;
 	double Rcos, Rsin;
@@ -252,14 +170,14 @@ void CMyPaintEllipse::normalize() {
 		}
 	}
 	auto it = connectionsCoordinates_.begin();
-	for (auto i = 0; i <  place.size(); i++,it++) {
+	for (auto i = 0; i < place.size(); i++, it++) {
 		switch (place[i])
 		{
 		case 1:
 			it->second.x = (ellipseCoordinates_[0].x + ellipseCoordinates_[1].x) / 2;
 			it->second.y = (ellipseCoordinates_[0].y + ellipseCoordinates_[1].y) / 2;
 			break;
-		case 2: 
+		case 2:
 			it->second.x = (ellipseCoordinates_[1].x + ellipseCoordinates_[2].x) / 2;
 			it->second.y = (ellipseCoordinates_[1].y + ellipseCoordinates_[2].y) / 2;
 			break;
@@ -276,48 +194,6 @@ void CMyPaintEllipse::normalize() {
 		}
 	}
 }
-void CMyPaintEllipse::drawTempFigure(CClientDC& dc, HWND& m_HWND) {
-	CPen Pen(penStyle_, penWidth_, penColor_);
-	CPen* oldPen = (CPen*)dc.SelectObject(&Pen);
-	HBRUSH hBrush = (HBRUSH)GetStockObject(HOLLOW_BRUSH);
-	HGDIOBJ hOldBush = SelectObject(dc, hBrush);
-	dc.Ellipse(ellipseCoordinates_[0].x, ellipseCoordinates_[0].y, ellipseCoordinates_[2].x, ellipseCoordinates_[2].y);
-}
-CRect CMyPaintEllipse::getTempCoordinates() {
-	CRect rect;
-	CPoint diffrence;
-	diffrence.y = ellipseCoordinates_[2].y - ellipseCoordinates_[0].y;
-	diffrence.x = ellipseCoordinates_[2].x - ellipseCoordinates_[0].x;
-	if ((diffrence.x > 0 && diffrence.y < 0) || (diffrence.y > 0 && diffrence.x < 0)) {
-		if (abs(diffrence.x) > abs(diffrence.y)) {
-			rect.right = ellipseCenter_.x + diffrence.x / 1.5;
-			rect.bottom = ellipseCenter_.y - diffrence.x / 1.5;
-			rect.top = ellipseCenter_.y + diffrence.x / 1.5;
-			rect.left = ellipseCenter_.x - diffrence.x / 1.5;
-		}
-		else {
-			rect.right = ellipseCenter_.x - diffrence.y / 1.5;
-			rect.bottom = ellipseCenter_.y + diffrence.y / 1.5;
-			rect.top = ellipseCenter_.y - diffrence.y / 1.5;
-			rect.left = ellipseCenter_.x + diffrence.y / 1.5;
-		}
-	}
-	if ((diffrence.x >= 0 && diffrence.y >= 0) || (diffrence.x < 0 && diffrence.y < 0)) {
-		if (abs(diffrence.x) > abs(diffrence.y)) {
-			rect.right = ellipseCenter_.x + diffrence.x / 1.5;
-			rect.bottom = ellipseCenter_.y + diffrence.x / 1.5;
-			rect.top = ellipseCenter_.y - diffrence.x / 1.5;
-			rect.left = ellipseCenter_.x - diffrence.x / 1.5;
-		}
-		else {
-			rect.right = ellipseCenter_.x + diffrence.y / 1.5;
-			rect.bottom = ellipseCenter_.y + diffrence.y / 1.5;
-			rect.top = ellipseCenter_.y - diffrence.y / 1.5;
-			rect.left = ellipseCenter_.x - diffrence.y / 1.5;
-		}
-	}
-	return rect;
-}
 void CMyPaintEllipse::changeOtherCoordinates()
 {
 	ellipseCoordinates_[1].x = ellipseCoordinates_[2].x;
@@ -325,7 +201,7 @@ void CMyPaintEllipse::changeOtherCoordinates()
 	ellipseCoordinates_[3].x = ellipseCoordinates_[0].x;
 	ellipseCoordinates_[3].y = ellipseCoordinates_[2].y;
 }
-bool CMyPaintEllipse::edit(CPoint editPoint,bool isEnd) {
+bool CMyPaintEllipse::edit(CPoint editPoint, bool isEnd) {
 	setCoordinates(editPoint, true);
 	return true;
 }
@@ -338,7 +214,7 @@ void CMyPaintEllipse::makeTempCoordinatesNull() {
 CPoint CMyPaintEllipse::getCenterCoordinates() {
 	return ellipseCenter_;
 }
-CPoint CMyPaintEllipse::findConnectionCoordinates(CPoint centerPoint,int connectionNum) {
+CPoint CMyPaintEllipse::findConnectionCoordinates(CPoint centerPoint, int connectionNum) {
 	CPoint arrowPoint[4];
 	double length;
 	int pointNum;
@@ -448,7 +324,7 @@ void CMyPaintEllipse::properties(std::vector<int>ids, std::vector<CString> names
 	dlg.setBrushStyle(brushStyle_);
 	dlg.setPenColor(penColor_);
 	dlg.setBrushColor(brushColor_);
-	dlg.DoModal();	
+	dlg.DoModal();
 	name_ = dlg.getName();
 	id_ = dlg.getID();
 	ellipseCoordinates_[0] = dlg.getFirstPoint();
@@ -513,48 +389,130 @@ void CMyPaintEllipse::setSecondCoordinate(CPoint point) {
 
 void CMyPaintEllipse::setThirdCoordinate(CPoint point) {
 }
-void CMyPaintEllipse::drawInMemory(HDC hdc) {
+
+void CMyPaintEllipse::draw(HDC hdc) {
 	CPen Pen(penStyle_, penWidth_, penColor_);
-	CPen* oldPen = (CPen*)SelectObject(hdc ,&Pen); //(CPen*)dc.SelectObject(&Pen);
+	SelectObject(hdc, Pen);
 	if (brushStyle_ == 0) {
 		HBRUSH hBrush = (HBRUSH)GetStockObject(HOLLOW_BRUSH);
-		HGDIOBJ hOldBush = SelectObject(hdc, hBrush);
-		Ellipse(hdc,ellipseCoordinates_[0].x, ellipseCoordinates_[0].y, ellipseCoordinates_[2].x, ellipseCoordinates_[2].y);
+		SelectObject(hdc, hBrush);
+		Ellipse(hdc, ellipseCoordinates_[0].x, ellipseCoordinates_[0].y, ellipseCoordinates_[2].x, ellipseCoordinates_[2].y);
+		DeleteObject(hBrush);
 	}
 	if (brushStyle_ == 1) {
-		CBrush hBrush(brushColor_);
-		CBrush* oldBrush = (CBrush*)SelectObject(hdc,&hBrush);
-		Ellipse(hdc,ellipseCoordinates_[0].x, ellipseCoordinates_[0].y, ellipseCoordinates_[2].x, ellipseCoordinates_[2].y);
+		HBRUSH hBrush = CreateSolidBrush(brushColor_);
+		SelectObject(hdc, hBrush);
+		Ellipse(hdc, ellipseCoordinates_[0].x, ellipseCoordinates_[0].y, ellipseCoordinates_[2].x, ellipseCoordinates_[2].y);
+		DeleteObject(hBrush);
 	}
 	if (brushStyle_ == 2) {
 		CBrush hBrush(HS_BDIAGONAL, brushColor_);
-		CBrush* oldBrush = (CBrush*)SelectObject(hdc ,&hBrush);
-		Ellipse(hdc,ellipseCoordinates_[0].x, ellipseCoordinates_[0].y, ellipseCoordinates_[2].x, ellipseCoordinates_[2].y);
+		SelectObject(hdc, hBrush);
+		Ellipse(hdc, ellipseCoordinates_[0].x, ellipseCoordinates_[0].y, ellipseCoordinates_[2].x, ellipseCoordinates_[2].y);
+		DeleteObject(hBrush);
 	}
 	if (brushStyle_ == 3) {
 		CBrush hBrush(HS_CROSS, brushColor_);
-		CBrush* oldBrush = (CBrush*)SelectObject(hdc ,&hBrush);
-		Ellipse(hdc,ellipseCoordinates_[0].x, ellipseCoordinates_[0].y, ellipseCoordinates_[2].x, ellipseCoordinates_[2].y);
+		SelectObject(hdc, hBrush);
+		Ellipse(hdc, ellipseCoordinates_[0].x, ellipseCoordinates_[0].y, ellipseCoordinates_[2].x, ellipseCoordinates_[2].y);
+		DeleteObject(hBrush);
 	}
 	if (brushStyle_ == 4) {
 		CBrush hBrush(HS_DIAGCROSS, brushColor_);
-		CBrush* oldBrush = (CBrush*)SelectObject(hdc ,&hBrush);
-		Ellipse(hdc,ellipseCoordinates_[0].x, ellipseCoordinates_[0].y, ellipseCoordinates_[2].x, ellipseCoordinates_[2].y);
+		SelectObject(hdc, hBrush);
+		Ellipse(hdc, ellipseCoordinates_[0].x, ellipseCoordinates_[0].y, ellipseCoordinates_[2].x, ellipseCoordinates_[2].y);
+		DeleteObject(hBrush);
 	}
 	if (brushStyle_ == 5) {
 		CBrush hBrush(HS_FDIAGONAL, brushColor_);
-		CBrush* oldBrush = (CBrush*)SelectObject(hdc ,&hBrush);
-		Ellipse(hdc,ellipseCoordinates_[0].x, ellipseCoordinates_[0].y, ellipseCoordinates_[2].x, ellipseCoordinates_[2].y);
+		SelectObject(hdc, hBrush);
+		Ellipse(hdc, ellipseCoordinates_[0].x, ellipseCoordinates_[0].y, ellipseCoordinates_[2].x, ellipseCoordinates_[2].y);
+		DeleteObject(hBrush);
 	}
 	if (brushStyle_ == 6) {
 		CBrush hBrush(HS_HORIZONTAL, brushColor_);
-		CBrush* oldBrush = (CBrush*)SelectObject(hdc ,&hBrush);
-		Ellipse(hdc,ellipseCoordinates_[0].x, ellipseCoordinates_[0].y, ellipseCoordinates_[2].x, ellipseCoordinates_[2].y);
+		SelectObject(hdc, hBrush);
+		Ellipse(hdc, ellipseCoordinates_[0].x, ellipseCoordinates_[0].y, ellipseCoordinates_[2].x, ellipseCoordinates_[2].y);
+		DeleteObject(hBrush);
 	}
 	if (brushStyle_ == 7) {
 		CBrush hBrush(HS_VERTICAL, brushColor_);
-		CBrush* oldBrush = (CBrush*)SelectObject(hdc ,&hBrush);
-		Ellipse(hdc,ellipseCoordinates_[0].x, ellipseCoordinates_[0].y, ellipseCoordinates_[2].x, ellipseCoordinates_[2].y);
+		SelectObject(hdc, hBrush);
+		Ellipse(hdc, ellipseCoordinates_[0].x, ellipseCoordinates_[0].y, ellipseCoordinates_[2].x, ellipseCoordinates_[2].y);
+		DeleteObject(hBrush);
 	}
-	//Ellipse(hdc,ellipseCoordinates_[0].x, ellipseCoordinates_[0].y, ellipseCoordinates_[2].x, ellipseCoordinates_[2].y);
+	DeleteObject(Pen);
+}
+
+void CMyPaintEllipse::tempDraw(HDC hdc) {
+	CPen Pen(penStyle_, penWidth_, penColor_);
+	SelectObject(hdc, Pen);
+	if (brushStyle_ == 0) {
+		HBRUSH hBrush = (HBRUSH)GetStockObject(HOLLOW_BRUSH);
+		SelectObject(hdc, hBrush);
+		Ellipse(hdc, tempEllipse_[0].x, tempEllipse_[0].y, tempEllipse_[2].x, tempEllipse_[2].y);
+		DeleteObject(hBrush);
+	}
+	if (brushStyle_ == 1) {
+		HBRUSH hBrush = CreateSolidBrush(brushColor_);
+		SelectObject(hdc, hBrush);
+		Ellipse(hdc, tempEllipse_[0].x, tempEllipse_[0].y, tempEllipse_[2].x, tempEllipse_[2].y);
+		DeleteObject(hBrush);
+	}
+	if (brushStyle_ == 2) {
+		CBrush hBrush(HS_BDIAGONAL, brushColor_);
+		SelectObject(hdc, hBrush);
+		Ellipse(hdc, tempEllipse_[0].x, tempEllipse_[0].y, tempEllipse_[2].x, tempEllipse_[2].y);
+		DeleteObject(hBrush);
+	}
+	if (brushStyle_ == 3) {
+		CBrush hBrush(HS_CROSS, brushColor_);
+		SelectObject(hdc, hBrush);
+		Ellipse(hdc, tempEllipse_[0].x, tempEllipse_[0].y, tempEllipse_[2].x, tempEllipse_[2].y);
+		DeleteObject(hBrush);
+	}
+	if (brushStyle_ == 4) {
+		CBrush hBrush(HS_DIAGCROSS, brushColor_);
+		SelectObject(hdc, hBrush);
+		Ellipse(hdc, tempEllipse_[0].x, tempEllipse_[0].y, tempEllipse_[2].x, tempEllipse_[2].y);
+		DeleteObject(hBrush);
+	}
+	if (brushStyle_ == 5) {
+		CBrush hBrush(HS_FDIAGONAL, brushColor_);
+		SelectObject(hdc, hBrush);
+		Ellipse(hdc, tempEllipse_[0].x, tempEllipse_[0].y, tempEllipse_[2].x, tempEllipse_[2].y);
+		DeleteObject(hBrush);
+	}
+	if (brushStyle_ == 6) {
+		CBrush hBrush(HS_HORIZONTAL, brushColor_);
+		SelectObject(hdc, hBrush);
+		Ellipse(hdc, tempEllipse_[0].x, tempEllipse_[0].y, tempEllipse_[2].x, tempEllipse_[2].y);
+		DeleteObject(hBrush);
+	}
+	if (brushStyle_ == 7) {
+		CBrush hBrush(HS_VERTICAL, brushColor_);
+		SelectObject(hdc, hBrush);
+		Ellipse(hdc, tempEllipse_[0].x, tempEllipse_[0].y, tempEllipse_[2].x, tempEllipse_[2].y);
+		DeleteObject(hBrush);
+	}
+	DeleteObject(Pen);
+}
+void CMyPaintEllipse::select(HDC hdc) {
+	int selectStyle;
+	COLORREF selectColor;
+	if (penStyle_ != PS_DOT) {
+		selectStyle = PS_DOT;
+		selectColor = RGB(0, 0, 0);
+	}
+	else {
+		selectStyle = PS_SOLID;
+		selectColor = RGB(0, 0, 0);
+	}
+	CPen Pen(selectStyle, 1, selectColor);
+	SelectObject(hdc, Pen);
+	HBRUSH hBrush = (HBRUSH)GetStockObject(HOLLOW_BRUSH);
+	SelectObject(hdc, hBrush);
+	Ellipse(hdc, ellipseCoordinates_[0].x, ellipseCoordinates_[0].y, ellipseCoordinates_[2].x, ellipseCoordinates_[2].y);
+	DeleteObject(hBrush);
+	DeleteObject(Pen);
 }

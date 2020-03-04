@@ -11,7 +11,7 @@ public:
 	CMyPaintWidthDialog(CWnd* pParent = nullptr);   // стандартный конструктор
 	virtual ~CMyPaintWidthDialog();
 
-// Данные диалогового окна
+	// Данные диалогового окна
 #ifdef AFX_DESIGN_TIME
 	enum { IDD = IDD_DIALOG_WIDTH };
 #endif

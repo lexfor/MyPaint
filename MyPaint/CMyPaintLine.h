@@ -9,17 +9,13 @@ private:
 	CPoint tempLineCoordinates_[2];
 public:
 	CMyPaintLine();
-	CMyPaintLine(unsigned int, CString,int, COLORREF,int ,CPoint,CPoint);
-	void draw(CClientDC&, HWND&)override;
+	CMyPaintLine(unsigned int, CString, int, COLORREF, int, CPoint, CPoint);
 	void setCoordinates(CPoint, bool)override;
 	void findCenterCoordinates();
-	CRect getCoordinates()override;
 	bool ifThisFigure(CPoint point)override;
 	void move(CPoint*)override;
 	void rotate(CPoint*, bool)override;
 	void normalize()override;
-	void drawTempFigure(CClientDC&, HWND&)override;
-	CRect getTempCoordinates()override;
 	void changeOtherCoordinates()override;
 	bool edit(CPoint, bool)override;
 	void makeTempCoordinatesNull()override;
@@ -36,6 +32,8 @@ public:
 	void setFirstCoordinate(CPoint)override;
 	void setSecondCoordinate(CPoint)override;
 	void setThirdCoordinate(CPoint)override;
-	void drawInMemory(HDC)override;
+	void draw(HDC)override;
+	void tempDraw(HDC)override;
+	void select(HDC)override;
 };
 

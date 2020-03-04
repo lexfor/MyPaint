@@ -4,27 +4,23 @@ class CMyPaintTriangle :
 	public CMyPaintFigure
 {
 private:
-		CPoint triangleCoordinates_[3];
-		CPoint triangleCenter_;
-		CPoint tempTriangle_[3];
-		enum class clickCountEnum_{firstClick,secondClick,thirdClick}clickCount_;
+	CPoint triangleCoordinates_[3];
+	CPoint triangleCenter_;
+	CPoint tempTriangle_[3];
+	enum class clickCountEnum_ { firstClick, secondClick, thirdClick }clickCount_;
 public:
 	CMyPaintTriangle();
-	CMyPaintTriangle( unsigned int, CString, int, COLORREF, int, COLORREF, int,CPoint,CPoint,CPoint);
-	void draw(CClientDC&,HWND&)override;
-	void setCoordinates(CPoint,bool)override;
+	CMyPaintTriangle(unsigned int, CString, int, COLORREF, int, COLORREF, int, CPoint, CPoint, CPoint);
+	void setCoordinates(CPoint, bool)override;
 	void findCenterCoordinates();
-	CRect getCoordinates()override;
 	bool ifThisFigure(CPoint)override;
-	void move(CPoint *)override;
-	void rotate(CPoint*,bool)override;
+	void move(CPoint*)override;
+	void rotate(CPoint*, bool)override;
 	void normalize()override;
-	void drawTempFigure(CClientDC&, HWND&)override;
-	CRect getTempCoordinates()override;
-	bool edit(CPoint,bool)override;
+	bool edit(CPoint, bool)override;
 	void makeTempCoordinatesNull()override;
 	CPoint getCenterCoordinates()override;
-	CPoint findConnectionCoordinates(CPoint,int)override;
+	CPoint findConnectionCoordinates(CPoint, int)override;
 	int findConnectionPlace(int)override;
 	std::vector<int> getConnectionID()override;
 	void deleteConnection(int)override;
@@ -37,6 +33,8 @@ public:
 	void setSecondCoordinate(CPoint)override;
 	void setThirdCoordinate(CPoint)override;
 	void changeOtherCoordinates()override;
-	void drawInMemory(HDC)override;
+	void draw(HDC)override;
+	void tempDraw(HDC)override;
+	void select(HDC)override;
 };
 

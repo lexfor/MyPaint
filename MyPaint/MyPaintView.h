@@ -68,6 +68,7 @@ private:
 	int penWidth_;
 	int penStyle_;
 	int brushStyle_;
+	HDC back_buffer;
 public:
 	afx_msg void OnLButtonUp(UINT nFlags, CPoint point);
 private:
@@ -101,7 +102,9 @@ public:
 	afx_msg void OnLinemenuProperties();
 	afx_msg void OnListview();
 	afx_msg void OnLine();
+	afx_msg BOOL OnEraseBkgnd(CDC* pDC);
 	afx_msg void OnPaint();
+
 };
 
 #ifndef _DEBUG  // версия отладки в MyPaintView.cpp
@@ -110,3 +113,4 @@ inline CMyPaintDoc* CMyPaintView::GetDocument() const
 	return reinterpret_cast<CMyPaintDoc*>(m_pDocument);
 }
 #endif
+

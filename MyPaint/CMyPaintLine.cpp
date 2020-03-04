@@ -3,7 +3,7 @@
 CMyPaintLine::CMyPaintLine() : CMyPaintFigure()
 {}
 
-CMyPaintLine::CMyPaintLine(unsigned int id, CString name, int penWidth, COLORREF penColor, int penStyle,CPoint firstPoint,CPoint secondPoint) : CMyPaintFigure(id,name,penWidth,penColor,penStyle)
+CMyPaintLine::CMyPaintLine(unsigned int id, CString name, int penWidth, COLORREF penColor, int penStyle, CPoint firstPoint, CPoint secondPoint) : CMyPaintFigure(id, name, penWidth, penColor, penStyle)
 {
 	lineCoordinates_[0] = firstPoint;
 	lineCoordinates_[1] = secondPoint;
@@ -15,19 +15,12 @@ void CMyPaintLine::findCenterCoordinates() {
 	lineCenter_.y = (lineCoordinates_[0].y + lineCoordinates_[1].y) / 2;
 }
 
-void CMyPaintLine::draw(CClientDC& dc, HWND& m_HWND) {
-	CPen Pen(penStyle_, penWidth_, penColor_);
-	CPen* oldPen = (CPen*)dc.SelectObject(&Pen);
-	dc.MoveTo(lineCoordinates_[0]);
-	dc.LineTo(lineCoordinates_[1]);
-}
-
 void CMyPaintLine::setCoordinates(CPoint point, bool isClickEnd) {
 	lineCoordinates_[1] = point;
 	findCenterCoordinates();
 }
 
-CRect CMyPaintLine::getCoordinates() {
+bool CMyPaintLine::ifThisFigure(CPoint point) {
 	CRect rect;
 	if (lineCoordinates_[0].x > lineCoordinates_[1].x) {
 		rect.right = lineCoordinates_[0].x + 10;
@@ -45,12 +38,7 @@ CRect CMyPaintLine::getCoordinates() {
 		rect.bottom = lineCoordinates_[1].y + 10;
 		rect.top = lineCoordinates_[0].y - 10;
 	}
-	return rect;
-}
-
-bool CMyPaintLine::ifThisFigure(CPoint point) {
-	CRect rect = getCoordinates();
-	if (point.x > rect.left&& point.x < rect.right && point.y < rect.bottom&& point.y > rect.top) {
+	if (point.x > rect.left&& point.x < rect.right && point.y < rect.bottom && point.y > rect.top) {
 		return true;
 	}
 	return false;
@@ -135,35 +123,6 @@ void CMyPaintLine::normalize() {
 		it->second = lineCenter_;
 	}
 }
-
-void CMyPaintLine::drawTempFigure(CClientDC& dc, HWND& m_HWND) {
-	CPen Pen(penStyle_, penWidth_, penColor_);
-	CPen* oldPen = (CPen*)dc.SelectObject(&Pen);
-	dc.MoveTo(tempLineCoordinates_[0]);
-	dc.LineTo(tempLineCoordinates_[1]);
-}
-
-CRect CMyPaintLine::getTempCoordinates() {
-	CRect rect;
-	if (tempLineCoordinates_[0].x > tempLineCoordinates_[1].x) {
-		rect.right = tempLineCoordinates_[0].x + 10;
-		rect.left = tempLineCoordinates_[1].x - 10;
-	}
-	else {
-		rect.right = tempLineCoordinates_[1].x + 10;
-		rect.left = tempLineCoordinates_[0].x - 10;
-	}
-	if (tempLineCoordinates_[0].y > tempLineCoordinates_[1].y) {
-		rect.bottom = tempLineCoordinates_[0].y + 10;
-		rect.top = tempLineCoordinates_[1].y - 10;
-	}
-	else {
-		rect.bottom = tempLineCoordinates_[1].y + 10;
-		rect.top = tempLineCoordinates_[0].y - 10;
-	}
-	return rect;
-}
-
 void CMyPaintLine::changeOtherCoordinates() {
 
 }
@@ -242,7 +201,7 @@ void CMyPaintLine::setThirdCoordinate(CPoint point) {
 }
 
 CPoint CMyPaintLine::findConnectionCoordinates(CPoint centerPoint, int connectionNum) {
-	std::pair<int, CPoint> Pair(connectionNum,lineCenter_);
+	std::pair<int, CPoint> Pair(connectionNum, lineCenter_);
 	connectionsCoordinates_.insert(Pair);
 	return lineCenter_;
 }
@@ -261,8 +220,36 @@ void CMyPaintLine::deleteConnection(int key) {
 	connectionsCoordinates_.erase(it);
 }
 
-void CMyPaintLine::drawInMemory(HDC hdc) {
+void CMyPaintLine::tempDraw(HDC hdc) {
 	CPen Pen(penStyle_, penWidth_, penColor_);
-	CPen* oldPen = (CPen*)SelectObject(hdc,&Pen);
+	SelectObject(hdc, Pen);
+	Polygon(hdc, tempLineCoordinates_, 2);
+	DeleteObject(Pen);
+}
+
+void CMyPaintLine::draw(HDC hdc) {
+	CPen Pen(penStyle_, penWidth_, penColor_);
+	SelectObject(hdc, Pen);
 	Polygon(hdc, lineCoordinates_, 2);
+	DeleteObject(Pen);
+}
+
+void CMyPaintLine::select(HDC hdc) {
+	int selectStyle;
+	COLORREF selectColor;
+	if (penStyle_ != PS_DOT) {
+		selectStyle = PS_DOT;
+		selectColor = RGB(0, 0, 0);
+	}
+	else {
+		selectStyle = PS_SOLID;
+		selectColor = RGB(0, 0, 0);
+	}
+	CPen Pen(selectStyle, 1, selectColor);
+	SelectObject(hdc, Pen);
+	HBRUSH hBrush = (HBRUSH)GetStockObject(HOLLOW_BRUSH);
+	SelectObject(hdc, hBrush);
+	Polygon(hdc, lineCoordinates_, 2);
+	DeleteObject(hBrush);
+	DeleteObject(Pen);
 }

@@ -26,7 +26,7 @@ void CMyPaintWidthDialog::DoDataExchange(CDataExchange* pDX)
 {
 	CDialogEx::DoDataExchange(pDX);
 	DDX_CBIndex(pDX, IDC_COMBO_WIDTH, penWidth_);
-	DDV_MinMaxInt(pDX, penWidth_, 1, 30);
+	//DDV_MinMaxInt(pDX, penWidth_, 1, 30);
 	DDX_Control(pDX, IDC_COMBO_WIDTH, penWidthControl_);
 }
 
