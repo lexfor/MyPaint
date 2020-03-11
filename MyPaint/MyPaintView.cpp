@@ -25,9 +25,9 @@
 
 // CMyPaintView
 
-IMPLEMENT_DYNCREATE(CMyPaintView, CView)
+IMPLEMENT_DYNCREATE(CMyPaintView, CScrollView)
 
-BEGIN_MESSAGE_MAP(CMyPaintView, CView)
+BEGIN_MESSAGE_MAP(CMyPaintView, CScrollView)
 	// Стандартные команды печати
 	ON_COMMAND(ID_FILE_PRINT, &CView::OnFilePrint)
 	ON_COMMAND(ID_FILE_PRINT_DIRECT, &CView::OnFilePrint)
@@ -87,6 +87,10 @@ CMyPaintView::CMyPaintView() noexcept
 	penWidth_ = 1;
 	penStyle_ = PS_SOLID;
 	brushStyle_ = 0;
+	previous_.x = 0;
+	previous_.y = 0;
+	next_.x = 0;
+	next_.y = 0;
 }
 
 CMyPaintView::~CMyPaintView()
@@ -178,7 +182,6 @@ void CMyPaintView::OnLButtonDown(UINT nFlags, CPoint point)
 		CMyPaintDoc* pDoc = GetDocument();
 		ASSERT_VALID(pDoc);
 		HDC dc = ::GetDC(m_hWnd);
-		//CClientDC dc(this);
 		if (figureDraw_ != figureDrawEnum::nothing) {
 			SetCapture();
 			pDoc->setWidth(penWidth_);
@@ -954,8 +957,11 @@ void CMyPaintView::OnPaint()
 {
 	CMyPaintDoc* pDoc = GetDocument();
 	ASSERT_VALID(pDoc);
-	CRect client;
+	CRect client; CPoint diff;
 	::GetClientRect(m_hWnd, &client);
+	next_ = GetScrollPosition();
+	diff.x = previous_.x - next_.x;
+	diff.y = previous_.y - next_.y;
 	PAINTSTRUCT ps;
 	::BeginPaint(m_hWnd, &ps);
 	HDC dc = ::GetDC(m_hWnd);
@@ -964,16 +970,17 @@ void CMyPaintView::OnPaint()
 	::SelectObject(back_buffer, hbmp);
 	::FillRect(back_buffer, &client, (HBRUSH)GetStockObject(WHITE_BRUSH));
 	for (auto i = 0; i < pDoc->figure_.size(); i++) {
+		pDoc->figure_[i]->scrollFigure(diff);
 		if (i == current_ && rotation_) {
 			continue;
 		}
-
 		pDoc->figure_[i]->draw(back_buffer);
 	}
 	if (rotation_) {
 		pDoc->figure_[current_]->tempDraw(back_buffer);
 	}
 	for (size_t i = 0; i < pDoc->connections_.size(); i++) {
+		pDoc->connections_[i].scrollConnection(diff);
 		pDoc->connections_[i].draw(back_buffer);
 	}
 	::BitBlt(dc, 0, 0, client.Width(), client.Height(), back_buffer, 0, 0, SRCCOPY);
@@ -982,4 +989,15 @@ void CMyPaintView::OnPaint()
 	::ReleaseDC(m_hWnd, dc);
 	::DeleteObject(hbmp);
 	::DeleteDC(back_buffer);
+	previous_ = next_;
+}
+
+
+void CMyPaintView::OnInitialUpdate()
+{
+	CScrollView::OnInitialUpdate();
+
+
+	CSize DocSize(2000, 2000);
+	SetScrollSizes(MM_TEXT, DocSize, CSize(500, 500), CSize(50, 50));
 }

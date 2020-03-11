@@ -253,3 +253,14 @@ void CMyPaintLine::select(HDC hdc) {
 	DeleteObject(hBrush);
 	DeleteObject(Pen);
 }
+void CMyPaintLine::scrollFigure(CPoint point) {
+	for (auto i = 0; i < 2; i++) {
+		lineCoordinates_[i].x += point.x;
+		lineCoordinates_[i].y += point.y;
+	}
+	for (auto it = connectionsCoordinates_.begin(); it != connectionsCoordinates_.end(); it++) {
+		it->second.x += point.x;
+		it->second.y += point.y;
+	}
+	findCenterCoordinates();
+}

@@ -10,7 +10,7 @@
 #pragma once
 
 
-class CMyPaintView : public CView
+class CMyPaintView : public CScrollView
 {
 protected: // создать только из сериализации
 	CMyPaintView() noexcept;
@@ -69,6 +69,8 @@ private:
 	int penStyle_;
 	int brushStyle_;
 	HDC back_buffer;
+	CPoint previous_;
+	CPoint next_;
 public:
 	afx_msg void OnLButtonUp(UINT nFlags, CPoint point);
 private:
@@ -105,6 +107,7 @@ public:
 	afx_msg BOOL OnEraseBkgnd(CDC* pDC);
 	afx_msg void OnPaint();
 
+	virtual void OnInitialUpdate();
 };
 
 #ifndef _DEBUG  // версия отладки в MyPaintView.cpp

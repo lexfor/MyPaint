@@ -516,3 +516,14 @@ void CMyPaintEllipse::select(HDC hdc) {
 	DeleteObject(hBrush);
 	DeleteObject(Pen);
 }
+void CMyPaintEllipse::scrollFigure(CPoint point) {
+	for (auto i = 0; i < 4; i++) {
+		ellipseCoordinates_[i].x +=point.x;
+		ellipseCoordinates_[i].y += point.y;
+	}
+	for (auto it = connectionsCoordinates_.begin(); it != connectionsCoordinates_.end(); it++) {
+		it->second.x += point.x;
+		it->second.y += point.y;
+	}
+	findCenterCoordinates();
+}

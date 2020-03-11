@@ -501,3 +501,14 @@ void CMyPaintTriangle::select(HDC hdc) {
 	DeleteObject(hBrush);
 	DeleteObject(Pen);
 }
+void CMyPaintTriangle::scrollFigure(CPoint point) {
+	for (auto i = 0; i < 3; i++) {
+		triangleCoordinates_[i].x += point.x;
+		triangleCoordinates_[i].y += point.y;
+	}
+	for (auto it = connectionsCoordinates_.begin(); it != connectionsCoordinates_.end(); it++) {
+		it->second.x += point.x;
+		it->second.y += point.y;
+	}
+	findCenterCoordinates();
+}

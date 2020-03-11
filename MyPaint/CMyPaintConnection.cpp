@@ -372,3 +372,9 @@ void CMyPaintConnection::draw(HDC hdc) {
 		break;
 	}
 }
+void CMyPaintConnection::scrollConnection(CPoint point) {
+	for (auto i = 0; i < 2; i++) {
+		connectionCoordinates_[i].x += point.x;
+		connectionCoordinates_[i].y += point.y;
+	}	
+}

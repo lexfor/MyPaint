@@ -36,5 +36,6 @@ public:
 	void draw(HDC)override;
 	void tempDraw(HDC)override;
 	void select(HDC)override;
+	void scrollFigure(CPoint);
 };
 

@@ -63,4 +63,5 @@ public:
 	virtual void draw(HDC) = 0;
 	virtual void tempDraw(HDC) = 0;
 	virtual void select(HDC) = 0;
+	virtual void scrollFigure(CPoint) = 0;
 };

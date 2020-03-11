@@ -516,3 +516,14 @@ void CMyPaintRect::select(HDC hdc) {
 	DeleteObject(hBrush);
 	DeleteObject(Pen);
 }
+void CMyPaintRect::scrollFigure(CPoint point) {
+	for (auto i = 0; i < 4; i++) {
+		rectCoordinates_[i].x += point.x;
+		rectCoordinates_[i].y += point.y;
+	}
+	for (auto it = connectionsCoordinates_.begin(); it != connectionsCoordinates_.end(); it++) {
+		it->second.x += point.x;
+		it->second.y += point.y;
+	}
+	findCenterCoordinates();
+}

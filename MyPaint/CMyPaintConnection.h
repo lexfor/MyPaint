@@ -39,5 +39,6 @@ public:
 	CPoint getFirstCoordinate();
 	CPoint getSecondCoordinate();
 	void draw(HDC);
+	void scrollConnection(CPoint);
 };
 
