@@ -71,6 +71,7 @@ private:
 	HDC back_buffer;
 	CPoint previous_;
 	CPoint next_;
+	CSize docSize_;
 public:
 	afx_msg void OnLButtonUp(UINT nFlags, CPoint point);
 private:

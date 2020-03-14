@@ -91,6 +91,7 @@ CMyPaintView::CMyPaintView() noexcept
 	previous_.y = 0;
 	next_.x = 0;
 	next_.y = 0;
+	docSize_ = GetTotalSize();
 }
 
 CMyPaintView::~CMyPaintView()
@@ -962,6 +963,20 @@ void CMyPaintView::OnPaint()
 	next_ = GetScrollPosition();
 	diff.x = previous_.x - next_.x;
 	diff.y = previous_.y - next_.y;
+	docSize_.cx += diff.x;
+	docSize_.cy += diff.y;
+	if (docSize_.cx < 1500) {
+		docSize_.cx += 100;
+		CSize size = GetTotalSize();
+		size.cx += 100;
+		SetScrollSizes(MM_TEXT, size, CSize(500, 500), CSize(50, 50));
+	}
+	if (docSize_.cy < 500) {
+		docSize_.cy += 100;
+		CSize size = GetTotalSize();
+		size.cy += 100;
+		SetScrollSizes(MM_TEXT, size, CSize(500, 500), CSize(50, 50));
+	}
 	PAINTSTRUCT ps;
 	::BeginPaint(m_hWnd, &ps);
 	HDC dc = ::GetDC(m_hWnd);
