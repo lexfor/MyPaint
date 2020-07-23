@@ -63,6 +63,7 @@ BEGIN_MESSAGE_MAP(CMyPaintView, CScrollView)
 	ON_WM_PAINT()
 	ON_WM_ERASEBKGND()
 	ON_WM_PAINT()
+	ON_COMMAND(ID_CONTEXTMENU_CHECKCROSS, &CMyPaintView::OnContextmenuCheckcross)
 END_MESSAGE_MAP()
 
 // Создание или уничтожение CMyPaintView
@@ -92,6 +93,7 @@ CMyPaintView::CMyPaintView() noexcept
 	next_.x = 0;
 	next_.y = 0;
 	docSize_ = GetTotalSize();
+	isCheckCross = false;
 }
 
 CMyPaintView::~CMyPaintView()
@@ -241,6 +243,25 @@ void CMyPaintView::OnLButtonDown(UINT nFlags, CPoint point)
 			connect_ = true;
 			return;
 		}
+		if (isCheckCross) {
+			if (findFigure(point)) {
+				if (current_ == crossFigure[0]) {
+					AfxMessageBox(L"Данная фигура уже выбрана");
+					return;
+				}
+				crossFigure[1] = current_;
+				isCheckCross = false;
+				if (checkCross())
+				{
+					AfxMessageBox(L"Данные фигуры пересекаются");
+				}
+				else {
+					AfxMessageBox(L"Данные фигуры не пересекаются");
+				}
+			}
+			return;
+		}
+
 		if (cursor_) {
 			if (findFigure(point)) {
 				movePoint_[0] = point;
@@ -1015,4 +1036,77 @@ void CMyPaintView::OnInitialUpdate()
 
 	CSize DocSize(2000, 2000);
 	SetScrollSizes(MM_TEXT, DocSize, CSize(500, 500), CSize(50, 50));
+}
+
+
+bool CMyPaintView::checkCross()
+{
+	CMyPaintDoc* pDoc = GetDocument();
+	ASSERT_VALID(pDoc);
+	int rightFigureID,leftFigureID, topFigureID, bottomFigureID;
+	if (pDoc->figure_[crossFigure[0]]->getCenterCoordinates().x > pDoc->figure_[crossFigure[1]]->getCenterCoordinates().x) {
+		rightFigureID = crossFigure[0];
+		leftFigureID = crossFigure[1];
+	}
+	else {
+		rightFigureID = crossFigure[1];
+		leftFigureID = crossFigure[0];
+	}
+	if (pDoc->figure_[crossFigure[0]]->getCenterCoordinates().y > pDoc->figure_[crossFigure[1]]->getCenterCoordinates().y) {
+		topFigureID = crossFigure[0];
+		bottomFigureID = crossFigure[1];
+	}
+	else {
+		topFigureID = crossFigure[1];
+		bottomFigureID = crossFigure[0];
+	}
+	if (pDoc->figure_[crossFigure[0]]->ifThisFigure(pDoc->figure_[crossFigure[1]]->getCenterCoordinates())) {
+		return true;
+	}
+	if (pDoc->figure_[crossFigure[1]]->ifThisFigure(pDoc->figure_[crossFigure[0]]->getCenterCoordinates())) {
+		return true;
+	}
+	std::vector<CPoint> temp;
+	temp = pDoc->figure_[rightFigureID]->getLeftCoordinate();
+	for (auto i = 0; i < temp.size(); i++) {
+		if (pDoc->figure_[leftFigureID]->ifThisFigure(temp[i])) {
+			return true;
+		}
+	}
+	temp = pDoc->figure_[leftFigureID]->getRightCoordinate();
+	for (auto i = 0; i < temp.size(); i++) {
+		if (pDoc->figure_[rightFigureID]->ifThisFigure(temp[i])) {
+			return true;
+		}
+	}
+	temp = pDoc->figure_[bottomFigureID]->getTopCoordinate();
+	for (auto i = 0; i < temp.size(); i++) {
+		if (pDoc->figure_[topFigureID]->ifThisFigure(temp[i])) {
+			return true;
+		}
+	}
+	temp = pDoc->figure_[topFigureID]->getBottomCoordinate();
+	for (auto i = 0; i < temp.size(); i++) {
+		if (pDoc->figure_[bottomFigureID]->ifThisFigure(temp[i])) {
+			return true;
+		}
+	}
+	std::vector<LONG> FirstMaxMinX = pDoc->figure_[crossFigure[0]]->getMaxMinX();
+	std::vector<LONG> FirstMaxMinY = pDoc->figure_[crossFigure[0]]->getMaxMinY();
+	std::vector<LONG> SecondMaxMinX = pDoc->figure_[crossFigure[1]]->getMaxMinX();
+	std::vector<LONG> SecondMaxMinY = pDoc->figure_[crossFigure[1]]->getMaxMinY();
+	if (FirstMaxMinX[0] > SecondMaxMinX[0] && FirstMaxMinX[1] < SecondMaxMinX[1] && FirstMaxMinY[0] < SecondMaxMinY[0] && FirstMaxMinY[1] > SecondMaxMinY[1]) {
+		return true;
+	}
+	if (FirstMaxMinX[0] < SecondMaxMinX[0] && FirstMaxMinX[1] > SecondMaxMinX[1] && FirstMaxMinY[0] > SecondMaxMinY[0] && FirstMaxMinY[1] < SecondMaxMinY[1]) {
+		return true;
+	}
+	return false;
+}
+
+
+void CMyPaintView::OnContextmenuCheckcross()
+{
+	crossFigure[0] = current_;
+	isCheckCross = true;
 }

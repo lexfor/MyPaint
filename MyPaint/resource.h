@@ -65,13 +65,15 @@
 #define ID_LISTVIEW_DGDG                32800
 #define ID_LINE                         32803
 #define ID_ACCELERATOR32804             32804
+#define ID_CONTEXTMENU_32816            32816
+#define ID_CONTEXTMENU_CHECKCROSS       32817
 
 // Next default values for new objects
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        332
-#define _APS_NEXT_COMMAND_VALUE         32816
+#define _APS_NEXT_COMMAND_VALUE         32818
 #define _APS_NEXT_CONTROL_VALUE         1036
 #define _APS_NEXT_SYMED_VALUE           310
 #endif

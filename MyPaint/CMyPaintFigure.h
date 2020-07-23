@@ -64,4 +64,10 @@ public:
 	virtual void tempDraw(HDC) = 0;
 	virtual void select(HDC) = 0;
 	virtual void scrollFigure(CPoint) = 0;
+	virtual std::vector<CPoint> getLeftCoordinate() = 0;
+	virtual std::vector<CPoint> getBottomCoordinate() = 0;
+	virtual std::vector<CPoint> getRightCoordinate() = 0;
+	virtual std::vector<CPoint> getTopCoordinate() = 0;
+	virtual std::vector<LONG> getMaxMinX() = 0;
+	virtual std::vector<LONG> getMaxMinY() = 0;
 };

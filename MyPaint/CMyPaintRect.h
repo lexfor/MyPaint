@@ -36,5 +36,11 @@ public:
 	void tempDraw(HDC)override;
 	void select(HDC)override;
 	void scrollFigure(CPoint)override;
+	std::vector<CPoint> getLeftCoordinate();
+	std::vector<CPoint> getBottomCoordinate();
+	std::vector<CPoint> getRightCoordinate()override;
+	std::vector<CPoint> getTopCoordinate()override;
+	std::vector<LONG> getMaxMinX();
+	std::vector<LONG> getMaxMinY();	
 };
 

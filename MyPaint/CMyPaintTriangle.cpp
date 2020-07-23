@@ -512,3 +512,85 @@ void CMyPaintTriangle::scrollFigure(CPoint point) {
 	}
 	findCenterCoordinates();
 }
+
+std::vector<CPoint> CMyPaintTriangle::getLeftCoordinate() {
+	CPoint temp;
+	temp = triangleCoordinates_[0];
+	for (auto i = 1; i < 3; i++) {
+		if (triangleCoordinates_[i].x < temp.x) {
+			temp = triangleCoordinates_[i];
+		}
+	}
+	std::vector<CPoint> rez;
+	rez.push_back(temp);
+	return rez;
+}
+
+std::vector<CPoint> CMyPaintTriangle::getBottomCoordinate() {
+	CPoint temp;
+	temp = triangleCoordinates_[0];
+	for (auto i = 1; i < 3; i++) {
+		if (triangleCoordinates_[i].y < temp.y) {
+			temp = triangleCoordinates_[i];
+		}
+	}
+	std::vector<CPoint> rez;
+	rez.push_back(temp);
+	return rez;
+}
+
+std::vector<CPoint> CMyPaintTriangle::getRightCoordinate() {
+	CPoint temp;
+	temp = triangleCoordinates_[0];
+	for (auto i = 1; i < 3; i++) {
+		if (triangleCoordinates_[i].x > temp.x) {
+			temp = triangleCoordinates_[i];
+		}
+	}
+	std::vector<CPoint> rez;
+	rez.push_back(temp);
+	return rez;
+}
+
+std::vector<CPoint> CMyPaintTriangle::getTopCoordinate() {
+	CPoint temp;
+	temp = triangleCoordinates_[0];
+	for (auto i = 1; i < 3; i++) {
+		if (triangleCoordinates_[i].y > temp.y) {
+			temp = triangleCoordinates_[i];
+		}
+	}
+	std::vector<CPoint> rez;
+	rez.push_back(temp);
+	return rez;
+}
+
+std::vector<LONG> CMyPaintTriangle::getMaxMinX() {
+	std::vector<LONG>MaxMin;
+	MaxMin.push_back(triangleCoordinates_[0].x);
+	MaxMin.push_back(triangleCoordinates_[0].x);
+	for (auto i = 1; i < 3; i++) {
+		if (triangleCoordinates_[i].x > MaxMin[0]) {
+			MaxMin[0] = triangleCoordinates_[i].x;
+		}
+		if (triangleCoordinates_[i].x < MaxMin[1]) {
+			MaxMin[1] = triangleCoordinates_[i].x;
+		}
+	}
+	return MaxMin;
+}
+
+std::vector<LONG> CMyPaintTriangle::getMaxMinY() {
+	std::vector<LONG>MaxMin;
+	MaxMin.push_back(triangleCoordinates_[0].y);
+	MaxMin.push_back(triangleCoordinates_[0].y);
+	for (auto i = 1; i < 3; i++) {
+		if (triangleCoordinates_[i].y > MaxMin[0]) {
+			MaxMin[0] = triangleCoordinates_[i].y;
+		}
+		if (triangleCoordinates_[i].y < MaxMin[1]) {
+			MaxMin[1] = triangleCoordinates_[i].y;
+		}
+	}
+	return MaxMin;
+}

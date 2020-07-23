@@ -527,3 +527,110 @@ void CMyPaintRect::scrollFigure(CPoint point) {
 	}
 	findCenterCoordinates();
 }
+
+std::vector<CPoint> CMyPaintRect::getLeftCoordinate() {
+	CPoint temp;
+	temp = rectCoordinates_[0];
+	for (auto i = 1; i < 4; i++) {	
+		if (rectCoordinates_[i].x < temp.x) {
+			temp = rectCoordinates_[i];
+			continue;
+		}
+	}
+	std::vector<CPoint> rez;
+	rez.push_back(temp);
+	for (auto i = 0; i < 4; i++) {
+		if (rectCoordinates_[i].x == temp.x) {
+			rez.push_back(rectCoordinates_[i]);
+		}
+	}
+	return rez;
+}
+
+std::vector<CPoint> CMyPaintRect::getBottomCoordinate() {
+	CPoint temp;
+	temp = rectCoordinates_[0];
+	for (auto i = 1; i < 4; i++) {
+		if (rectCoordinates_[i].y < temp.y) {
+			temp = rectCoordinates_[i];
+			continue;
+		}
+	}
+	std::vector<CPoint> rez;
+	rez.push_back(temp);
+	for (auto i = 0; i < 4; i++) {
+		if (rectCoordinates_[i].y == temp.y) {
+			rez.push_back(rectCoordinates_[i]);
+		}
+	}
+	return rez;
+}
+
+
+std::vector<CPoint> CMyPaintRect::getRightCoordinate() {
+	CPoint temp;
+	temp = rectCoordinates_[0];
+	for (auto i = 1; i < 4; i++) {
+		if (rectCoordinates_[i].x > temp.x) {
+			temp = rectCoordinates_[i];
+			continue;
+		}
+	}
+	std::vector<CPoint> rez;
+	rez.push_back(temp);
+	for (auto i = 0; i < 4; i++) {
+		if (rectCoordinates_[i].x == temp.x) {
+			rez.push_back(rectCoordinates_[i]);
+		}
+	}
+	return rez;
+}
+
+std::vector<CPoint> CMyPaintRect::getTopCoordinate() {
+	CPoint temp;
+	temp = rectCoordinates_[0];
+	for (auto i = 1; i < 4; i++) {
+		if (rectCoordinates_[i].y > temp.y) {
+			temp = rectCoordinates_[i];
+			continue;
+		}
+	}
+	std::vector<CPoint> rez;
+	rez.push_back(temp);
+	for (auto i = 0; i < 4; i++) {
+		if (rectCoordinates_[i].y == temp.y) {
+			rez.push_back(rectCoordinates_[i]);
+		}
+	}
+	return rez;
+}
+
+std::vector<LONG> CMyPaintRect::getMaxMinX() {
+	std::vector<LONG>MaxMin;
+	MaxMin.push_back(rectCoordinates_[0].x);
+	MaxMin.push_back(rectCoordinates_[0].x);
+	for (auto i = 1; i < 4; i++) {
+		if (rectCoordinates_[i].x > MaxMin[0]) {
+			MaxMin[0] = rectCoordinates_[i].x;
+		}
+		if (rectCoordinates_[i].x < MaxMin[1]) {
+			MaxMin[1] = rectCoordinates_[i].x;
+		}
+	}
+	return MaxMin;
+}
+
+std::vector<LONG> CMyPaintRect::getMaxMinY() {
+	std::vector<LONG>MaxMin;
+	MaxMin.push_back(rectCoordinates_[0].y);
+	MaxMin.push_back(rectCoordinates_[0].y);
+	for (auto i = 1; i < 4; i++) {
+		if (rectCoordinates_[i].y > MaxMin[0]) {
+			MaxMin[0] = rectCoordinates_[i].y;
+		}
+		if (rectCoordinates_[i].y < MaxMin[1]) {
+			MaxMin[1] = rectCoordinates_[i].y;
+		}
+	}
+	return MaxMin;
+}

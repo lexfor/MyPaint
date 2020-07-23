@@ -264,3 +264,85 @@ void CMyPaintLine::scrollFigure(CPoint point) {
 	}
 	findCenterCoordinates();
 }
+
+std::vector<CPoint> CMyPaintLine::getLeftCoordinate() {
+	CPoint temp;
+	temp = lineCoordinates_[0];
+	for (auto i = 1; i < 2; i++) {
+		if (lineCoordinates_[i].x < temp.x) {
+			temp = lineCoordinates_[i];
+		}
+	}
+	std::vector<CPoint> rez;
+	rez.push_back(temp);
+	return rez;
+}
+
+std::vector<CPoint> CMyPaintLine::getBottomCoordinate() {
+	CPoint temp;
+	temp = lineCoordinates_[0];
+	for (auto i = 1; i < 2; i++) {
+		if (lineCoordinates_[i].y < temp.y) {
+			temp = lineCoordinates_[i];
+		}
+	}
+	std::vector<CPoint> rez;
+	rez.push_back(temp);
+	return rez;
+}
+
+std::vector<CPoint> CMyPaintLine::getRightCoordinate() {
+	CPoint temp;
+	temp = lineCoordinates_[0];
+	for (auto i = 1; i < 2; i++) {
+		if (lineCoordinates_[i].x > temp.x) {
+			temp = lineCoordinates_[i];
+		}
+	}
+	std::vector<CPoint> rez;
+	rez.push_back(temp);
+	return rez;
+}
+
+std::vector<CPoint> CMyPaintLine::getTopCoordinate() {
+	CPoint temp;
+	temp = lineCoordinates_[0];
+	for (auto i = 1; i < 2; i++) {
+		if (lineCoordinates_[i].y > temp.y) {
+			temp = lineCoordinates_[i];
+		}
+	}
+	std::vector<CPoint> rez;
+	rez.push_back(temp);
+	return rez;
+}
+
+std::vector<LONG> CMyPaintLine::getMaxMinX() {
+	std::vector<LONG>MaxMin;
+	MaxMin.push_back(lineCoordinates_[0].x);
+	MaxMin.push_back(lineCoordinates_[0].x);
+	for (auto i = 1; i < 2; i++) {
+		if (lineCoordinates_[i].x > MaxMin[0]) {
+			MaxMin[0] = lineCoordinates_[i].x;
+		}
+		if (lineCoordinates_[i].x < MaxMin[1]) {
+			MaxMin[1] = lineCoordinates_[i].x;
+		}
+	}
+	return MaxMin;
+}
+
+std::vector<LONG> CMyPaintLine::getMaxMinY() {
+	std::vector<LONG>MaxMin;
+	MaxMin.push_back(lineCoordinates_[0].y);
+	MaxMin.push_back(lineCoordinates_[0].y);
+	for (auto i = 1; i < 2; i++) {
+		if (lineCoordinates_[i].y > MaxMin[0]) {
+			MaxMin[0] = lineCoordinates_[i].y;
+		}
+		if (lineCoordinates_[i].y < MaxMin[1]) {
+			MaxMin[1] = lineCoordinates_[i].y;
+		}
+	}
+	return MaxMin;
+}

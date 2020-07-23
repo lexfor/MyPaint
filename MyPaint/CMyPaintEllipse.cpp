@@ -527,3 +527,125 @@ void CMyPaintEllipse::scrollFigure(CPoint point) {
 	}
 	findCenterCoordinates();
 }
+
+std::vector<CPoint> CMyPaintEllipse::getLeftCoordinate() {
+	CPoint temp;
+	CPoint tempEllipseCoordinate[4];
+	tempEllipseCoordinate[0].x = ellipseCoordinates_[0].x;
+	tempEllipseCoordinate[0].y = ellipseCenter_.y;
+	tempEllipseCoordinate[1].x = ellipseCenter_.x;
+	tempEllipseCoordinate[1].y = ellipseCoordinates_[0].y;
+	tempEllipseCoordinate[2].x = ellipseCoordinates_[2].x;
+	tempEllipseCoordinate[2].y = ellipseCenter_.y;
+	tempEllipseCoordinate[3].x = ellipseCenter_.x;
+	tempEllipseCoordinate[3].y = ellipseCoordinates_[2].y;
+
+	temp = tempEllipseCoordinate[0];
+	for (auto i = 1; i < 4; i++) {
+		if (tempEllipseCoordinate[i].x < temp.x) {
+			temp = tempEllipseCoordinate[i];
+		}
+	}
+	std::vector<CPoint> rez;
+	rez.push_back(temp);
+	return rez;
+}
+
+std::vector<CPoint> CMyPaintEllipse::getBottomCoordinate() {
+	CPoint temp;
+	CPoint tempEllipseCoordinate[4];
+	tempEllipseCoordinate[0].x = ellipseCoordinates_[0].x;
+	tempEllipseCoordinate[0].y = ellipseCenter_.y;
+	tempEllipseCoordinate[1].x = ellipseCenter_.x;
+	tempEllipseCoordinate[1].y = ellipseCoordinates_[0].y;
+	tempEllipseCoordinate[2].x = ellipseCoordinates_[2].x;
+	tempEllipseCoordinate[2].y = ellipseCenter_.y;
+	tempEllipseCoordinate[3].x = ellipseCenter_.x;
+	tempEllipseCoordinate[3].y = ellipseCoordinates_[2].y;
+
+	temp = tempEllipseCoordinate[0];
+	for (auto i = 1; i < 4; i++) {
+		if (tempEllipseCoordinate[i].y < temp.y) {
+			temp = tempEllipseCoordinate[i];
+		}
+	}
+	std::vector<CPoint> rez;
+	rez.push_back(temp);
+	return rez;
+}
+
+std::vector<CPoint> CMyPaintEllipse::getRightCoordinate() {
+	CPoint temp;
+	CPoint tempEllipseCoordinate[4];
+	tempEllipseCoordinate[0].x = ellipseCoordinates_[0].x;
+	tempEllipseCoordinate[0].y = ellipseCenter_.y;
+	tempEllipseCoordinate[1].x = ellipseCenter_.x;
+	tempEllipseCoordinate[1].y = ellipseCoordinates_[0].y;
+	tempEllipseCoordinate[2].x = ellipseCoordinates_[2].x;
+	tempEllipseCoordinate[2].y = ellipseCenter_.y;
+	tempEllipseCoordinate[3].x = ellipseCenter_.x;
+	tempEllipseCoordinate[3].y = ellipseCoordinates_[2].y;
+
+	temp = tempEllipseCoordinate[0];
+	for (auto i = 1; i < 4; i++) {
+		if (tempEllipseCoordinate[i].x > temp.x) {
+			temp = tempEllipseCoordinate[i];
+		}
+	}
+	std::vector<CPoint> rez;
+	rez.push_back(temp);
+	return rez;
+}
+
+std::vector<CPoint> CMyPaintEllipse::getTopCoordinate() {
+	CPoint temp;
+	CPoint tempEllipseCoordinate[4];
+	tempEllipseCoordinate[0].x = ellipseCoordinates_[0].x;
+	tempEllipseCoordinate[0].y = ellipseCenter_.y;
+	tempEllipseCoordinate[1].x = ellipseCenter_.x;
+	tempEllipseCoordinate[1].y = ellipseCoordinates_[0].y;
+	tempEllipseCoordinate[2].x = ellipseCoordinates_[2].x;
+	tempEllipseCoordinate[2].y = ellipseCenter_.y;
+	tempEllipseCoordinate[3].x = ellipseCenter_.x;
+	tempEllipseCoordinate[3].y = ellipseCoordinates_[2].y;
+
+	temp = tempEllipseCoordinate[0];
+	for (auto i = 1; i < 4; i++) {
+		if (tempEllipseCoordinate[i].y > temp.y) {
+			temp = tempEllipseCoordinate[i];
+		}
+	}
+	std::vector<CPoint> rez;
+	rez.push_back(temp);
+	return rez;
+}
+
+std::vector<LONG> CMyPaintEllipse::getMaxMinX() {
+	std::vector<LONG>MaxMin;
+	MaxMin.push_back(ellipseCoordinates_[0].x);
+	MaxMin.push_back(ellipseCoordinates_[0].x);
+	for (auto i = 1; i < 4; i++) {
+		if (ellipseCoordinates_[i].x > MaxMin[0]) {
+			MaxMin[0] = ellipseCoordinates_[i].x;
+		}
+		if (ellipseCoordinates_[i].x < MaxMin[1]) {
+			MaxMin[1] = ellipseCoordinates_[i].x;
+		}
+	}
+	return MaxMin;
+}
+
+std::vector<LONG> CMyPaintEllipse::getMaxMinY() {
+	std::vector<LONG>MaxMin;
+	MaxMin.push_back(ellipseCoordinates_[0].y);
+	MaxMin.push_back(ellipseCoordinates_[0].y);
+	for (auto i = 1; i < 4; i++) {
+		if (ellipseCoordinates_[i].y > MaxMin[0]) {
+			MaxMin[0] = ellipseCoordinates_[i].y;
+		}
+		if (ellipseCoordinates_[i].y < MaxMin[1]) {
+			MaxMin[1] = ellipseCoordinates_[i].y;
+		}
+	}
+	return MaxMin;
+}

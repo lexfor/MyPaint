@@ -72,6 +72,8 @@ private:
 	CPoint previous_;
 	CPoint next_;
 	CSize docSize_;
+	int crossFigure[2];
+	bool isCheckCross;
 public:
 	afx_msg void OnLButtonUp(UINT nFlags, CPoint point);
 private:
@@ -107,8 +109,10 @@ public:
 	afx_msg void OnLine();
 	afx_msg BOOL OnEraseBkgnd(CDC* pDC);
 	afx_msg void OnPaint();
+	bool checkCross();
 
 	virtual void OnInitialUpdate();
+	afx_msg void OnContextmenuCheckcross();
 };
 
 #ifndef _DEBUG  // версия отладки в MyPaintView.cpp
