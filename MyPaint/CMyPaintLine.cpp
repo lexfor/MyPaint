@@ -1,42 +1,45 @@
 #include "pch.h"
 #include "CMyPaintLine.h"
+
+#define FIRSTLINECOORDINATE 0
+#define SECONDLINECOORDINATE 1
 CMyPaintLine::CMyPaintLine() : CMyPaintFigure()
 {}
 
 CMyPaintLine::CMyPaintLine(unsigned int id, CString name, int penWidth, COLORREF penColor, int penStyle, CPoint firstPoint, CPoint secondPoint) : CMyPaintFigure(id, name, penWidth, penColor, penStyle)
 {
-	lineCoordinates_[0] = firstPoint;
-	lineCoordinates_[1] = secondPoint;
+	lineCoordinates_[FIRSTLINECOORDINATE] = firstPoint;
+	lineCoordinates_[SECONDLINECOORDINATE] = secondPoint;
 	findCenterCoordinates();
 }
 
 void CMyPaintLine::findCenterCoordinates() {
-	lineCenter_.x = (lineCoordinates_[0].x + lineCoordinates_[1].x) / 2;
-	lineCenter_.y = (lineCoordinates_[0].y + lineCoordinates_[1].y) / 2;
+	lineCenter_.x = (lineCoordinates_[FIRSTLINECOORDINATE].x + lineCoordinates_[SECONDLINECOORDINATE].x) / 2;
+	lineCenter_.y = (lineCoordinates_[FIRSTLINECOORDINATE].y + lineCoordinates_[SECONDLINECOORDINATE].y) / 2;
 }
 
 void CMyPaintLine::setCoordinates(CPoint point, bool isClickEnd) {
-	lineCoordinates_[1] = point;
+	lineCoordinates_[SECONDLINECOORDINATE] = point;
 	findCenterCoordinates();
 }
 
 bool CMyPaintLine::ifThisFigure(CPoint point) {
 	CRect rect;
-	if (lineCoordinates_[0].x > lineCoordinates_[1].x) {
-		rect.right = lineCoordinates_[0].x + 10;
-		rect.left = lineCoordinates_[1].x - 10;
+	if (lineCoordinates_[FIRSTLINECOORDINATE].x > lineCoordinates_[SECONDLINECOORDINATE].x) {
+		rect.right = lineCoordinates_[FIRSTLINECOORDINATE].x + 10;
+		rect.left = lineCoordinates_[SECONDLINECOORDINATE].x - 10;
 	}
 	else {
-		rect.right = lineCoordinates_[1].x + 10;
-		rect.left = lineCoordinates_[0].x - 10;
+		rect.right = lineCoordinates_[SECONDLINECOORDINATE].x + 10;
+		rect.left = lineCoordinates_[FIRSTLINECOORDINATE].x - 10;
 	}
-	if (lineCoordinates_[0].y > lineCoordinates_[1].y) {
-		rect.bottom = lineCoordinates_[0].y + 10;
-		rect.top = lineCoordinates_[1].y - 10;
+	if (lineCoordinates_[FIRSTLINECOORDINATE].y > lineCoordinates_[SECONDLINECOORDINATE].y) {
+		rect.bottom = lineCoordinates_[FIRSTLINECOORDINATE].y + 10;
+		rect.top = lineCoordinates_[SECONDLINECOORDINATE].y - 10;
 	}
 	else {
-		rect.bottom = lineCoordinates_[1].y + 10;
-		rect.top = lineCoordinates_[0].y - 10;
+		rect.bottom = lineCoordinates_[SECONDLINECOORDINATE].y + 10;
+		rect.top = lineCoordinates_[FIRSTLINECOORDINATE].y - 10;
 	}
 	if (point.x > rect.left&& point.x < rect.right && point.y < rect.bottom && point.y > rect.top) {
 		return true;
@@ -97,18 +100,18 @@ void CMyPaintLine::rotate(CPoint* rotatePoint, bool realCoordinates) {
 
 void CMyPaintLine::normalize() {
 	CPoint diff;
-	diff.x = abs(lineCoordinates_[0].x - lineCenter_.x);
-	diff.y = abs(lineCoordinates_[0].x - lineCenter_.y);
-	if (diff.x > abs(lineCoordinates_[1].x - lineCenter_.x)) {
-		diff.x = abs(lineCoordinates_[1].x - lineCenter_.x);
+	diff.x = abs(lineCoordinates_[FIRSTLINECOORDINATE].x - lineCenter_.x);
+	diff.y = abs(lineCoordinates_[FIRSTLINECOORDINATE].x - lineCenter_.y);
+	if (diff.x > abs(lineCoordinates_[SECONDLINECOORDINATE].x - lineCenter_.x)) {
+		diff.x = abs(lineCoordinates_[SECONDLINECOORDINATE].x - lineCenter_.x);
 	}
-	if (diff.y > abs(lineCoordinates_[1].y - lineCenter_.y)) {
-		diff.y = abs(lineCoordinates_[1].y - lineCenter_.y);
+	if (diff.y > abs(lineCoordinates_[SECONDLINECOORDINATE].y - lineCenter_.y)) {
+		diff.y = abs(lineCoordinates_[SECONDLINECOORDINATE].y - lineCenter_.y);
 	}
-	lineCoordinates_[0].x = lineCenter_.x - diff.x;
-	lineCoordinates_[1].x = lineCenter_.x + diff.x;
-	lineCoordinates_[0].y = lineCenter_.y - diff.y;
-	lineCoordinates_[1].y = lineCenter_.y + diff.y;
+	lineCoordinates_[FIRSTLINECOORDINATE].x = lineCenter_.x - diff.x;
+	lineCoordinates_[SECONDLINECOORDINATE].x = lineCenter_.x + diff.x;
+	lineCoordinates_[FIRSTLINECOORDINATE].y = lineCenter_.y - diff.y;
+	lineCoordinates_[SECONDLINECOORDINATE].y = lineCenter_.y + diff.y;
 	findCenterCoordinates();
 	if (rotationCos_ != 0 || rotationSin_ != 0) {
 		for (size_t i = 0; i < 2; i++) {
@@ -149,9 +152,9 @@ void CMyPaintLine::properties(std::vector<int>ids, std::vector<CString> names) {
 	dlg.getNames(names);
 	dlg.setName(name_);
 	dlg.setID(id_);
-	dlg.setFirstPoint(lineCoordinates_[0]);
-	dlg.setSecondPoint(lineCoordinates_[1]);
-	dlg.setThirdPoint(lineCoordinates_[1]);
+	dlg.setFirstPoint(lineCoordinates_[FIRSTLINECOORDINATE]);
+	dlg.setSecondPoint(lineCoordinates_[SECONDLINECOORDINATE]);
+	dlg.setThirdPoint(lineCoordinates_[SECONDLINECOORDINATE]);
 	dlg.setWidth(penWidth_);
 	dlg.setPenStyle(penStyle_);
 	dlg.setBrushStyle(brushStyle_);
@@ -160,8 +163,8 @@ void CMyPaintLine::properties(std::vector<int>ids, std::vector<CString> names) {
 	dlg.DoModal();
 	name_ = dlg.getName();
 	id_ = dlg.getID();
-	lineCoordinates_[0] = dlg.getFirstPoint();
-	lineCoordinates_[1] = dlg.getSecondPoint();
+	lineCoordinates_[FIRSTLINECOORDINATE] = dlg.getFirstPoint();
+	lineCoordinates_[SECONDLINECOORDINATE] = dlg.getSecondPoint();
 	penWidth_ = dlg.getWidth();
 	penStyle_ = dlg.getPenStyle();
 	brushStyle_ = dlg.getBrushStyle();
@@ -174,15 +177,15 @@ void CMyPaintLine::properties(std::vector<int>ids, std::vector<CString> names) {
 }
 
 CPoint CMyPaintLine::getFirstCoordinate() {
-	return lineCoordinates_[0];
+	return lineCoordinates_[FIRSTLINECOORDINATE];
 }
 
 CPoint CMyPaintLine::getSecondCoordinate() {
-	return lineCoordinates_[1];
+	return lineCoordinates_[SECONDLINECOORDINATE];
 }
 
 CPoint CMyPaintLine::getThirdCoordinate() {
-	return lineCoordinates_[1];
+	return lineCoordinates_[SECONDLINECOORDINATE];
 }
 
 int CMyPaintLine::getFigureType() {
@@ -190,11 +193,11 @@ int CMyPaintLine::getFigureType() {
 }
 
 void CMyPaintLine::setFirstCoordinate(CPoint point) {
-	lineCoordinates_[0] = point;
+	lineCoordinates_[FIRSTLINECOORDINATE] = point;
 }
 
 void CMyPaintLine::setSecondCoordinate(CPoint point) {
-	lineCoordinates_[1] = point;
+	lineCoordinates_[SECONDLINECOORDINATE] = point;
 }
 
 void CMyPaintLine::setThirdCoordinate(CPoint point) {
@@ -267,7 +270,7 @@ void CMyPaintLine::scrollFigure(CPoint point) {
 
 std::vector<CPoint> CMyPaintLine::getLeftCoordinate() {
 	CPoint temp;
-	temp = lineCoordinates_[0];
+	temp = lineCoordinates_[FIRSTLINECOORDINATE];
 	for (auto i = 1; i < 2; i++) {
 		if (lineCoordinates_[i].x < temp.x) {
 			temp = lineCoordinates_[i];
@@ -280,7 +283,7 @@ std::vector<CPoint> CMyPaintLine::getLeftCoordinate() {
 
 std::vector<CPoint> CMyPaintLine::getBottomCoordinate() {
 	CPoint temp;
-	temp = lineCoordinates_[0];
+	temp = lineCoordinates_[FIRSTLINECOORDINATE];
 	for (auto i = 1; i < 2; i++) {
 		if (lineCoordinates_[i].y < temp.y) {
 			temp = lineCoordinates_[i];
@@ -293,7 +296,7 @@ std::vector<CPoint> CMyPaintLine::getBottomCoordinate() {
 
 std::vector<CPoint> CMyPaintLine::getRightCoordinate() {
 	CPoint temp;
-	temp = lineCoordinates_[0];
+	temp = lineCoordinates_[FIRSTLINECOORDINATE];
 	for (auto i = 1; i < 2; i++) {
 		if (lineCoordinates_[i].x > temp.x) {
 			temp = lineCoordinates_[i];
@@ -306,7 +309,7 @@ std::vector<CPoint> CMyPaintLine::getRightCoordinate() {
 
 std::vector<CPoint> CMyPaintLine::getTopCoordinate() {
 	CPoint temp;
-	temp = lineCoordinates_[0];
+	temp = lineCoordinates_[FIRSTLINECOORDINATE];
 	for (auto i = 1; i < 2; i++) {
 		if (lineCoordinates_[i].y > temp.y) {
 			temp = lineCoordinates_[i];
@@ -319,8 +322,8 @@ std::vector<CPoint> CMyPaintLine::getTopCoordinate() {
 
 std::vector<LONG> CMyPaintLine::getMaxMinX() {
 	std::vector<LONG>MaxMin;
-	MaxMin.push_back(lineCoordinates_[0].x);
-	MaxMin.push_back(lineCoordinates_[0].x);
+	MaxMin.push_back(lineCoordinates_[FIRSTLINECOORDINATE].x);
+	MaxMin.push_back(lineCoordinates_[FIRSTLINECOORDINATE].x);
 	for (auto i = 1; i < 2; i++) {
 		if (lineCoordinates_[i].x > MaxMin[0]) {
 			MaxMin[0] = lineCoordinates_[i].x;
@@ -334,8 +337,8 @@ std::vector<LONG> CMyPaintLine::getMaxMinX() {
 
 std::vector<LONG> CMyPaintLine::getMaxMinY() {
 	std::vector<LONG>MaxMin;
-	MaxMin.push_back(lineCoordinates_[0].y);
-	MaxMin.push_back(lineCoordinates_[0].y);
+	MaxMin.push_back(lineCoordinates_[FIRSTLINECOORDINATE].y);
+	MaxMin.push_back(lineCoordinates_[FIRSTLINECOORDINATE].y);
 	for (auto i = 1; i < 2; i++) {
 		if (lineCoordinates_[i].y > MaxMin[0]) {
 			MaxMin[0] = lineCoordinates_[i].y;

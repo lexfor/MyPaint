@@ -1,11 +1,11 @@
 #include "pch.h"
 #include "CMyPaintFigure.h"
-CMyPaintFigure::CMyPaintFigure() : id_(0), name_("Figure"), penWidth_(1), penColor_(RGB(0, 0, 0)), penStyle_(1), brushColor_(RGB(0, 0, 0)), brushStyle_(1)
+CMyPaintFigure::CMyPaintFigure() : id_(0), name_("Figure"), penWidth_(1), penColor_(RGB(0, 0, 0)), penStyle_(PS_SOLID), brushColor_(RGB(0, 0, 0)), brushStyle_(1)
 {
 	rotationCos_ = 0;
 	rotationSin_ = 0;
 }
-CMyPaintFigure::CMyPaintFigure(CClientDC& dc, unsigned int id, CString name) : id_(id), name_(name), penWidth_(1), penColor_(RGB(0, 0, 0)), penStyle_(1), brushColor_(RGB(0, 0, 0)), brushStyle_(1)
+CMyPaintFigure::CMyPaintFigure(CClientDC& dc, unsigned int id, CString name) : id_(id), name_(name), penWidth_(1), penColor_(RGB(0, 0, 0)), penStyle_(PS_SOLID), brushColor_(RGB(0, 0, 0)), brushStyle_(1)
 {
 	rotationCos_ = 0;
 	rotationSin_ = 0;
