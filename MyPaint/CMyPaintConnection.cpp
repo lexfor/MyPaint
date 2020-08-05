@@ -1,6 +1,12 @@
 #include "pch.h"
 #include "CMyPaintConnection.h"
 #include "CMyPaintLinePropertiesDialog.h"
+
+#define FIRSTCONNECTIONPLACE 0
+#define SECONDCONNECTIONPLACE 1
+#define FIRSTCONNECTIONCOORDINATE 0
+#define SECONDCONNECTIONCOORDINATE 1
+
 CMyPaintConnection::CMyPaintConnection() : id_(0), name_("Connection"), penWidth_(1), penColor_(RGB(0, 0, 0)), penStyle_(0)
 {}
 CMyPaintConnection::CMyPaintConnection(unsigned int id, CString name, int penWidth, COLORREF penColor, int penStyle, int connectionType, int connectionPlace, int firstFigureNum, CPoint firstCoordinates) : id_(id), name_(name), penWidth_(penWidth), penColor_(penColor), penStyle_(penStyle)
@@ -25,22 +31,22 @@ CMyPaintConnection::CMyPaintConnection(unsigned int id, CString name, int penWid
 	switch (connectionPlace)
 	{
 	case 1:
-		connectionPlace_[0] = connectionPlaceEnum::top;
+		connectionPlace_[FIRSTCONNECTIONPLACE] = connectionPlaceEnum::top;
 		break;
 	case 2:
-		connectionPlace_[0] = connectionPlaceEnum::right;
+		connectionPlace_[FIRSTCONNECTIONPLACE] = connectionPlaceEnum::right;
 		break;
 	case 3:
-		connectionPlace_[0] = connectionPlaceEnum::bottom;
+		connectionPlace_[FIRSTCONNECTIONPLACE] = connectionPlaceEnum::bottom;
 		break;
 	case 4:
-		connectionPlace_[0] = connectionPlaceEnum::left;
+		connectionPlace_[FIRSTCONNECTIONPLACE] = connectionPlaceEnum::left;
 		break;
 	default:
 		break;
 	}
 	figureID_[0] = firstFigureNum;
-	connectionCoordinates_[0] = firstCoordinates;
+	connectionCoordinates_[FIRSTCONNECTIONCOORDINATE] = firstCoordinates;
 }
 void CMyPaintConnection::setCoordinates(CPoint point, int secondFigure) {
 
@@ -49,21 +55,21 @@ int CMyPaintConnection::getFirstFigureID() {
 	return figureID_[0];
 }
 void CMyPaintConnection::setSecondCoordinates(CPoint point) {
-	connectionCoordinates_[1] = point;
+	connectionCoordinates_[SECONDCONNECTIONCOORDINATE] = point;
 }
 void CMyPaintConnection::setSecondPlace(int secondPlace) {
 	switch (secondPlace) {
 	case 1:
-		connectionPlace_[1] = connectionPlaceEnum::top;
+		connectionPlace_[SECONDCONNECTIONPLACE] = connectionPlaceEnum::top;
 		break;
 	case 2:
-		connectionPlace_[1] = connectionPlaceEnum::right;
+		connectionPlace_[SECONDCONNECTIONPLACE] = connectionPlaceEnum::right;
 		break;
 	case 3:
-		connectionPlace_[1] = connectionPlaceEnum::bottom;
+		connectionPlace_[SECONDCONNECTIONPLACE] = connectionPlaceEnum::bottom;
 		break;
 	case 4:
-		connectionPlace_[1] = connectionPlaceEnum::left;
+		connectionPlace_[SECONDCONNECTIONPLACE] = connectionPlaceEnum::left;
 		break;
 	default:
 		break;
@@ -73,21 +79,21 @@ void CMyPaintConnection::setSecondFigureID(int num) {
 	figureID_[1] = num;
 }
 void CMyPaintConnection::setFirstCoordinates(CPoint firstCoordinates) {
-	connectionCoordinates_[0] = firstCoordinates;
+	connectionCoordinates_[FIRSTCONNECTIONCOORDINATE] = firstCoordinates;
 }
 void CMyPaintConnection::setFirstPlace(int firstPlace) {
 	switch (firstPlace) {
 	case 1:
-		connectionPlace_[0] = connectionPlaceEnum::top;
+		connectionPlace_[FIRSTCONNECTIONPLACE] = connectionPlaceEnum::top;
 		break;
 	case 2:
-		connectionPlace_[0] = connectionPlaceEnum::right;
+		connectionPlace_[FIRSTCONNECTIONPLACE] = connectionPlaceEnum::right;
 		break;
 	case 3:
-		connectionPlace_[0] = connectionPlaceEnum::bottom;
+		connectionPlace_[FIRSTCONNECTIONPLACE] = connectionPlaceEnum::bottom;
 		break;
 	case 4:
-		connectionPlace_[0] = connectionPlaceEnum::left;
+		connectionPlace_[FIRSTCONNECTIONPLACE] = connectionPlaceEnum::left;
 		break;
 	default:
 		break;
@@ -95,21 +101,21 @@ void CMyPaintConnection::setFirstPlace(int firstPlace) {
 }
 CRect CMyPaintConnection::getInvalidRect() {
 	CRect rect;
-	if (connectionCoordinates_[0].x < connectionCoordinates_[1].x) {
-		rect.left = connectionCoordinates_[0].x - 20;
-		rect.right = connectionCoordinates_[1].x + 20;
+	if (connectionCoordinates_[FIRSTCONNECTIONCOORDINATE].x < connectionCoordinates_[SECONDCONNECTIONCOORDINATE].x) {
+		rect.left = connectionCoordinates_[FIRSTCONNECTIONCOORDINATE].x - 20;
+		rect.right = connectionCoordinates_[SECONDCONNECTIONCOORDINATE].x + 20;
 	}
 	else {
-		rect.left = connectionCoordinates_[1].x - 20;
-		rect.right = connectionCoordinates_[0].x + 20;
+		rect.left = connectionCoordinates_[SECONDCONNECTIONCOORDINATE].x - 20;
+		rect.right = connectionCoordinates_[FIRSTCONNECTIONCOORDINATE].x + 20;
 	}
-	if (connectionCoordinates_[0].y < connectionCoordinates_[1].y) {
-		rect.top = connectionCoordinates_[0].y - 20;
-		rect.bottom = connectionCoordinates_[1].y + 20;
+	if (connectionCoordinates_[FIRSTCONNECTIONCOORDINATE].y < connectionCoordinates_[SECONDCONNECTIONCOORDINATE].y) {
+		rect.top = connectionCoordinates_[FIRSTCONNECTIONCOORDINATE].y - 20;
+		rect.bottom = connectionCoordinates_[SECONDCONNECTIONCOORDINATE].y + 20;
 	}
 	else {
-		rect.top = connectionCoordinates_[1].y - 20;
-		rect.bottom = connectionCoordinates_[0].y + 20;
+		rect.top = connectionCoordinates_[SECONDCONNECTIONCOORDINATE].y - 20;
+		rect.bottom = connectionCoordinates_[FIRSTCONNECTIONCOORDINATE].y + 20;
 	}
 	return rect;
 }
@@ -238,12 +244,12 @@ int CMyPaintConnection::getSecondConnectionPlace() {
 
 
 CPoint CMyPaintConnection::getFirstCoordinate() {
-	return connectionCoordinates_[0];
+	return connectionCoordinates_[FIRSTCONNECTIONCOORDINATE];
 }
 
 
 CPoint CMyPaintConnection::getSecondCoordinate() {
-	return connectionCoordinates_[1];
+	return connectionCoordinates_[SECONDCONNECTIONCOORDINATE];
 }
 
 void CMyPaintConnection::draw(HDC hdc) {
@@ -257,114 +263,114 @@ void CMyPaintConnection::draw(HDC hdc) {
 		Polyline(hdc, connectionCoordinates_, 2);
 		break;
 	case connectionTypeEnum::rightArrow:
-		if (connectionCoordinates_[0].x < connectionCoordinates_[1].x) {
-			TempPoint = connectionCoordinates_[0];
-			connectionCoordinates_[0] = connectionCoordinates_[1];
-			connectionCoordinates_[1] = TempPoint;
+		if (connectionCoordinates_[FIRSTCONNECTIONCOORDINATE].x < connectionCoordinates_[SECONDCONNECTIONCOORDINATE].x) {
+			TempPoint = connectionCoordinates_[FIRSTCONNECTIONCOORDINATE];
+			connectionCoordinates_[FIRSTCONNECTIONCOORDINATE] = connectionCoordinates_[SECONDCONNECTIONCOORDINATE];
+			connectionCoordinates_[SECONDCONNECTIONCOORDINATE] = TempPoint;
 			isChange = true;
 		}
-		diffrence.x = connectionCoordinates_[0].x - connectionCoordinates_[1].x;
-		diffrence.y = connectionCoordinates_[0].y - connectionCoordinates_[1].y;
+		diffrence.x = connectionCoordinates_[FIRSTCONNECTIONCOORDINATE].x - connectionCoordinates_[SECONDCONNECTIONCOORDINATE].x;
+		diffrence.y = connectionCoordinates_[FIRSTCONNECTIONCOORDINATE].y - connectionCoordinates_[SECONDCONNECTIONCOORDINATE].y;
 		radius = sqrt(pow(diffrence.x, 2) + pow(diffrence.y, 2));
 		arrowCos = diffrence.x / radius;
 		arrowSin = diffrence.y / radius;
-		linePoint.x = connectionCoordinates_[1].x + radius;
-		linePoint.y = connectionCoordinates_[1].y;
+		linePoint.x = connectionCoordinates_[SECONDCONNECTIONCOORDINATE].x + radius;
+		linePoint.y = connectionCoordinates_[SECONDCONNECTIONCOORDINATE].y;
 		arrowPoint[0].x = linePoint.x - 20;
 		arrowPoint[0].y = linePoint.y + 20;
 		arrowPoint[1].x = linePoint.x - 20;
 		arrowPoint[1].y = linePoint.y - 20;
-		arrowPoint[2].x = (arrowPoint[0].x - connectionCoordinates_[1].x) * arrowCos - (arrowPoint[0].y - connectionCoordinates_[1].y) * arrowSin + connectionCoordinates_[1].x;
-		arrowPoint[2].y = (arrowPoint[0].y - connectionCoordinates_[1].y) * arrowCos + (arrowPoint[0].x - connectionCoordinates_[1].x) * arrowSin + connectionCoordinates_[1].y;
-		arrowPoint[3].x = (arrowPoint[1].x - connectionCoordinates_[1].x) * arrowCos - (arrowPoint[1].y - connectionCoordinates_[1].y) * arrowSin + connectionCoordinates_[1].x;
-		arrowPoint[3].y = (arrowPoint[1].y - connectionCoordinates_[1].y) * arrowCos + (arrowPoint[1].x - connectionCoordinates_[1].x) * arrowSin + connectionCoordinates_[1].y;
+		arrowPoint[2].x = (arrowPoint[0].x - connectionCoordinates_[SECONDCONNECTIONCOORDINATE].x) * arrowCos - (arrowPoint[0].y - connectionCoordinates_[SECONDCONNECTIONCOORDINATE].y) * arrowSin + connectionCoordinates_[SECONDCONNECTIONCOORDINATE].x;
+		arrowPoint[2].y = (arrowPoint[0].y - connectionCoordinates_[SECONDCONNECTIONCOORDINATE].y) * arrowCos + (arrowPoint[0].x - connectionCoordinates_[SECONDCONNECTIONCOORDINATE].x) * arrowSin + connectionCoordinates_[SECONDCONNECTIONCOORDINATE].y;
+		arrowPoint[3].x = (arrowPoint[1].x - connectionCoordinates_[SECONDCONNECTIONCOORDINATE].x) * arrowCos - (arrowPoint[1].y - connectionCoordinates_[SECONDCONNECTIONCOORDINATE].y) * arrowSin + connectionCoordinates_[SECONDCONNECTIONCOORDINATE].x;
+		arrowPoint[3].y = (arrowPoint[1].y - connectionCoordinates_[SECONDCONNECTIONCOORDINATE].y) * arrowCos + (arrowPoint[1].x - connectionCoordinates_[SECONDCONNECTIONCOORDINATE].x) * arrowSin + connectionCoordinates_[SECONDCONNECTIONCOORDINATE].y;
 		Polyline(hdc, connectionCoordinates_, 2);
-		arrowPoint[0] = connectionCoordinates_[0];
+		arrowPoint[0] = connectionCoordinates_[FIRSTCONNECTIONCOORDINATE];
 		arrowPoint[1] = arrowPoint[2];
 		Polyline(hdc, arrowPoint, 2);
 		arrowPoint[1] = arrowPoint[3];
 		Polyline(hdc, arrowPoint, 2);
 		if (isChange) {
-			TempPoint = connectionCoordinates_[0];
-			connectionCoordinates_[0] = connectionCoordinates_[1];
-			connectionCoordinates_[1] = TempPoint;
+			TempPoint = connectionCoordinates_[FIRSTCONNECTIONCOORDINATE];
+			connectionCoordinates_[FIRSTCONNECTIONCOORDINATE] = connectionCoordinates_[SECONDCONNECTIONCOORDINATE];
+			connectionCoordinates_[SECONDCONNECTIONCOORDINATE] = TempPoint;
 			isChange = false;
 		}
 		break;
 	case connectionTypeEnum::leftArrow:
-		if (connectionCoordinates_[0].x < connectionCoordinates_[1].x) {
-			TempPoint = connectionCoordinates_[0];
-			connectionCoordinates_[0] = connectionCoordinates_[1];
-			connectionCoordinates_[1] = TempPoint;
+		if (connectionCoordinates_[FIRSTCONNECTIONCOORDINATE].x < connectionCoordinates_[SECONDCONNECTIONCOORDINATE].x) {
+			TempPoint = connectionCoordinates_[FIRSTCONNECTIONCOORDINATE];
+			connectionCoordinates_[FIRSTCONNECTIONCOORDINATE] = connectionCoordinates_[SECONDCONNECTIONCOORDINATE];
+			connectionCoordinates_[SECONDCONNECTIONCOORDINATE] = TempPoint;
 			isChange = true;
 		}
-		diffrence.x = connectionCoordinates_[1].x - connectionCoordinates_[0].x;
-		diffrence.y = connectionCoordinates_[1].y - connectionCoordinates_[0].y;
+		diffrence.x = connectionCoordinates_[SECONDCONNECTIONCOORDINATE].x - connectionCoordinates_[FIRSTCONNECTIONCOORDINATE].x;
+		diffrence.y = connectionCoordinates_[SECONDCONNECTIONCOORDINATE].y - connectionCoordinates_[FIRSTCONNECTIONCOORDINATE].y;
 		radius = sqrt(pow(diffrence.x, 2) + pow(diffrence.y, 2));
 		arrowCos = diffrence.x / radius;
 		arrowSin = diffrence.y / radius;
-		linePoint.x = connectionCoordinates_[0].x + radius;
-		linePoint.y = connectionCoordinates_[0].y;
+		linePoint.x = connectionCoordinates_[FIRSTCONNECTIONCOORDINATE].x + radius;
+		linePoint.y = connectionCoordinates_[FIRSTCONNECTIONCOORDINATE].y;
 		arrowPoint[0].x = linePoint.x - 20;
 		arrowPoint[0].y = linePoint.y + 20;
 		arrowPoint[1].x = linePoint.x - 20;
 		arrowPoint[1].y = linePoint.y - 20;
-		arrowPoint[2].x = (arrowPoint[0].x - connectionCoordinates_[0].x) * arrowCos - (arrowPoint[0].y - connectionCoordinates_[0].y) * arrowSin + connectionCoordinates_[0].x;
-		arrowPoint[2].y = (arrowPoint[0].y - connectionCoordinates_[0].y) * arrowCos + (arrowPoint[0].x - connectionCoordinates_[0].x) * arrowSin + connectionCoordinates_[0].y;
-		arrowPoint[3].x = (arrowPoint[1].x - connectionCoordinates_[0].x) * arrowCos - (arrowPoint[1].y - connectionCoordinates_[0].y) * arrowSin + connectionCoordinates_[0].x;
-		arrowPoint[3].y = (arrowPoint[1].y - connectionCoordinates_[0].y) * arrowCos + (arrowPoint[1].x - connectionCoordinates_[0].x) * arrowSin + connectionCoordinates_[0].y;
+		arrowPoint[2].x = (arrowPoint[0].x - connectionCoordinates_[FIRSTCONNECTIONCOORDINATE].x) * arrowCos - (arrowPoint[0].y - connectionCoordinates_[FIRSTCONNECTIONCOORDINATE].y) * arrowSin + connectionCoordinates_[FIRSTCONNECTIONCOORDINATE].x;
+		arrowPoint[2].y = (arrowPoint[0].y - connectionCoordinates_[FIRSTCONNECTIONCOORDINATE].y) * arrowCos + (arrowPoint[0].x - connectionCoordinates_[FIRSTCONNECTIONCOORDINATE].x) * arrowSin + connectionCoordinates_[FIRSTCONNECTIONCOORDINATE].y;
+		arrowPoint[3].x = (arrowPoint[1].x - connectionCoordinates_[FIRSTCONNECTIONCOORDINATE].x) * arrowCos - (arrowPoint[1].y - connectionCoordinates_[FIRSTCONNECTIONCOORDINATE].y) * arrowSin + connectionCoordinates_[FIRSTCONNECTIONCOORDINATE].x;
+		arrowPoint[3].y = (arrowPoint[1].y - connectionCoordinates_[FIRSTCONNECTIONCOORDINATE].y) * arrowCos + (arrowPoint[1].x - connectionCoordinates_[FIRSTCONNECTIONCOORDINATE].x) * arrowSin + connectionCoordinates_[FIRSTCONNECTIONCOORDINATE].y;
 		Polyline(hdc, connectionCoordinates_, 2);
-		arrowPoint[0] = connectionCoordinates_[1];
+		arrowPoint[0] = connectionCoordinates_[SECONDCONNECTIONCOORDINATE];
 		arrowPoint[1] = arrowPoint[2];
 		Polyline(hdc, arrowPoint, 2);
 		arrowPoint[1] = arrowPoint[3];
 		Polyline(hdc, arrowPoint, 2);
 		if (isChange) {
-			TempPoint = connectionCoordinates_[0];
-			connectionCoordinates_[0] = connectionCoordinates_[1];
-			connectionCoordinates_[1] = TempPoint;
+			TempPoint = connectionCoordinates_[FIRSTCONNECTIONCOORDINATE];
+			connectionCoordinates_[FIRSTCONNECTIONCOORDINATE] = connectionCoordinates_[SECONDCONNECTIONCOORDINATE];
+			connectionCoordinates_[SECONDCONNECTIONCOORDINATE] = TempPoint;
 			isChange = false;
 		}
 		break;
 	case connectionTypeEnum::biDirectional:
-		diffrence.x = connectionCoordinates_[0].x - connectionCoordinates_[1].x;
-		diffrence.y = connectionCoordinates_[0].y - connectionCoordinates_[1].y;
+		diffrence.x = connectionCoordinates_[FIRSTCONNECTIONCOORDINATE].x - connectionCoordinates_[SECONDCONNECTIONCOORDINATE].x;
+		diffrence.y = connectionCoordinates_[FIRSTCONNECTIONCOORDINATE].y - connectionCoordinates_[SECONDCONNECTIONCOORDINATE].y;
 		radius = sqrt(pow(diffrence.x, 2) + pow(diffrence.y, 2));
 		arrowCos = diffrence.x / radius;
 		arrowSin = diffrence.y / radius;
-		linePoint.x = connectionCoordinates_[1].x + radius;
-		linePoint.y = connectionCoordinates_[1].y;
+		linePoint.x = connectionCoordinates_[SECONDCONNECTIONCOORDINATE].x + radius;
+		linePoint.y = connectionCoordinates_[SECONDCONNECTIONCOORDINATE].y;
 		arrowPoint[0].x = linePoint.x - 20;
 		arrowPoint[0].y = linePoint.y + 20;
 		arrowPoint[1].x = linePoint.x - 20;
 		arrowPoint[1].y = linePoint.y - 20;
-		arrowPoint[2].x = (arrowPoint[0].x - connectionCoordinates_[1].x) * arrowCos - (arrowPoint[0].y - connectionCoordinates_[1].y) * arrowSin + connectionCoordinates_[1].x;
-		arrowPoint[2].y = (arrowPoint[0].y - connectionCoordinates_[1].y) * arrowCos + (arrowPoint[0].x - connectionCoordinates_[1].x) * arrowSin + connectionCoordinates_[1].y;
-		arrowPoint[3].x = (arrowPoint[1].x - connectionCoordinates_[1].x) * arrowCos - (arrowPoint[1].y - connectionCoordinates_[1].y) * arrowSin + connectionCoordinates_[1].x;
-		arrowPoint[3].y = (arrowPoint[1].y - connectionCoordinates_[1].y) * arrowCos + (arrowPoint[1].x - connectionCoordinates_[1].x) * arrowSin + connectionCoordinates_[1].y;
+		arrowPoint[2].x = (arrowPoint[0].x - connectionCoordinates_[SECONDCONNECTIONCOORDINATE].x) * arrowCos - (arrowPoint[0].y - connectionCoordinates_[SECONDCONNECTIONCOORDINATE].y) * arrowSin + connectionCoordinates_[SECONDCONNECTIONCOORDINATE].x;
+		arrowPoint[2].y = (arrowPoint[0].y - connectionCoordinates_[SECONDCONNECTIONCOORDINATE].y) * arrowCos + (arrowPoint[0].x - connectionCoordinates_[SECONDCONNECTIONCOORDINATE].x) * arrowSin + connectionCoordinates_[SECONDCONNECTIONCOORDINATE].y;
+		arrowPoint[3].x = (arrowPoint[1].x - connectionCoordinates_[SECONDCONNECTIONCOORDINATE].x) * arrowCos - (arrowPoint[1].y - connectionCoordinates_[SECONDCONNECTIONCOORDINATE].y) * arrowSin + connectionCoordinates_[SECONDCONNECTIONCOORDINATE].x;
+		arrowPoint[3].y = (arrowPoint[1].y - connectionCoordinates_[SECONDCONNECTIONCOORDINATE].y) * arrowCos + (arrowPoint[1].x - connectionCoordinates_[SECONDCONNECTIONCOORDINATE].x) * arrowSin + connectionCoordinates_[SECONDCONNECTIONCOORDINATE].y;
 		Polyline(hdc, connectionCoordinates_, 2);
-		arrowPoint[0] = connectionCoordinates_[0];
+		arrowPoint[0] = connectionCoordinates_[FIRSTCONNECTIONCOORDINATE];
 		arrowPoint[1] = arrowPoint[2];
 		Polyline(hdc, arrowPoint, 2);
 		arrowPoint[1] = arrowPoint[3];
 		Polyline(hdc, arrowPoint, 2);
-		diffrence.x = connectionCoordinates_[1].x - connectionCoordinates_[0].x;
-		diffrence.y = connectionCoordinates_[1].y - connectionCoordinates_[0].y;
+		diffrence.x = connectionCoordinates_[SECONDCONNECTIONCOORDINATE].x - connectionCoordinates_[FIRSTCONNECTIONCOORDINATE].x;
+		diffrence.y = connectionCoordinates_[SECONDCONNECTIONCOORDINATE].y - connectionCoordinates_[FIRSTCONNECTIONCOORDINATE].y;
 		radius = sqrt(pow(diffrence.x, 2) + pow(diffrence.y, 2));
 		arrowCos = diffrence.x / radius;
 		arrowSin = diffrence.y / radius;
-		linePoint.x = connectionCoordinates_[0].x + radius;
-		linePoint.y = connectionCoordinates_[0].y;
+		linePoint.x = connectionCoordinates_[FIRSTCONNECTIONCOORDINATE].x + radius;
+		linePoint.y = connectionCoordinates_[FIRSTCONNECTIONCOORDINATE].y;
 		arrowPoint[0].x = linePoint.x - 20;
 		arrowPoint[0].y = linePoint.y + 20;
 		arrowPoint[1].x = linePoint.x - 20;
 		arrowPoint[1].y = linePoint.y - 20;
-		arrowPoint[2].x = (arrowPoint[0].x - connectionCoordinates_[0].x) * arrowCos - (arrowPoint[0].y - connectionCoordinates_[0].y) * arrowSin + connectionCoordinates_[0].x;
-		arrowPoint[2].y = (arrowPoint[0].y - connectionCoordinates_[0].y) * arrowCos + (arrowPoint[0].x - connectionCoordinates_[0].x) * arrowSin + connectionCoordinates_[0].y;
-		arrowPoint[3].x = (arrowPoint[1].x - connectionCoordinates_[0].x) * arrowCos - (arrowPoint[1].y - connectionCoordinates_[0].y) * arrowSin + connectionCoordinates_[0].x;
-		arrowPoint[3].y = (arrowPoint[1].y - connectionCoordinates_[0].y) * arrowCos + (arrowPoint[1].x - connectionCoordinates_[0].x) * arrowSin + connectionCoordinates_[0].y;
+		arrowPoint[2].x = (arrowPoint[0].x - connectionCoordinates_[FIRSTCONNECTIONCOORDINATE].x) * arrowCos - (arrowPoint[0].y - connectionCoordinates_[FIRSTCONNECTIONCOORDINATE].y) * arrowSin + connectionCoordinates_[FIRSTCONNECTIONCOORDINATE].x;
+		arrowPoint[2].y = (arrowPoint[0].y - connectionCoordinates_[FIRSTCONNECTIONCOORDINATE].y) * arrowCos + (arrowPoint[0].x - connectionCoordinates_[FIRSTCONNECTIONCOORDINATE].x) * arrowSin + connectionCoordinates_[FIRSTCONNECTIONCOORDINATE].y;
+		arrowPoint[3].x = (arrowPoint[1].x - connectionCoordinates_[FIRSTCONNECTIONCOORDINATE].x) * arrowCos - (arrowPoint[1].y - connectionCoordinates_[FIRSTCONNECTIONCOORDINATE].y) * arrowSin + connectionCoordinates_[FIRSTCONNECTIONCOORDINATE].x;
+		arrowPoint[3].y = (arrowPoint[1].y - connectionCoordinates_[FIRSTCONNECTIONCOORDINATE].y) * arrowCos + (arrowPoint[1].x - connectionCoordinates_[FIRSTCONNECTIONCOORDINATE].x) * arrowSin + connectionCoordinates_[FIRSTCONNECTIONCOORDINATE].y;
 		Polyline(hdc, connectionCoordinates_, 2);
-		arrowPoint[0] = connectionCoordinates_[1];
+		arrowPoint[0] = connectionCoordinates_[SECONDCONNECTIONCOORDINATE];
 		arrowPoint[1] = arrowPoint[2];
 		Polyline(hdc, arrowPoint, 2);
 		arrowPoint[1] = arrowPoint[3];

@@ -1,40 +1,46 @@
 #include "pch.h"
 #include "CMyPaintEllipse.h"
+
+#define FIRSTELLIPSECOORDINATE 0
+#define SECONDELLIPSECOORDINATE 1
+#define THIRDELLIPSECOORDINATE 2
+#define FOURTHELLIPSECOORDINATE 3
+
 CMyPaintEllipse::CMyPaintEllipse() :CMyPaintFigure()
 {}
 CMyPaintEllipse::CMyPaintEllipse(unsigned int id, CString name, int penWidth, COLORREF penColor, int penStyle, COLORREF brushColor, int brushStyle, CRect ellipseCoordinates) : CMyPaintFigure(id, name, penWidth, penColor, penStyle, brushColor, brushStyle)
 {
-	ellipseCoordinates_[0].x = ellipseCoordinates.left;
-	ellipseCoordinates_[0].y = ellipseCoordinates.top;
-	ellipseCoordinates_[1].x = ellipseCoordinates.right;
-	ellipseCoordinates_[1].y = ellipseCoordinates.top;
-	ellipseCoordinates_[2].x = ellipseCoordinates.right;
-	ellipseCoordinates_[2].y = ellipseCoordinates.bottom;
-	ellipseCoordinates_[3].x = ellipseCoordinates.left;
-	ellipseCoordinates_[3].y = ellipseCoordinates.bottom;
+	ellipseCoordinates_[FIRSTELLIPSECOORDINATE].x = ellipseCoordinates.left;
+	ellipseCoordinates_[FIRSTELLIPSECOORDINATE].y = ellipseCoordinates.top;
+	ellipseCoordinates_[SECONDELLIPSECOORDINATE].x = ellipseCoordinates.right;
+	ellipseCoordinates_[SECONDELLIPSECOORDINATE].y = ellipseCoordinates.top;
+	ellipseCoordinates_[THIRDELLIPSECOORDINATE].x = ellipseCoordinates.right;
+	ellipseCoordinates_[THIRDELLIPSECOORDINATE].y = ellipseCoordinates.bottom;
+	ellipseCoordinates_[FOURTHELLIPSECOORDINATE].x = ellipseCoordinates.left;
+	ellipseCoordinates_[FOURTHELLIPSECOORDINATE].y = ellipseCoordinates.bottom;
 	findCenterCoordinates();
 }
 void CMyPaintEllipse::setCoordinates(CPoint point, bool isClickEnd) {
-	ellipseCoordinates_[1].x = point.x;
-	ellipseCoordinates_[1].y = ellipseCoordinates_[0].y;
-	ellipseCoordinates_[2].x = point.x;
-	ellipseCoordinates_[2].y = point.y;
-	ellipseCoordinates_[3].x = ellipseCoordinates_[0].x;
-	ellipseCoordinates_[3].y = point.y;
+	ellipseCoordinates_[SECONDELLIPSECOORDINATE].x = point.x;
+	ellipseCoordinates_[SECONDELLIPSECOORDINATE].y = ellipseCoordinates_[FIRSTELLIPSECOORDINATE].y;
+	ellipseCoordinates_[THIRDELLIPSECOORDINATE].x = point.x;
+	ellipseCoordinates_[THIRDELLIPSECOORDINATE].y = point.y;
+	ellipseCoordinates_[FOURTHELLIPSECOORDINATE].x = ellipseCoordinates_[FIRSTELLIPSECOORDINATE].x;
+	ellipseCoordinates_[FOURTHELLIPSECOORDINATE].y = point.y;
 	findCenterCoordinates();
 
 }
 void CMyPaintEllipse::findCenterCoordinates() {
-	ellipseCenter_.x = (ellipseCoordinates_[0].x + ellipseCoordinates_[2].x) / 2;
-	ellipseCenter_.y = (ellipseCoordinates_[0].y + ellipseCoordinates_[2].y) / 2;
+	ellipseCenter_.x = (ellipseCoordinates_[FIRSTELLIPSECOORDINATE].x + ellipseCoordinates_[THIRDELLIPSECOORDINATE].x) / 2;
+	ellipseCenter_.y = (ellipseCoordinates_[FIRSTELLIPSECOORDINATE].y + ellipseCoordinates_[THIRDELLIPSECOORDINATE].y) / 2;
 
 }
 bool CMyPaintEllipse::ifThisFigure(CPoint point) {
 	double MaxX, MaxY, MinX, MinY;
-	MinX = ellipseCoordinates_[0].x;
-	MinY = ellipseCoordinates_[0].y;
-	MaxX = ellipseCoordinates_[0].x;
-	MaxY = ellipseCoordinates_[0].y;
+	MinX = ellipseCoordinates_[FIRSTELLIPSECOORDINATE].x;
+	MinY = ellipseCoordinates_[FIRSTELLIPSECOORDINATE].y;
+	MaxX = ellipseCoordinates_[FIRSTELLIPSECOORDINATE].x;
+	MaxY = ellipseCoordinates_[FIRSTELLIPSECOORDINATE].y;
 	for (size_t i = 1; i < 4; i++) {
 		if (MinX > ellipseCoordinates_[i].x) {
 			MinX = ellipseCoordinates_[i].x;
@@ -107,55 +113,55 @@ void CMyPaintEllipse::normalize() {
 	std::vector<int>place;
 	for (auto it = connectionsCoordinates_.begin(); it != connectionsCoordinates_.end(); it++) {
 		CPoint point;
-		point.x = (ellipseCoordinates_[0].x + ellipseCoordinates_[1].x) / 2;
-		point.y = (ellipseCoordinates_[0].y + ellipseCoordinates_[1].y) / 2;
+		point.x = (ellipseCoordinates_[FIRSTELLIPSECOORDINATE].x + ellipseCoordinates_[SECONDELLIPSECOORDINATE].x) / 2;
+		point.y = (ellipseCoordinates_[FIRSTELLIPSECOORDINATE].y + ellipseCoordinates_[SECONDELLIPSECOORDINATE].y) / 2;
 		if (it->second == point) {
 			place.push_back(1);
 			continue;
 		}
-		point.x = (ellipseCoordinates_[1].x + ellipseCoordinates_[2].x) / 2;
-		point.y = (ellipseCoordinates_[1].y + ellipseCoordinates_[2].y) / 2;
+		point.x = (ellipseCoordinates_[SECONDELLIPSECOORDINATE].x + ellipseCoordinates_[THIRDELLIPSECOORDINATE].x) / 2;
+		point.y = (ellipseCoordinates_[SECONDELLIPSECOORDINATE].y + ellipseCoordinates_[THIRDELLIPSECOORDINATE].y) / 2;
 		if (it->second == point) {
 			place.push_back(2);
 			continue;
 		}
-		point.x = (ellipseCoordinates_[2].x + ellipseCoordinates_[3].x) / 2;
-		point.y = (ellipseCoordinates_[2].y + ellipseCoordinates_[3].y) / 2;
+		point.x = (ellipseCoordinates_[THIRDELLIPSECOORDINATE].x + ellipseCoordinates_[FOURTHELLIPSECOORDINATE].x) / 2;
+		point.y = (ellipseCoordinates_[THIRDELLIPSECOORDINATE].y + ellipseCoordinates_[FOURTHELLIPSECOORDINATE].y) / 2;
 		if (it->second == point) {
 			place.push_back(3);
 			continue;
 		}
-		point.x = (ellipseCoordinates_[3].x + ellipseCoordinates_[0].x) / 2;
-		point.y = (ellipseCoordinates_[3].y + ellipseCoordinates_[0].y) / 2;
+		point.x = (ellipseCoordinates_[FOURTHELLIPSECOORDINATE].x + ellipseCoordinates_[FIRSTELLIPSECOORDINATE].x) / 2;
+		point.y = (ellipseCoordinates_[FOURTHELLIPSECOORDINATE].y + ellipseCoordinates_[FIRSTELLIPSECOORDINATE].y) / 2;
 		if (it->second == point) {
 			place.push_back(4);
 			continue;
 		}
 	}
 	CPoint diffrence;
-	diffrence.y = ellipseCoordinates_[2].y - ellipseCoordinates_[0].y;
-	diffrence.x = ellipseCoordinates_[2].x - ellipseCoordinates_[0].x;
+	diffrence.y = ellipseCoordinates_[THIRDELLIPSECOORDINATE].y - ellipseCoordinates_[FIRSTELLIPSECOORDINATE].y;
+	diffrence.x = ellipseCoordinates_[THIRDELLIPSECOORDINATE].x - ellipseCoordinates_[FIRSTELLIPSECOORDINATE].x;
 	if ((diffrence.x > 0 && diffrence.y < 0) || (diffrence.y > 0 && diffrence.x < 0)) {
 		if (abs(diffrence.x) > abs(diffrence.y)) {
-			ellipseCoordinates_[2].x = ellipseCoordinates_[0].x - diffrence.y;
-			ellipseCoordinates_[2].y = ellipseCoordinates_[0].y + diffrence.y;
+			ellipseCoordinates_[THIRDELLIPSECOORDINATE].x = ellipseCoordinates_[FIRSTELLIPSECOORDINATE].x - diffrence.y;
+			ellipseCoordinates_[THIRDELLIPSECOORDINATE].y = ellipseCoordinates_[FIRSTELLIPSECOORDINATE].y + diffrence.y;
 			changeOtherCoordinates();
 		}
 		else {
-			ellipseCoordinates_[2].x = ellipseCoordinates_[0].x + diffrence.x;
-			ellipseCoordinates_[2].y = ellipseCoordinates_[0].y - diffrence.x;
+			ellipseCoordinates_[THIRDELLIPSECOORDINATE].x = ellipseCoordinates_[FIRSTELLIPSECOORDINATE].x + diffrence.x;
+			ellipseCoordinates_[THIRDELLIPSECOORDINATE].y = ellipseCoordinates_[FIRSTELLIPSECOORDINATE].y - diffrence.x;
 			changeOtherCoordinates();
 		}
 	}
 	if ((diffrence.x >= 0 && diffrence.y >= 0) || (diffrence.x < 0 && diffrence.y < 0)) {
 		if (abs(diffrence.x) > abs(diffrence.y)) {
-			ellipseCoordinates_[2].x = ellipseCoordinates_[0].x + diffrence.y;
-			ellipseCoordinates_[2].y = ellipseCoordinates_[0].y + diffrence.y;
+			ellipseCoordinates_[THIRDELLIPSECOORDINATE].x = ellipseCoordinates_[FIRSTELLIPSECOORDINATE].x + diffrence.y;
+			ellipseCoordinates_[THIRDELLIPSECOORDINATE].y = ellipseCoordinates_[FIRSTELLIPSECOORDINATE].y + diffrence.y;
 			changeOtherCoordinates();
 		}
 		else {
-			ellipseCoordinates_[2].x = ellipseCoordinates_[0].x + diffrence.x;
-			ellipseCoordinates_[2].y = ellipseCoordinates_[0].y + diffrence.x;
+			ellipseCoordinates_[THIRDELLIPSECOORDINATE].x = ellipseCoordinates_[FIRSTELLIPSECOORDINATE].x + diffrence.x;
+			ellipseCoordinates_[THIRDELLIPSECOORDINATE].y = ellipseCoordinates_[FIRSTELLIPSECOORDINATE].y + diffrence.x;
 			changeOtherCoordinates();
 		}
 	}
@@ -174,20 +180,20 @@ void CMyPaintEllipse::normalize() {
 		switch (place[i])
 		{
 		case 1:
-			it->second.x = (ellipseCoordinates_[0].x + ellipseCoordinates_[1].x) / 2;
-			it->second.y = (ellipseCoordinates_[0].y + ellipseCoordinates_[1].y) / 2;
+			it->second.x = (ellipseCoordinates_[FIRSTELLIPSECOORDINATE].x + ellipseCoordinates_[SECONDELLIPSECOORDINATE].x) / 2;
+			it->second.y = (ellipseCoordinates_[FIRSTELLIPSECOORDINATE].y + ellipseCoordinates_[SECONDELLIPSECOORDINATE].y) / 2;
 			break;
 		case 2:
-			it->second.x = (ellipseCoordinates_[1].x + ellipseCoordinates_[2].x) / 2;
-			it->second.y = (ellipseCoordinates_[1].y + ellipseCoordinates_[2].y) / 2;
+			it->second.x = (ellipseCoordinates_[SECONDELLIPSECOORDINATE].x + ellipseCoordinates_[THIRDELLIPSECOORDINATE].x) / 2;
+			it->second.y = (ellipseCoordinates_[SECONDELLIPSECOORDINATE].y + ellipseCoordinates_[THIRDELLIPSECOORDINATE].y) / 2;
 			break;
 		case 3:
-			it->second.x = (ellipseCoordinates_[2].x + ellipseCoordinates_[3].x) / 2;
-			it->second.y = (ellipseCoordinates_[2].y + ellipseCoordinates_[3].y) / 2;
+			it->second.x = (ellipseCoordinates_[THIRDELLIPSECOORDINATE].x + ellipseCoordinates_[FOURTHELLIPSECOORDINATE].x) / 2;
+			it->second.y = (ellipseCoordinates_[THIRDELLIPSECOORDINATE].y + ellipseCoordinates_[FOURTHELLIPSECOORDINATE].y) / 2;
 			break;
 		case 4:
-			it->second.x = (ellipseCoordinates_[3].x + ellipseCoordinates_[0].x) / 2;
-			it->second.y = (ellipseCoordinates_[3].y + ellipseCoordinates_[0].y) / 2;
+			it->second.x = (ellipseCoordinates_[FOURTHELLIPSECOORDINATE].x + ellipseCoordinates_[FIRSTELLIPSECOORDINATE].x) / 2;
+			it->second.y = (ellipseCoordinates_[FOURTHELLIPSECOORDINATE].y + ellipseCoordinates_[FIRSTELLIPSECOORDINATE].y) / 2;
 			break;
 		default:
 			break;
@@ -196,10 +202,10 @@ void CMyPaintEllipse::normalize() {
 }
 void CMyPaintEllipse::changeOtherCoordinates()
 {
-	ellipseCoordinates_[1].x = ellipseCoordinates_[2].x;
-	ellipseCoordinates_[1].y = ellipseCoordinates_[0].y;
-	ellipseCoordinates_[3].x = ellipseCoordinates_[0].x;
-	ellipseCoordinates_[3].y = ellipseCoordinates_[2].y;
+	ellipseCoordinates_[SECONDELLIPSECOORDINATE].x = ellipseCoordinates_[THIRDELLIPSECOORDINATE].x;
+	ellipseCoordinates_[SECONDELLIPSECOORDINATE].y = ellipseCoordinates_[FIRSTELLIPSECOORDINATE].y;
+	ellipseCoordinates_[FOURTHELLIPSECOORDINATE].x = ellipseCoordinates_[FIRSTELLIPSECOORDINATE].x;
+	ellipseCoordinates_[FOURTHELLIPSECOORDINATE].y = ellipseCoordinates_[THIRDELLIPSECOORDINATE].y;
 }
 bool CMyPaintEllipse::edit(CPoint editPoint, bool isEnd) {
 	setCoordinates(editPoint, true);
@@ -218,14 +224,14 @@ CPoint CMyPaintEllipse::findConnectionCoordinates(CPoint centerPoint, int connec
 	CPoint arrowPoint[4];
 	double length;
 	int pointNum;
-	arrowPoint[0].x = (ellipseCoordinates_[0].x + ellipseCoordinates_[1].x) / 2;
-	arrowPoint[0].y = (ellipseCoordinates_[0].y + ellipseCoordinates_[1].y) / 2;
-	arrowPoint[1].x = (ellipseCoordinates_[1].x + ellipseCoordinates_[2].x) / 2;
-	arrowPoint[1].y = (ellipseCoordinates_[1].y + ellipseCoordinates_[2].y) / 2;
-	arrowPoint[2].x = (ellipseCoordinates_[2].x + ellipseCoordinates_[3].x) / 2;
-	arrowPoint[2].y = (ellipseCoordinates_[2].y + ellipseCoordinates_[3].y) / 2;
-	arrowPoint[3].x = (ellipseCoordinates_[3].x + ellipseCoordinates_[0].x) / 2;
-	arrowPoint[3].y = (ellipseCoordinates_[3].y + ellipseCoordinates_[0].y) / 2;
+	arrowPoint[0].x = (ellipseCoordinates_[FIRSTELLIPSECOORDINATE].x + ellipseCoordinates_[SECONDELLIPSECOORDINATE].x) / 2;
+	arrowPoint[0].y = (ellipseCoordinates_[FIRSTELLIPSECOORDINATE].y + ellipseCoordinates_[SECONDELLIPSECOORDINATE].y) / 2;
+	arrowPoint[1].x = (ellipseCoordinates_[SECONDELLIPSECOORDINATE].x + ellipseCoordinates_[THIRDELLIPSECOORDINATE].x) / 2;
+	arrowPoint[1].y = (ellipseCoordinates_[SECONDELLIPSECOORDINATE].y + ellipseCoordinates_[THIRDELLIPSECOORDINATE].y) / 2;
+	arrowPoint[2].x = (ellipseCoordinates_[THIRDELLIPSECOORDINATE].x + ellipseCoordinates_[FOURTHELLIPSECOORDINATE].x) / 2;
+	arrowPoint[2].y = (ellipseCoordinates_[THIRDELLIPSECOORDINATE].y + ellipseCoordinates_[FOURTHELLIPSECOORDINATE].y) / 2;
+	arrowPoint[3].x = (ellipseCoordinates_[FOURTHELLIPSECOORDINATE].x + ellipseCoordinates_[FIRSTELLIPSECOORDINATE].x) / 2;
+	arrowPoint[3].y = (ellipseCoordinates_[FOURTHELLIPSECOORDINATE].y + ellipseCoordinates_[FIRSTELLIPSECOORDINATE].y) / 2;
 	length = sqrt(pow(arrowPoint[0].x - centerPoint.x, 2) + pow(arrowPoint[0].y - centerPoint.y, 2));
 	pointNum = 0;
 	if (length > sqrt(pow(arrowPoint[1].x - centerPoint.x, 2) + pow(arrowPoint[1].y - centerPoint.y, 2))) {
@@ -248,14 +254,14 @@ CPoint CMyPaintEllipse::findConnectionCoordinates(CPoint centerPoint, int connec
 }
 int CMyPaintEllipse::findConnectionPlace(int key) {
 	CPoint arrowPoint[4];
-	arrowPoint[0].x = (ellipseCoordinates_[0].x + ellipseCoordinates_[1].x) / 2;
-	arrowPoint[0].y = (ellipseCoordinates_[0].y + ellipseCoordinates_[1].y) / 2;
-	arrowPoint[1].x = (ellipseCoordinates_[1].x + ellipseCoordinates_[2].x) / 2;
-	arrowPoint[1].y = (ellipseCoordinates_[1].y + ellipseCoordinates_[2].y) / 2;
-	arrowPoint[2].x = (ellipseCoordinates_[2].x + ellipseCoordinates_[3].x) / 2;
-	arrowPoint[2].y = (ellipseCoordinates_[2].y + ellipseCoordinates_[3].y) / 2;
-	arrowPoint[3].x = (ellipseCoordinates_[3].x + ellipseCoordinates_[0].x) / 2;
-	arrowPoint[3].y = (ellipseCoordinates_[3].y + ellipseCoordinates_[0].y) / 2;
+	arrowPoint[0].x = (ellipseCoordinates_[FIRSTELLIPSECOORDINATE].x + ellipseCoordinates_[SECONDELLIPSECOORDINATE].x) / 2;
+	arrowPoint[0].y = (ellipseCoordinates_[FIRSTELLIPSECOORDINATE].y + ellipseCoordinates_[SECONDELLIPSECOORDINATE].y) / 2;
+	arrowPoint[1].x = (ellipseCoordinates_[SECONDELLIPSECOORDINATE].x + ellipseCoordinates_[THIRDELLIPSECOORDINATE].x) / 2;
+	arrowPoint[1].y = (ellipseCoordinates_[SECONDELLIPSECOORDINATE].y + ellipseCoordinates_[THIRDELLIPSECOORDINATE].y) / 2;
+	arrowPoint[2].x = (ellipseCoordinates_[THIRDELLIPSECOORDINATE].x + ellipseCoordinates_[FOURTHELLIPSECOORDINATE].x) / 2;
+	arrowPoint[2].y = (ellipseCoordinates_[THIRDELLIPSECOORDINATE].y + ellipseCoordinates_[FOURTHELLIPSECOORDINATE].y) / 2;
+	arrowPoint[3].x = (ellipseCoordinates_[FOURTHELLIPSECOORDINATE].x + ellipseCoordinates_[FIRSTELLIPSECOORDINATE].x) / 2;
+	arrowPoint[3].y = (ellipseCoordinates_[FOURTHELLIPSECOORDINATE].y + ellipseCoordinates_[FIRSTELLIPSECOORDINATE].y) / 2;
 	auto it = connectionsCoordinates_.find(key);
 	if (it->second == arrowPoint[0]) {
 		return 1;
@@ -286,26 +292,26 @@ void CMyPaintEllipse::properties(std::vector<int>ids, std::vector<CString> names
 	std::vector<int>place;
 	for (auto it = connectionsCoordinates_.begin(); it != connectionsCoordinates_.end(); it++) {
 		CPoint point;
-		point.x = (ellipseCoordinates_[0].x + ellipseCoordinates_[1].x) / 2;
-		point.y = (ellipseCoordinates_[0].y + ellipseCoordinates_[1].y) / 2;
+		point.x = (ellipseCoordinates_[FIRSTELLIPSECOORDINATE].x + ellipseCoordinates_[SECONDELLIPSECOORDINATE].x) / 2;
+		point.y = (ellipseCoordinates_[FIRSTELLIPSECOORDINATE].y + ellipseCoordinates_[SECONDELLIPSECOORDINATE].y) / 2;
 		if (it->second == point) {
 			place.push_back(1);
 			continue;
 		}
-		point.x = (ellipseCoordinates_[1].x + ellipseCoordinates_[2].x) / 2;
-		point.y = (ellipseCoordinates_[1].y + ellipseCoordinates_[2].y) / 2;
+		point.x = (ellipseCoordinates_[SECONDELLIPSECOORDINATE].x + ellipseCoordinates_[THIRDELLIPSECOORDINATE].x) / 2;
+		point.y = (ellipseCoordinates_[SECONDELLIPSECOORDINATE].y + ellipseCoordinates_[THIRDELLIPSECOORDINATE].y) / 2;
 		if (it->second == point) {
 			place.push_back(2);
 			continue;
 		}
-		point.x = (ellipseCoordinates_[2].x + ellipseCoordinates_[3].x) / 2;
-		point.y = (ellipseCoordinates_[2].y + ellipseCoordinates_[3].y) / 2;
+		point.x = (ellipseCoordinates_[THIRDELLIPSECOORDINATE].x + ellipseCoordinates_[FOURTHELLIPSECOORDINATE].x) / 2;
+		point.y = (ellipseCoordinates_[THIRDELLIPSECOORDINATE].y + ellipseCoordinates_[FOURTHELLIPSECOORDINATE].y) / 2;
 		if (it->second == point) {
 			place.push_back(3);
 			continue;
 		}
-		point.x = (ellipseCoordinates_[3].x + ellipseCoordinates_[0].x) / 2;
-		point.y = (ellipseCoordinates_[3].y + ellipseCoordinates_[0].y) / 2;
+		point.x = (ellipseCoordinates_[FOURTHELLIPSECOORDINATE].x + ellipseCoordinates_[FIRSTELLIPSECOORDINATE].x) / 2;
+		point.y = (ellipseCoordinates_[FOURTHELLIPSECOORDINATE].y + ellipseCoordinates_[FIRSTELLIPSECOORDINATE].y) / 2;
 		if (it->second == point) {
 			place.push_back(4);
 			continue;
@@ -341,20 +347,20 @@ void CMyPaintEllipse::properties(std::vector<int>ids, std::vector<CString> names
 		switch (place[i])
 		{
 		case 1:
-			it->second.x = (ellipseCoordinates_[0].x + ellipseCoordinates_[1].x) / 2;
-			it->second.y = (ellipseCoordinates_[0].y + ellipseCoordinates_[1].y) / 2;
+			it->second.x = (ellipseCoordinates_[FIRSTELLIPSECOORDINATE].x + ellipseCoordinates_[SECONDELLIPSECOORDINATE].x) / 2;
+			it->second.y = (ellipseCoordinates_[FIRSTELLIPSECOORDINATE].y + ellipseCoordinates_[SECONDELLIPSECOORDINATE].y) / 2;
 			break;
 		case 2:
-			it->second.x = (ellipseCoordinates_[1].x + ellipseCoordinates_[2].x) / 2;
-			it->second.y = (ellipseCoordinates_[1].y + ellipseCoordinates_[2].y) / 2;
+			it->second.x = (ellipseCoordinates_[SECONDELLIPSECOORDINATE].x + ellipseCoordinates_[THIRDELLIPSECOORDINATE].x) / 2;
+			it->second.y = (ellipseCoordinates_[SECONDELLIPSECOORDINATE].y + ellipseCoordinates_[THIRDELLIPSECOORDINATE].y) / 2;
 			break;
 		case 3:
-			it->second.x = (ellipseCoordinates_[2].x + ellipseCoordinates_[3].x) / 2;
-			it->second.y = (ellipseCoordinates_[2].y + ellipseCoordinates_[3].y) / 2;
+			it->second.x = (ellipseCoordinates_[THIRDELLIPSECOORDINATE].x + ellipseCoordinates_[FOURTHELLIPSECOORDINATE].x) / 2;
+			it->second.y = (ellipseCoordinates_[THIRDELLIPSECOORDINATE].y + ellipseCoordinates_[FOURTHELLIPSECOORDINATE].y) / 2;
 			break;
 		case 4:
-			it->second.x = (ellipseCoordinates_[3].x + ellipseCoordinates_[0].x) / 2;
-			it->second.y = (ellipseCoordinates_[3].y + ellipseCoordinates_[0].y) / 2;
+			it->second.x = (ellipseCoordinates_[FOURTHELLIPSECOORDINATE].x + ellipseCoordinates_[FIRSTELLIPSECOORDINATE].x) / 2;
+			it->second.y = (ellipseCoordinates_[FOURTHELLIPSECOORDINATE].y + ellipseCoordinates_[FIRSTELLIPSECOORDINATE].y) / 2;
 			break;
 		default:
 			break;
@@ -364,15 +370,15 @@ void CMyPaintEllipse::properties(std::vector<int>ids, std::vector<CString> names
 
 
 CPoint CMyPaintEllipse::getFirstCoordinate() {
-	return ellipseCoordinates_[0];
+	return ellipseCoordinates_[FIRSTELLIPSECOORDINATE];
 }
 
 CPoint CMyPaintEllipse::getSecondCoordinate() {
-	return ellipseCoordinates_[2];
+	return ellipseCoordinates_[THIRDELLIPSECOORDINATE];
 }
 
 CPoint CMyPaintEllipse::getThirdCoordinate() {
-	return ellipseCoordinates_[2];
+	return ellipseCoordinates_[THIRDELLIPSECOORDINATE];
 }
 
 int CMyPaintEllipse::getFigureType() {
@@ -380,11 +386,11 @@ int CMyPaintEllipse::getFigureType() {
 }
 
 void CMyPaintEllipse::setFirstCoordinate(CPoint point) {
-	ellipseCoordinates_[0] = point;
+	ellipseCoordinates_[FIRSTELLIPSECOORDINATE] = point;
 }
 
 void CMyPaintEllipse::setSecondCoordinate(CPoint point) {
-	ellipseCoordinates_[2] = point;
+	ellipseCoordinates_[THIRDELLIPSECOORDINATE] = point;
 }
 
 void CMyPaintEllipse::setThirdCoordinate(CPoint point) {
@@ -396,49 +402,49 @@ void CMyPaintEllipse::draw(HDC hdc) {
 	if (brushStyle_ == 0) {
 		HBRUSH hBrush = (HBRUSH)GetStockObject(HOLLOW_BRUSH);
 		SelectObject(hdc, hBrush);
-		Ellipse(hdc, ellipseCoordinates_[0].x, ellipseCoordinates_[0].y, ellipseCoordinates_[2].x, ellipseCoordinates_[2].y);
+		Ellipse(hdc, ellipseCoordinates_[FIRSTELLIPSECOORDINATE].x, ellipseCoordinates_[FIRSTELLIPSECOORDINATE].y, ellipseCoordinates_[THIRDELLIPSECOORDINATE].x, ellipseCoordinates_[THIRDELLIPSECOORDINATE].y);
 		DeleteObject(hBrush);
 	}
 	if (brushStyle_ == 1) {
 		HBRUSH hBrush = CreateSolidBrush(brushColor_);
 		SelectObject(hdc, hBrush);
-		Ellipse(hdc, ellipseCoordinates_[0].x, ellipseCoordinates_[0].y, ellipseCoordinates_[2].x, ellipseCoordinates_[2].y);
+		Ellipse(hdc, ellipseCoordinates_[FIRSTELLIPSECOORDINATE].x, ellipseCoordinates_[FIRSTELLIPSECOORDINATE].y, ellipseCoordinates_[THIRDELLIPSECOORDINATE].x, ellipseCoordinates_[THIRDELLIPSECOORDINATE].y);
 		DeleteObject(hBrush);
 	}
 	if (brushStyle_ == 2) {
 		CBrush hBrush(HS_BDIAGONAL, brushColor_);
 		SelectObject(hdc, hBrush);
-		Ellipse(hdc, ellipseCoordinates_[0].x, ellipseCoordinates_[0].y, ellipseCoordinates_[2].x, ellipseCoordinates_[2].y);
+		Ellipse(hdc, ellipseCoordinates_[FIRSTELLIPSECOORDINATE].x, ellipseCoordinates_[FIRSTELLIPSECOORDINATE].y, ellipseCoordinates_[THIRDELLIPSECOORDINATE].x, ellipseCoordinates_[THIRDELLIPSECOORDINATE].y);
 		DeleteObject(hBrush);
 	}
 	if (brushStyle_ == 3) {
 		CBrush hBrush(HS_CROSS, brushColor_);
 		SelectObject(hdc, hBrush);
-		Ellipse(hdc, ellipseCoordinates_[0].x, ellipseCoordinates_[0].y, ellipseCoordinates_[2].x, ellipseCoordinates_[2].y);
+		Ellipse(hdc, ellipseCoordinates_[FIRSTELLIPSECOORDINATE].x, ellipseCoordinates_[FIRSTELLIPSECOORDINATE].y, ellipseCoordinates_[THIRDELLIPSECOORDINATE].x, ellipseCoordinates_[THIRDELLIPSECOORDINATE].y);
 		DeleteObject(hBrush);
 	}
 	if (brushStyle_ == 4) {
 		CBrush hBrush(HS_DIAGCROSS, brushColor_);
 		SelectObject(hdc, hBrush);
-		Ellipse(hdc, ellipseCoordinates_[0].x, ellipseCoordinates_[0].y, ellipseCoordinates_[2].x, ellipseCoordinates_[2].y);
+		Ellipse(hdc, ellipseCoordinates_[FIRSTELLIPSECOORDINATE].x, ellipseCoordinates_[FIRSTELLIPSECOORDINATE].y, ellipseCoordinates_[THIRDELLIPSECOORDINATE].x, ellipseCoordinates_[THIRDELLIPSECOORDINATE].y);
 		DeleteObject(hBrush);
 	}
 	if (brushStyle_ == 5) {
 		CBrush hBrush(HS_FDIAGONAL, brushColor_);
 		SelectObject(hdc, hBrush);
-		Ellipse(hdc, ellipseCoordinates_[0].x, ellipseCoordinates_[0].y, ellipseCoordinates_[2].x, ellipseCoordinates_[2].y);
+		Ellipse(hdc, ellipseCoordinates_[FIRSTELLIPSECOORDINATE].x, ellipseCoordinates_[FIRSTELLIPSECOORDINATE].y, ellipseCoordinates_[THIRDELLIPSECOORDINATE].x, ellipseCoordinates_[THIRDELLIPSECOORDINATE].y);
 		DeleteObject(hBrush);
 	}
 	if (brushStyle_ == 6) {
 		CBrush hBrush(HS_HORIZONTAL, brushColor_);
 		SelectObject(hdc, hBrush);
-		Ellipse(hdc, ellipseCoordinates_[0].x, ellipseCoordinates_[0].y, ellipseCoordinates_[2].x, ellipseCoordinates_[2].y);
+		Ellipse(hdc, ellipseCoordinates_[FIRSTELLIPSECOORDINATE].x, ellipseCoordinates_[FIRSTELLIPSECOORDINATE].y, ellipseCoordinates_[THIRDELLIPSECOORDINATE].x, ellipseCoordinates_[THIRDELLIPSECOORDINATE].y);
 		DeleteObject(hBrush);
 	}
 	if (brushStyle_ == 7) {
 		CBrush hBrush(HS_VERTICAL, brushColor_);
 		SelectObject(hdc, hBrush);
-		Ellipse(hdc, ellipseCoordinates_[0].x, ellipseCoordinates_[0].y, ellipseCoordinates_[2].x, ellipseCoordinates_[2].y);
+		Ellipse(hdc, ellipseCoordinates_[FIRSTELLIPSECOORDINATE].x, ellipseCoordinates_[FIRSTELLIPSECOORDINATE].y, ellipseCoordinates_[THIRDELLIPSECOORDINATE].x, ellipseCoordinates_[THIRDELLIPSECOORDINATE].y);
 		DeleteObject(hBrush);
 	}
 	DeleteObject(Pen);
@@ -450,49 +456,49 @@ void CMyPaintEllipse::tempDraw(HDC hdc) {
 	if (brushStyle_ == 0) {
 		HBRUSH hBrush = (HBRUSH)GetStockObject(HOLLOW_BRUSH);
 		SelectObject(hdc, hBrush);
-		Ellipse(hdc, tempEllipse_[0].x, tempEllipse_[0].y, tempEllipse_[2].x, tempEllipse_[2].y);
+		Ellipse(hdc, tempEllipse_[FIRSTELLIPSECOORDINATE].x, tempEllipse_[FIRSTELLIPSECOORDINATE].y, tempEllipse_[THIRDELLIPSECOORDINATE].x, tempEllipse_[THIRDELLIPSECOORDINATE].y);
 		DeleteObject(hBrush);
 	}
 	if (brushStyle_ == 1) {
 		HBRUSH hBrush = CreateSolidBrush(brushColor_);
 		SelectObject(hdc, hBrush);
-		Ellipse(hdc, tempEllipse_[0].x, tempEllipse_[0].y, tempEllipse_[2].x, tempEllipse_[2].y);
+		Ellipse(hdc, tempEllipse_[FIRSTELLIPSECOORDINATE].x, tempEllipse_[FIRSTELLIPSECOORDINATE].y, tempEllipse_[THIRDELLIPSECOORDINATE].x, tempEllipse_[THIRDELLIPSECOORDINATE].y);
 		DeleteObject(hBrush);
 	}
 	if (brushStyle_ == 2) {
 		CBrush hBrush(HS_BDIAGONAL, brushColor_);
 		SelectObject(hdc, hBrush);
-		Ellipse(hdc, tempEllipse_[0].x, tempEllipse_[0].y, tempEllipse_[2].x, tempEllipse_[2].y);
+		Ellipse(hdc, tempEllipse_[FIRSTELLIPSECOORDINATE].x, tempEllipse_[FIRSTELLIPSECOORDINATE].y, tempEllipse_[THIRDELLIPSECOORDINATE].x, tempEllipse_[THIRDELLIPSECOORDINATE].y);
 		DeleteObject(hBrush);
 	}
 	if (brushStyle_ == 3) {
 		CBrush hBrush(HS_CROSS, brushColor_);
 		SelectObject(hdc, hBrush);
-		Ellipse(hdc, tempEllipse_[0].x, tempEllipse_[0].y, tempEllipse_[2].x, tempEllipse_[2].y);
+		Ellipse(hdc, tempEllipse_[FIRSTELLIPSECOORDINATE].x, tempEllipse_[FIRSTELLIPSECOORDINATE].y, tempEllipse_[THIRDELLIPSECOORDINATE].x, tempEllipse_[THIRDELLIPSECOORDINATE].y);
 		DeleteObject(hBrush);
 	}
 	if (brushStyle_ == 4) {
 		CBrush hBrush(HS_DIAGCROSS, brushColor_);
 		SelectObject(hdc, hBrush);
-		Ellipse(hdc, tempEllipse_[0].x, tempEllipse_[0].y, tempEllipse_[2].x, tempEllipse_[2].y);
+		Ellipse(hdc, tempEllipse_[FIRSTELLIPSECOORDINATE].x, tempEllipse_[FIRSTELLIPSECOORDINATE].y, tempEllipse_[THIRDELLIPSECOORDINATE].x, tempEllipse_[THIRDELLIPSECOORDINATE].y);
 		DeleteObject(hBrush);
 	}
 	if (brushStyle_ == 5) {
 		CBrush hBrush(HS_FDIAGONAL, brushColor_);
 		SelectObject(hdc, hBrush);
-		Ellipse(hdc, tempEllipse_[0].x, tempEllipse_[0].y, tempEllipse_[2].x, tempEllipse_[2].y);
+		Ellipse(hdc, tempEllipse_[FIRSTELLIPSECOORDINATE].x, tempEllipse_[FIRSTELLIPSECOORDINATE].y, tempEllipse_[THIRDELLIPSECOORDINATE].x, tempEllipse_[THIRDELLIPSECOORDINATE].y);
 		DeleteObject(hBrush);
 	}
 	if (brushStyle_ == 6) {
 		CBrush hBrush(HS_HORIZONTAL, brushColor_);
 		SelectObject(hdc, hBrush);
-		Ellipse(hdc, tempEllipse_[0].x, tempEllipse_[0].y, tempEllipse_[2].x, tempEllipse_[2].y);
+		Ellipse(hdc, tempEllipse_[FIRSTELLIPSECOORDINATE].x, tempEllipse_[FIRSTELLIPSECOORDINATE].y, tempEllipse_[THIRDELLIPSECOORDINATE].x, tempEllipse_[THIRDELLIPSECOORDINATE].y);
 		DeleteObject(hBrush);
 	}
 	if (brushStyle_ == 7) {
 		CBrush hBrush(HS_VERTICAL, brushColor_);
 		SelectObject(hdc, hBrush);
-		Ellipse(hdc, tempEllipse_[0].x, tempEllipse_[0].y, tempEllipse_[2].x, tempEllipse_[2].y);
+		Ellipse(hdc, tempEllipse_[FIRSTELLIPSECOORDINATE].x, tempEllipse_[FIRSTELLIPSECOORDINATE].y, tempEllipse_[THIRDELLIPSECOORDINATE].x, tempEllipse_[THIRDELLIPSECOORDINATE].y);
 		DeleteObject(hBrush);
 	}
 	DeleteObject(Pen);
@@ -512,7 +518,7 @@ void CMyPaintEllipse::select(HDC hdc) {
 	SelectObject(hdc, Pen);
 	HBRUSH hBrush = (HBRUSH)GetStockObject(HOLLOW_BRUSH);
 	SelectObject(hdc, hBrush);
-	Ellipse(hdc, ellipseCoordinates_[0].x, ellipseCoordinates_[0].y, ellipseCoordinates_[2].x, ellipseCoordinates_[2].y);
+	Ellipse(hdc, ellipseCoordinates_[FIRSTELLIPSECOORDINATE].x, ellipseCoordinates_[FIRSTELLIPSECOORDINATE].y, ellipseCoordinates_[THIRDELLIPSECOORDINATE].x, ellipseCoordinates_[THIRDELLIPSECOORDINATE].y);
 	DeleteObject(hBrush);
 	DeleteObject(Pen);
 }
@@ -531,14 +537,14 @@ void CMyPaintEllipse::scrollFigure(CPoint point) {
 std::vector<CPoint> CMyPaintEllipse::getLeftCoordinate() {
 	CPoint temp;
 	CPoint tempEllipseCoordinate[4];
-	tempEllipseCoordinate[0].x = ellipseCoordinates_[0].x;
-	tempEllipseCoordinate[0].y = ellipseCenter_.y;
-	tempEllipseCoordinate[1].x = ellipseCenter_.x;
-	tempEllipseCoordinate[1].y = ellipseCoordinates_[0].y;
-	tempEllipseCoordinate[2].x = ellipseCoordinates_[2].x;
-	tempEllipseCoordinate[2].y = ellipseCenter_.y;
-	tempEllipseCoordinate[3].x = ellipseCenter_.x;
-	tempEllipseCoordinate[3].y = ellipseCoordinates_[2].y;
+	tempEllipseCoordinate[FIRSTELLIPSECOORDINATE].x = ellipseCoordinates_[FIRSTELLIPSECOORDINATE].x;
+	tempEllipseCoordinate[FIRSTELLIPSECOORDINATE].y = ellipseCenter_.y;
+	tempEllipseCoordinate[SECONDELLIPSECOORDINATE].x = ellipseCenter_.x;
+	tempEllipseCoordinate[SECONDELLIPSECOORDINATE].y = ellipseCoordinates_[FIRSTELLIPSECOORDINATE].y;
+	tempEllipseCoordinate[THIRDELLIPSECOORDINATE].x = ellipseCoordinates_[THIRDELLIPSECOORDINATE].x;
+	tempEllipseCoordinate[THIRDELLIPSECOORDINATE].y = ellipseCenter_.y;
+	tempEllipseCoordinate[FOURTHELLIPSECOORDINATE].x = ellipseCenter_.x;
+	tempEllipseCoordinate[FOURTHELLIPSECOORDINATE].y = ellipseCoordinates_[THIRDELLIPSECOORDINATE].y;
 
 	temp = tempEllipseCoordinate[0];
 	for (auto i = 1; i < 4; i++) {
@@ -554,14 +560,14 @@ std::vector<CPoint> CMyPaintEllipse::getLeftCoordinate() {
 std::vector<CPoint> CMyPaintEllipse::getBottomCoordinate() {
 	CPoint temp;
 	CPoint tempEllipseCoordinate[4];
-	tempEllipseCoordinate[0].x = ellipseCoordinates_[0].x;
-	tempEllipseCoordinate[0].y = ellipseCenter_.y;
-	tempEllipseCoordinate[1].x = ellipseCenter_.x;
-	tempEllipseCoordinate[1].y = ellipseCoordinates_[0].y;
-	tempEllipseCoordinate[2].x = ellipseCoordinates_[2].x;
-	tempEllipseCoordinate[2].y = ellipseCenter_.y;
-	tempEllipseCoordinate[3].x = ellipseCenter_.x;
-	tempEllipseCoordinate[3].y = ellipseCoordinates_[2].y;
+	tempEllipseCoordinate[FIRSTELLIPSECOORDINATE].x = ellipseCoordinates_[FIRSTELLIPSECOORDINATE].x;
+	tempEllipseCoordinate[FIRSTELLIPSECOORDINATE].y = ellipseCenter_.y;
+	tempEllipseCoordinate[SECONDELLIPSECOORDINATE].x = ellipseCenter_.x;
+	tempEllipseCoordinate[SECONDELLIPSECOORDINATE].y = ellipseCoordinates_[FIRSTELLIPSECOORDINATE].y;
+	tempEllipseCoordinate[THIRDELLIPSECOORDINATE].x = ellipseCoordinates_[THIRDELLIPSECOORDINATE].x;
+	tempEllipseCoordinate[THIRDELLIPSECOORDINATE].y = ellipseCenter_.y;
+	tempEllipseCoordinate[FOURTHELLIPSECOORDINATE].x = ellipseCenter_.x;
+	tempEllipseCoordinate[FOURTHELLIPSECOORDINATE].y = ellipseCoordinates_[THIRDELLIPSECOORDINATE].y;
 
 	temp = tempEllipseCoordinate[0];
 	for (auto i = 1; i < 4; i++) {
@@ -577,14 +583,14 @@ std::vector<CPoint> CMyPaintEllipse::getBottomCoordinate() {
 std::vector<CPoint> CMyPaintEllipse::getRightCoordinate() {
 	CPoint temp;
 	CPoint tempEllipseCoordinate[4];
-	tempEllipseCoordinate[0].x = ellipseCoordinates_[0].x;
-	tempEllipseCoordinate[0].y = ellipseCenter_.y;
-	tempEllipseCoordinate[1].x = ellipseCenter_.x;
-	tempEllipseCoordinate[1].y = ellipseCoordinates_[0].y;
-	tempEllipseCoordinate[2].x = ellipseCoordinates_[2].x;
-	tempEllipseCoordinate[2].y = ellipseCenter_.y;
-	tempEllipseCoordinate[3].x = ellipseCenter_.x;
-	tempEllipseCoordinate[3].y = ellipseCoordinates_[2].y;
+	tempEllipseCoordinate[FIRSTELLIPSECOORDINATE].x = ellipseCoordinates_[FIRSTELLIPSECOORDINATE].x;
+	tempEllipseCoordinate[FIRSTELLIPSECOORDINATE].y = ellipseCenter_.y;
+	tempEllipseCoordinate[SECONDELLIPSECOORDINATE].x = ellipseCenter_.x;
+	tempEllipseCoordinate[SECONDELLIPSECOORDINATE].y = ellipseCoordinates_[FIRSTELLIPSECOORDINATE].y;
+	tempEllipseCoordinate[THIRDELLIPSECOORDINATE].x = ellipseCoordinates_[THIRDELLIPSECOORDINATE].x;
+	tempEllipseCoordinate[THIRDELLIPSECOORDINATE].y = ellipseCenter_.y;
+	tempEllipseCoordinate[FOURTHELLIPSECOORDINATE].x = ellipseCenter_.x;
+	tempEllipseCoordinate[FOURTHELLIPSECOORDINATE].y = ellipseCoordinates_[THIRDELLIPSECOORDINATE].y;
 
 	temp = tempEllipseCoordinate[0];
 	for (auto i = 1; i < 4; i++) {
@@ -600,14 +606,14 @@ std::vector<CPoint> CMyPaintEllipse::getRightCoordinate() {
 std::vector<CPoint> CMyPaintEllipse::getTopCoordinate() {
 	CPoint temp;
 	CPoint tempEllipseCoordinate[4];
-	tempEllipseCoordinate[0].x = ellipseCoordinates_[0].x;
-	tempEllipseCoordinate[0].y = ellipseCenter_.y;
-	tempEllipseCoordinate[1].x = ellipseCenter_.x;
-	tempEllipseCoordinate[1].y = ellipseCoordinates_[0].y;
-	tempEllipseCoordinate[2].x = ellipseCoordinates_[2].x;
-	tempEllipseCoordinate[2].y = ellipseCenter_.y;
-	tempEllipseCoordinate[3].x = ellipseCenter_.x;
-	tempEllipseCoordinate[3].y = ellipseCoordinates_[2].y;
+	tempEllipseCoordinate[FIRSTELLIPSECOORDINATE].x = ellipseCoordinates_[FIRSTELLIPSECOORDINATE].x;
+	tempEllipseCoordinate[FIRSTELLIPSECOORDINATE].y = ellipseCenter_.y;
+	tempEllipseCoordinate[SECONDELLIPSECOORDINATE].x = ellipseCenter_.x;
+	tempEllipseCoordinate[SECONDELLIPSECOORDINATE].y = ellipseCoordinates_[FIRSTELLIPSECOORDINATE].y;
+	tempEllipseCoordinate[THIRDELLIPSECOORDINATE].x = ellipseCoordinates_[THIRDELLIPSECOORDINATE].x;
+	tempEllipseCoordinate[THIRDELLIPSECOORDINATE].y = ellipseCenter_.y;
+	tempEllipseCoordinate[FOURTHELLIPSECOORDINATE].x = ellipseCenter_.x;
+	tempEllipseCoordinate[FOURTHELLIPSECOORDINATE].y = ellipseCoordinates_[THIRDELLIPSECOORDINATE].y;
 
 	temp = tempEllipseCoordinate[0];
 	for (auto i = 1; i < 4; i++) {
@@ -622,8 +628,8 @@ std::vector<CPoint> CMyPaintEllipse::getTopCoordinate() {
 
 std::vector<LONG> CMyPaintEllipse::getMaxMinX() {
 	std::vector<LONG>MaxMin;
-	MaxMin.push_back(ellipseCoordinates_[0].x);
-	MaxMin.push_back(ellipseCoordinates_[0].x);
+	MaxMin.push_back(ellipseCoordinates_[FIRSTELLIPSECOORDINATE].x);
+	MaxMin.push_back(ellipseCoordinates_[FIRSTELLIPSECOORDINATE].x);
 	for (auto i = 1; i < 4; i++) {
 		if (ellipseCoordinates_[i].x > MaxMin[0]) {
 			MaxMin[0] = ellipseCoordinates_[i].x;
@@ -637,8 +643,8 @@ std::vector<LONG> CMyPaintEllipse::getMaxMinX() {
 
 std::vector<LONG> CMyPaintEllipse::getMaxMinY() {
 	std::vector<LONG>MaxMin;
-	MaxMin.push_back(ellipseCoordinates_[0].y);
-	MaxMin.push_back(ellipseCoordinates_[0].y);
+	MaxMin.push_back(ellipseCoordinates_[FIRSTELLIPSECOORDINATE].y);
+	MaxMin.push_back(ellipseCoordinates_[FIRSTELLIPSECOORDINATE].y);
 	for (auto i = 1; i < 4; i++) {
 		if (ellipseCoordinates_[i].y > MaxMin[0]) {
 			MaxMin[0] = ellipseCoordinates_[i].y;

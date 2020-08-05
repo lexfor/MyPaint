@@ -23,6 +23,22 @@
 #define new DEBUG_NEW
 #endif
 
+#define COORDINATEBEGINNING 0
+#define FIRSTCLICK 0
+#define LASTCLICK 2
+#define FIRSTFIGURE 0
+#define SECONDFIGURE 1
+#define FIRSTPOINT 0
+#define SECONDPOINT 1
+#define DEFAULTDOCSIZE 2000
+#define ADDITIONALPAGESIZE 500
+#define ADDITIONALLINESIZE 50
+#define DEFAULTPENWIDTH 1
+#define LINE 1
+#define RIGHTARROW 2
+#define LEFTARROW 3
+#define BIARROW 4
+
 // CMyPaintView
 
 IMPLEMENT_DYNCREATE(CMyPaintView, CScrollView)
@@ -70,12 +86,12 @@ END_MESSAGE_MAP()
 
 CMyPaintView::CMyPaintView() noexcept
 {
-	current_ = 0;
+	current_ = FIRSTFIGURE;
 	currentConnection_ = 0;
-	figureID_ = 0;
+	figureID_ = FIRSTFIGURE;
 	figureDraw_ = figureDrawEnum::nothing;
 	actionFlag_ = actionFlagEnum::nothing;
-	clickCount_ = 0;
+	clickCount_ = FIRSTCLICK;
 	cursor_ = true;
 	rotation_ = false;
 	edit_ = false;
@@ -85,13 +101,13 @@ CMyPaintView::CMyPaintView() noexcept
 	for (int i = 0; i < 16; i++) {
 		customColors[i] = RGB(16 * i, 16 * i, 16 * i);
 	}
-	penWidth_ = 1;
+	penWidth_ = DEFAULTPENWIDTH;
 	penStyle_ = PS_SOLID;
 	brushStyle_ = 0;
-	previous_.x = 0;
-	previous_.y = 0;
-	next_.x = 0;
-	next_.y = 0;
+	previous_.x = COORDINATEBEGINNING;
+	previous_.y = COORDINATEBEGINNING;
+	next_.x = COORDINATEBEGINNING;
+	next_.y = COORDINATEBEGINNING;
 	docSize_ = GetTotalSize();
 	isCheckCross = false;
 }
@@ -102,8 +118,6 @@ CMyPaintView::~CMyPaintView()
 
 BOOL CMyPaintView::PreCreateWindow(CREATESTRUCT& cs)
 {
-	// TODO: изменить класс Window или стили посредством изменения
-	//  CREATESTRUCT cs
 
 	return CView::PreCreateWindow(cs);
 }
@@ -178,7 +192,7 @@ CMyPaintDoc* CMyPaintView::GetDocument() const // встроена неотла�
 void CMyPaintView::OnLButtonDown(UINT nFlags, CPoint point)
 {
 	try {
-		if (point.x < 0 || point.y < 0) {
+		if (point.x < COORDINATEBEGINNING || point.y < COORDINATEBEGINNING) {
 			throw 1;
 		}
 
@@ -203,14 +217,14 @@ void CMyPaintView::OnLButtonDown(UINT nFlags, CPoint point)
 				actionFlag_ = actionFlagEnum::draw;
 				break;
 			case figureDrawEnum::triangleDraw:
-				if (clickCount_ == 0) {
+				if (clickCount_ == FIRSTCLICK) {
 					current_ = pDoc->CreateTriangle(point);
 					actionFlag_ = actionFlagEnum::draw;
 				}
-				if (clickCount_ == 2) {
+				if (clickCount_ == LASTCLICK) {
 					actionFlag_ = actionFlagEnum::nothing;
 					ReleaseCapture();
-					clickCount_ = 0;
+					clickCount_ = FIRSTCLICK;
 				}
 				pDoc->figure_[current_]->setCoordinates(point, true);
 				break;
@@ -221,7 +235,7 @@ void CMyPaintView::OnLButtonDown(UINT nFlags, CPoint point)
 				break;
 			}
 
-			if (current_ < 0) {
+			if (current_ < FIRSTFIGURE) {
 				throw 2;
 			}
 
@@ -231,7 +245,7 @@ void CMyPaintView::OnLButtonDown(UINT nFlags, CPoint point)
 		if (actionFlag_ == actionFlagEnum::rotate) {
 			pDoc->figure_[current_]->makeTempCoordinatesNull();
 			pDoc->UpdateAllViews(nullptr);
-			rotatePoint_[0] = point;
+			rotatePoint_[FIRSTPOINT] = point;
 			rotation_ = true;
 			return;
 		}
@@ -245,11 +259,11 @@ void CMyPaintView::OnLButtonDown(UINT nFlags, CPoint point)
 		}
 		if (isCheckCross) {
 			if (findFigure(point)) {
-				if (current_ == crossFigure[0]) {
+				if (current_ == crossFigure[FIRSTFIGURE]) {
 					AfxMessageBox(L"Данная фигура уже выбрана");
 					return;
 				}
-				crossFigure[1] = current_;
+				crossFigure[SECONDFIGURE] = current_;
 				isCheckCross = false;
 				if (checkCross())
 				{
@@ -264,7 +278,7 @@ void CMyPaintView::OnLButtonDown(UINT nFlags, CPoint point)
 
 		if (cursor_) {
 			if (findFigure(point)) {
-				movePoint_[0] = point;
+				movePoint_[FIRSTPOINT] = point;
 				actionFlag_ = actionFlagEnum::move;
 			}
 		}
@@ -292,10 +306,10 @@ void CMyPaintView::OnLButtonDown(UINT nFlags, CPoint point)
 void CMyPaintView::OnMouseMove(UINT nFlags, CPoint point)
 {
 	try {
-		if (point.x < 0 || point.y < 0) {
+		if (point.x < COORDINATEBEGINNING || point.y < COORDINATEBEGINNING) {
 			throw 1;
 		}
-		if (current_ < 0) {
+		if (current_ < FIRSTFIGURE) {
 			throw 2;
 		}
 
@@ -310,7 +324,7 @@ void CMyPaintView::OnMouseMove(UINT nFlags, CPoint point)
 		}
 
 		if (actionFlag_ == actionFlagEnum::move) {
-			movePoint_[1] = point;
+			movePoint_[SECONDPOINT] = point;
 			std::vector<int>nums;
 			pDoc->UpdateAllViews(nullptr);
 			pDoc->figure_[current_]->move(movePoint_);
@@ -326,18 +340,18 @@ void CMyPaintView::OnMouseMove(UINT nFlags, CPoint point)
 				}
 				pDoc->UpdateAllViews(nullptr);
 				if (pDoc->connections_[key].getFirstFigureID() == pDoc->figure_[current_]->getID()) {
-					pDoc->connections_[key].moveCoordinates(movePoint_, 0);
+					pDoc->connections_[key].moveCoordinates(movePoint_, FIRSTPOINT);
 				}
 				else {
-					pDoc->connections_[key].moveCoordinates(movePoint_, 1);
+					pDoc->connections_[key].moveCoordinates(movePoint_, SECONDPOINT);
 				}
 				pDoc->connections_[key].draw(dc);
 			}
-			movePoint_[0] = point;
+			movePoint_[FIRSTPOINT] = point;
 		}
 
 		if (actionFlag_ == actionFlagEnum::rotate && rotation_) {
-			rotatePoint_[1] = point;
+			rotatePoint_[SECONDPOINT] = point;
 			std::vector<int>nums;
 			pDoc->UpdateAllViews(nullptr);
 			pDoc->figure_[current_]->rotate(rotatePoint_, false);
@@ -372,10 +386,10 @@ void CMyPaintView::OnMouseMove(UINT nFlags, CPoint point)
 void CMyPaintView::OnLButtonUp(UINT nFlags, CPoint point)
 {
 	try {
-		if (point.x < 0 || point.y < 0) {
+		if (point.x < COORDINATEBEGINNING || point.y < COORDINATEBEGINNING) {
 			throw 1;
 		}
-		if (current_ < 0) {
+		if (current_ < FIRSTFIGURE) {
 			throw 2;
 		}
 
@@ -396,7 +410,7 @@ void CMyPaintView::OnLButtonUp(UINT nFlags, CPoint point)
 
 		}
 		if (actionFlag_ == actionFlagEnum::move) {
-			movePoint_[1] = point;
+			movePoint_[SECONDPOINT] = point;
 			std::vector<int>nums;
 			pDoc->UpdateAllViews(nullptr);
 			pDoc->figure_[current_]->move(movePoint_);
@@ -413,17 +427,17 @@ void CMyPaintView::OnLButtonUp(UINT nFlags, CPoint point)
 				}
 				pDoc->UpdateAllViews(nullptr);
 				if (pDoc->connections_[key].getFirstFigureID() == pDoc->figure_[current_]->getID()) {
-					pDoc->connections_[key].moveCoordinates(movePoint_, 0);
+					pDoc->connections_[key].moveCoordinates(movePoint_, FIRSTPOINT);
 				}
 				else {
-					pDoc->connections_[key].moveCoordinates(movePoint_, 1);
+					pDoc->connections_[key].moveCoordinates(movePoint_, SECONDPOINT);
 				}
 				pDoc->connections_[key].draw(dc);
 			}
 			actionFlag_ = actionFlagEnum::nothing;
 		}
 		if (actionFlag_ == actionFlagEnum::rotate && rotation_) {
-			rotatePoint_[1] = point;
+			rotatePoint_[SECONDPOINT] = point;
 			std::vector<int>nums;
 			pDoc->UpdateAllViews(nullptr);
 			pDoc->figure_[current_]->rotate(rotatePoint_, true);
@@ -608,7 +622,7 @@ void CMyPaintView::OnContextmenuDelete()
 	int deleteID = pDoc->figure_[current_]->getID();
 	nums = pDoc->figure_[current_]->getConnectionID();
 	pDoc->figure_.erase(pDoc->figure_.begin() + current_);
-	current_ = 0;
+	current_ = FIRSTFIGURE;
 	for (size_t i = 0; i < nums.size(); i++) {
 		int num;
 		for (size_t j = 0; j < pDoc->connections_.size(); j++) {
@@ -727,7 +741,7 @@ void CMyPaintView::OnConnectLine()
 	CPoint point;
 	CString str;
 	str.Format(_T("Line%i"), figureID_);
-	CMyPaintConnection connection_(figureID_++, str, penWidth_, currentPenColor_, penStyle_, 1, 0, pDoc->figure_[current_]->getID(), point);
+	CMyPaintConnection connection_(figureID_++, str, penWidth_, currentPenColor_, penStyle_, LINE, 0, pDoc->figure_[current_]->getID(), point);
 	pDoc->connections_.push_back(connection_);
 	actionFlag_ = actionFlagEnum::connect;
 }
@@ -740,7 +754,7 @@ void CMyPaintView::OnConnectRightarrow()
 	CPoint point;
 	CString str;
 	str.Format(_T("Right arrow%i"), figureID_);
-	CMyPaintConnection connection_(figureID_++, str, penWidth_, currentPenColor_, penStyle_, 2, 0, pDoc->figure_[current_]->getID(), point);
+	CMyPaintConnection connection_(figureID_++, str, penWidth_, currentPenColor_, penStyle_, RIGHTARROW, 0, pDoc->figure_[current_]->getID(), point);
 	pDoc->connections_.push_back(connection_);
 	actionFlag_ = actionFlagEnum::connect;
 }
@@ -753,7 +767,7 @@ void CMyPaintView::OnConnectLeftarrow()
 	CPoint point;
 	CString str;
 	str.Format(_T("Left arrow%i"), figureID_);
-	CMyPaintConnection connection_(figureID_++, str, penWidth_, currentPenColor_, penStyle_, 3, 0, pDoc->figure_[current_]->getID(), point);
+	CMyPaintConnection connection_(figureID_++, str, penWidth_, currentPenColor_, penStyle_, LEFTARROW, 0, pDoc->figure_[current_]->getID(), point);
 	pDoc->connections_.push_back(connection_);
 	actionFlag_ = actionFlagEnum::connect;
 }
@@ -766,7 +780,7 @@ void CMyPaintView::OnConnectBiderectionalarrow()
 	CPoint point;
 	CString str;
 	str.Format(_T("Biderectional arrow%i"), figureID_);
-	CMyPaintConnection connection_(figureID_++, str, penWidth_, currentPenColor_, penStyle_, 4, 0, pDoc->figure_[current_]->getID(), point);
+	CMyPaintConnection connection_(figureID_++, str, penWidth_, currentPenColor_, penStyle_, BIARROW, 0, pDoc->figure_[current_]->getID(), point);
 	pDoc->connections_.push_back(connection_);
 	actionFlag_ = actionFlagEnum::connect;
 }
@@ -809,9 +823,9 @@ void CMyPaintView::OnWidth()
 	dlg.setCurrentWidth(penWidth_);
 	dlg.DoModal();
 	penWidth_ = dlg.getCurrentWidth();
-	if (penWidth_ > 1 && penStyle_ > 0) {
+	if (penWidth_ > DEFAULTPENWIDTH && penStyle_ > PS_SOLID) {
 		AfxMessageBox(L"Данная ширина не совместима с выбранным стилем");
-		penStyle_ = 0;
+		penStyle_ = PS_SOLID;
 		pDoc->setPenStyle(penStyle_);
 	}
 	pDoc->setWidth(penWidth_);
@@ -827,9 +841,9 @@ void CMyPaintView::OnPenStyle()
 	dlg.setPenStyle(penStyle_);
 	dlg.DoModal();
 	penStyle_ = dlg.getPenStyle();
-	if (penWidth_ > 1 && penStyle_ > 0) {
+	if (penWidth_ > DEFAULTPENWIDTH && penStyle_ > PS_SOLID) {
 		AfxMessageBox(L"Данный стиль не совместим с выбранной шириной");
-		penWidth_ = 1;
+		penWidth_ = DEFAULTPENWIDTH;
 		pDoc->setWidth(penWidth_);
 	}
 	pDoc->setPenStyle(penStyle_);
@@ -990,13 +1004,13 @@ void CMyPaintView::OnPaint()
 		docSize_.cx += 100;
 		CSize size = GetTotalSize();
 		size.cx += 100;
-		SetScrollSizes(MM_TEXT, size, CSize(500, 500), CSize(50, 50));
+		SetScrollSizes(MM_TEXT, size, CSize(ADDITIONALPAGESIZE, ADDITIONALPAGESIZE), CSize(ADDITIONALLINESIZE, ADDITIONALLINESIZE));
 	}
 	if (docSize_.cy < 500) {
 		docSize_.cy += 100;
 		CSize size = GetTotalSize();
 		size.cy += 100;
-		SetScrollSizes(MM_TEXT, size, CSize(500, 500), CSize(50, 50));
+		SetScrollSizes(MM_TEXT, size, CSize(ADDITIONALPAGESIZE, ADDITIONALPAGESIZE), CSize(ADDITIONALLINESIZE, ADDITIONALLINESIZE));
 	}
 	PAINTSTRUCT ps;
 	::BeginPaint(m_hWnd, &ps);
@@ -1034,8 +1048,8 @@ void CMyPaintView::OnInitialUpdate()
 	CScrollView::OnInitialUpdate();
 
 
-	CSize DocSize(2000, 2000);
-	SetScrollSizes(MM_TEXT, DocSize, CSize(500, 500), CSize(50, 50));
+	CSize DocSize(DEFAULTDOCSIZE, DEFAULTDOCSIZE);
+	SetScrollSizes(MM_TEXT, DocSize, CSize(ADDITIONALPAGESIZE, ADDITIONALPAGESIZE), CSize(ADDITIONALLINESIZE, ADDITIONALLINESIZE));
 }
 
 
@@ -1044,26 +1058,26 @@ bool CMyPaintView::checkCross()
 	CMyPaintDoc* pDoc = GetDocument();
 	ASSERT_VALID(pDoc);
 	int rightFigureID,leftFigureID, topFigureID, bottomFigureID;
-	if (pDoc->figure_[crossFigure[0]]->getCenterCoordinates().x > pDoc->figure_[crossFigure[1]]->getCenterCoordinates().x) {
-		rightFigureID = crossFigure[0];
-		leftFigureID = crossFigure[1];
+	if (pDoc->figure_[crossFigure[FIRSTFIGURE]]->getCenterCoordinates().x > pDoc->figure_[crossFigure[SECONDFIGURE]]->getCenterCoordinates().x) {
+		rightFigureID = crossFigure[FIRSTFIGURE];
+		leftFigureID = crossFigure[SECONDFIGURE];
 	}
 	else {
-		rightFigureID = crossFigure[1];
-		leftFigureID = crossFigure[0];
+		rightFigureID = crossFigure[SECONDFIGURE];
+		leftFigureID = crossFigure[FIRSTFIGURE];
 	}
-	if (pDoc->figure_[crossFigure[0]]->getCenterCoordinates().y > pDoc->figure_[crossFigure[1]]->getCenterCoordinates().y) {
-		topFigureID = crossFigure[0];
-		bottomFigureID = crossFigure[1];
+	if (pDoc->figure_[crossFigure[FIRSTFIGURE]]->getCenterCoordinates().y > pDoc->figure_[crossFigure[SECONDFIGURE]]->getCenterCoordinates().y) {
+		topFigureID = crossFigure[FIRSTFIGURE];
+		bottomFigureID = crossFigure[SECONDFIGURE];
 	}
 	else {
-		topFigureID = crossFigure[1];
-		bottomFigureID = crossFigure[0];
+		topFigureID = crossFigure[SECONDFIGURE];
+		bottomFigureID = crossFigure[FIRSTFIGURE];
 	}
-	if (pDoc->figure_[crossFigure[0]]->ifThisFigure(pDoc->figure_[crossFigure[1]]->getCenterCoordinates())) {
+	if (pDoc->figure_[crossFigure[FIRSTFIGURE]]->ifThisFigure(pDoc->figure_[crossFigure[SECONDFIGURE]]->getCenterCoordinates())) {
 		return true;
 	}
-	if (pDoc->figure_[crossFigure[1]]->ifThisFigure(pDoc->figure_[crossFigure[0]]->getCenterCoordinates())) {
+	if (pDoc->figure_[crossFigure[SECONDFIGURE]]->ifThisFigure(pDoc->figure_[crossFigure[FIRSTFIGURE]]->getCenterCoordinates())) {
 		return true;
 	}
 	std::vector<CPoint> temp;
@@ -1091,10 +1105,10 @@ bool CMyPaintView::checkCross()
 			return true;
 		}
 	}
-	std::vector<LONG> FirstMaxMinX = pDoc->figure_[crossFigure[0]]->getMaxMinX();
-	std::vector<LONG> FirstMaxMinY = pDoc->figure_[crossFigure[0]]->getMaxMinY();
-	std::vector<LONG> SecondMaxMinX = pDoc->figure_[crossFigure[1]]->getMaxMinX();
-	std::vector<LONG> SecondMaxMinY = pDoc->figure_[crossFigure[1]]->getMaxMinY();
+	std::vector<LONG> FirstMaxMinX = pDoc->figure_[crossFigure[FIRSTFIGURE]]->getMaxMinX();
+	std::vector<LONG> FirstMaxMinY = pDoc->figure_[crossFigure[FIRSTFIGURE]]->getMaxMinY();
+	std::vector<LONG> SecondMaxMinX = pDoc->figure_[crossFigure[SECONDFIGURE]]->getMaxMinX();
+	std::vector<LONG> SecondMaxMinY = pDoc->figure_[crossFigure[SECONDFIGURE]]->getMaxMinY();
 	if (FirstMaxMinX[0] > SecondMaxMinX[0] && FirstMaxMinX[1] < SecondMaxMinX[1] && FirstMaxMinY[0] < SecondMaxMinY[0] && FirstMaxMinY[1] > SecondMaxMinY[1]) {
 		return true;
 	}
@@ -1107,6 +1121,6 @@ bool CMyPaintView::checkCross()
 
 void CMyPaintView::OnContextmenuCheckcross()
 {
-	crossFigure[0] = current_;
+	crossFigure[FIRSTFIGURE] = current_;
 	isCheckCross = true;
 }
