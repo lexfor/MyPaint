@@ -1,26 +1,32 @@
 #include "pch.h"
 #include "CMyPaintTriangle.h"
+
+#define FIRSTTRIANGLECOORDINATE 0
+#define SECONDTRIANGLECOORDINATE 1
+#define THIRDTRIANGLECOORDINATE 2
+
+
 CMyPaintTriangle::CMyPaintTriangle() : triangleCoordinates_(), CMyPaintFigure()
 {
 	clickCount_ = clickCountEnum_::firstClick;
 }
 CMyPaintTriangle::CMyPaintTriangle(unsigned int id, CString name, int penWidth, COLORREF penColor, int penStyle, COLORREF brushColor, int brushStyle, CPoint FirstPoint, CPoint SecondPoint, CPoint ThirdPoint) : CMyPaintFigure(id, name, penWidth, penColor, penStyle, brushColor, brushStyle)
 {
-	triangleCoordinates_[0] = FirstPoint;
-	triangleCoordinates_[1] = SecondPoint;
-	triangleCoordinates_[2] = ThirdPoint;
+	triangleCoordinates_[FIRSTTRIANGLECOORDINATE] = FirstPoint;
+	triangleCoordinates_[SECONDTRIANGLECOORDINATE] = SecondPoint;
+	triangleCoordinates_[THIRDTRIANGLECOORDINATE] = ThirdPoint;
 	findCenterCoordinates();
 	clickCount_ = clickCountEnum_::firstClick;
 }
 void CMyPaintTriangle::findCenterCoordinates() {
-	triangleCenter_.x = (triangleCoordinates_[0].x + triangleCoordinates_[1].x + triangleCoordinates_[2].x) / 3;
-	triangleCenter_.y = (triangleCoordinates_[0].y + triangleCoordinates_[1].y + triangleCoordinates_[2].y) / 3;
+	triangleCenter_.x = (triangleCoordinates_[FIRSTTRIANGLECOORDINATE].x + triangleCoordinates_[SECONDTRIANGLECOORDINATE].x + triangleCoordinates_[THIRDTRIANGLECOORDINATE].x) / 3;
+	triangleCenter_.y = (triangleCoordinates_[FIRSTTRIANGLECOORDINATE].y + triangleCoordinates_[SECONDTRIANGLECOORDINATE].y + triangleCoordinates_[THIRDTRIANGLECOORDINATE].y) / 3;
 }
 bool CMyPaintTriangle::ifThisFigure(CPoint point) {
 	int SummOne, SummTwo, SummThree;
-	SummOne = (triangleCoordinates_[0].x - point.x) * (triangleCoordinates_[1].y - triangleCoordinates_[0].y) - (triangleCoordinates_[1].x - triangleCoordinates_[0].x) * (triangleCoordinates_[0].y - point.y);
-	SummTwo = (triangleCoordinates_[1].x - point.x) * (triangleCoordinates_[2].y - triangleCoordinates_[1].y) - (triangleCoordinates_[2].x - triangleCoordinates_[1].x) * (triangleCoordinates_[1].y - point.y);
-	SummThree = (triangleCoordinates_[2].x - point.x) * (triangleCoordinates_[0].y - triangleCoordinates_[2].y) - (triangleCoordinates_[0].x - triangleCoordinates_[2].x) * (triangleCoordinates_[2].y - point.y);
+	SummOne = (triangleCoordinates_[FIRSTTRIANGLECOORDINATE].x - point.x) * (triangleCoordinates_[SECONDTRIANGLECOORDINATE].y - triangleCoordinates_[FIRSTTRIANGLECOORDINATE].y) - (triangleCoordinates_[SECONDTRIANGLECOORDINATE].x - triangleCoordinates_[FIRSTTRIANGLECOORDINATE].x) * (triangleCoordinates_[FIRSTTRIANGLECOORDINATE].y - point.y);
+	SummTwo = (triangleCoordinates_[SECONDTRIANGLECOORDINATE].x - point.x) * (triangleCoordinates_[THIRDTRIANGLECOORDINATE].y - triangleCoordinates_[SECONDTRIANGLECOORDINATE].y) - (triangleCoordinates_[THIRDTRIANGLECOORDINATE].x - triangleCoordinates_[SECONDTRIANGLECOORDINATE].x) * (triangleCoordinates_[SECONDTRIANGLECOORDINATE].y - point.y);
+	SummThree = (triangleCoordinates_[THIRDTRIANGLECOORDINATE].x - point.x) * (triangleCoordinates_[FIRSTTRIANGLECOORDINATE].y - triangleCoordinates_[THIRDTRIANGLECOORDINATE].y) - (triangleCoordinates_[FIRSTTRIANGLECOORDINATE].x - triangleCoordinates_[THIRDTRIANGLECOORDINATE].x) * (triangleCoordinates_[THIRDTRIANGLECOORDINATE].y - point.y);
 	if (SummOne > 0 && SummTwo > 0 && SummThree > 0) {
 		return true;
 	}
@@ -33,21 +39,21 @@ bool CMyPaintTriangle::ifThisFigure(CPoint point) {
 void CMyPaintTriangle::setCoordinates(CPoint point, bool isClickEnd) {
 	switch (clickCount_) {
 	case clickCountEnum_::firstClick:
-		triangleCoordinates_[0] = point;
+		triangleCoordinates_[FIRSTTRIANGLECOORDINATE] = point;
 		findCenterCoordinates();
 		if (isClickEnd) {
 			clickCount_ = clickCountEnum_::secondClick;
 		}
 		break;
 	case clickCountEnum_::secondClick:
-		triangleCoordinates_[1] = point;
+		triangleCoordinates_[SECONDTRIANGLECOORDINATE] = point;
 		findCenterCoordinates();
 		if (isClickEnd) {
 			clickCount_ = clickCountEnum_::thirdClick;
 		}
 		break;
 	case clickCountEnum_::thirdClick:
-		triangleCoordinates_[2] = point;
+		triangleCoordinates_[THIRDTRIANGLECOORDINATE] = point;
 		findCenterCoordinates();
 		if (isClickEnd) {
 			clickCount_ = clickCountEnum_::secondClick;
@@ -111,20 +117,20 @@ void CMyPaintTriangle::normalize() {
 	std::vector<int>place;
 	for (auto it = connectionsCoordinates_.begin(); it != connectionsCoordinates_.end(); it++) {
 		CPoint point;
-		point.x = (triangleCoordinates_[0].x + triangleCoordinates_[1].x) / 2;
-		point.y = (triangleCoordinates_[0].y + triangleCoordinates_[1].y) / 2;
+		point.x = (triangleCoordinates_[FIRSTTRIANGLECOORDINATE].x + triangleCoordinates_[SECONDTRIANGLECOORDINATE].x) / 2;
+		point.y = (triangleCoordinates_[FIRSTTRIANGLECOORDINATE].y + triangleCoordinates_[SECONDTRIANGLECOORDINATE].y) / 2;
 		if (it->second == point) {
 			place.push_back(1);
 			continue;
 		}
-		point.x = (triangleCoordinates_[1].x + triangleCoordinates_[2].x) / 2;
-		point.y = (triangleCoordinates_[1].y + triangleCoordinates_[2].y) / 2;
+		point.x = (triangleCoordinates_[SECONDTRIANGLECOORDINATE].x + triangleCoordinates_[THIRDTRIANGLECOORDINATE].x) / 2;
+		point.y = (triangleCoordinates_[SECONDTRIANGLECOORDINATE].y + triangleCoordinates_[THIRDTRIANGLECOORDINATE].y) / 2;
 		if (it->second == point) {
 			place.push_back(2);
 			continue;
 		}
-		point.x = (triangleCoordinates_[2].x + triangleCoordinates_[3].x) / 2;
-		point.y = (triangleCoordinates_[2].y + triangleCoordinates_[3].y) / 2;
+		point.x = (triangleCoordinates_[THIRDTRIANGLECOORDINATE].x + triangleCoordinates_[FIRSTTRIANGLECOORDINATE].x) / 2;
+		point.y = (triangleCoordinates_[THIRDTRIANGLECOORDINATE].y + triangleCoordinates_[FIRSTTRIANGLECOORDINATE].y) / 2;
 		if (it->second == point) {
 			place.push_back(3);
 			continue;
@@ -135,39 +141,39 @@ void CMyPaintTriangle::normalize() {
 	cos60 = 1 / 2;
 	sin60 = sqrt(3) / 2;
 	CPoint trianglePoint[2];
-	trianglePoint[0] = triangleCoordinates_[1];
-	trianglePoint[1] = triangleCoordinates_[0];
-	length = sqrt(pow(triangleCoordinates_[1].x - triangleCoordinates_[0].x, 2) + pow(triangleCoordinates_[1].y - triangleCoordinates_[0].y, 2));
-	if (length > sqrt(pow(triangleCoordinates_[2].x - triangleCoordinates_[1].x, 2) + pow(triangleCoordinates_[2].y - triangleCoordinates_[1].y, 2))) {
-		length = sqrt(pow(triangleCoordinates_[2].x - triangleCoordinates_[1].x, 2) + pow(triangleCoordinates_[2].y - triangleCoordinates_[1].y, 2));
-		trianglePoint[0] = triangleCoordinates_[2];
-		trianglePoint[1] = triangleCoordinates_[1];
+	trianglePoint[0] = triangleCoordinates_[SECONDTRIANGLECOORDINATE];
+	trianglePoint[1] = triangleCoordinates_[FIRSTTRIANGLECOORDINATE];
+	length = sqrt(pow(triangleCoordinates_[SECONDTRIANGLECOORDINATE].x - triangleCoordinates_[FIRSTTRIANGLECOORDINATE].x, 2) + pow(triangleCoordinates_[SECONDTRIANGLECOORDINATE].y - triangleCoordinates_[FIRSTTRIANGLECOORDINATE].y, 2));
+	if (length > sqrt(pow(triangleCoordinates_[THIRDTRIANGLECOORDINATE].x - triangleCoordinates_[SECONDTRIANGLECOORDINATE].x, 2) + pow(triangleCoordinates_[THIRDTRIANGLECOORDINATE].y - triangleCoordinates_[SECONDTRIANGLECOORDINATE].y, 2))) {
+		length = sqrt(pow(triangleCoordinates_[THIRDTRIANGLECOORDINATE].x - triangleCoordinates_[SECONDTRIANGLECOORDINATE].x, 2) + pow(triangleCoordinates_[THIRDTRIANGLECOORDINATE].y - triangleCoordinates_[SECONDTRIANGLECOORDINATE].y, 2));
+		trianglePoint[FIRSTTRIANGLECOORDINATE] = triangleCoordinates_[THIRDTRIANGLECOORDINATE];
+		trianglePoint[SECONDTRIANGLECOORDINATE] = triangleCoordinates_[SECONDTRIANGLECOORDINATE];
 	}
-	if (length > sqrt(pow(triangleCoordinates_[0].x - triangleCoordinates_[2].x, 2) + pow(triangleCoordinates_[0].y - triangleCoordinates_[2].y, 2))) {
-		length = sqrt(pow(triangleCoordinates_[0].x - triangleCoordinates_[2].x, 2) + pow(triangleCoordinates_[0].y - triangleCoordinates_[2].y, 2));
-		trianglePoint[0] = triangleCoordinates_[0];
-		trianglePoint[1] = triangleCoordinates_[2];
+	if (length > sqrt(pow(triangleCoordinates_[FIRSTTRIANGLECOORDINATE].x - triangleCoordinates_[THIRDTRIANGLECOORDINATE].x, 2) + pow(triangleCoordinates_[FIRSTTRIANGLECOORDINATE].y - triangleCoordinates_[THIRDTRIANGLECOORDINATE].y, 2))) {
+		length = sqrt(pow(triangleCoordinates_[FIRSTTRIANGLECOORDINATE].x - triangleCoordinates_[THIRDTRIANGLECOORDINATE].x, 2) + pow(triangleCoordinates_[FIRSTTRIANGLECOORDINATE].y - triangleCoordinates_[THIRDTRIANGLECOORDINATE].y, 2));
+		trianglePoint[FIRSTTRIANGLECOORDINATE] = triangleCoordinates_[FIRSTTRIANGLECOORDINATE];
+		trianglePoint[SECONDTRIANGLECOORDINATE] = triangleCoordinates_[THIRDTRIANGLECOORDINATE];
 	}
-	triangleCoordinates_[0] = trianglePoint[0];
-	triangleCoordinates_[1] = trianglePoint[1];
-	triangleCoordinates_[2].x = (triangleCoordinates_[1].x - triangleCoordinates_[0].x) * cos60 - (triangleCoordinates_[1].y - triangleCoordinates_[0].y) * sin60 + triangleCoordinates_[0].x;
-	triangleCoordinates_[2].y = (triangleCoordinates_[1].y - triangleCoordinates_[0].y) * cos60 + (triangleCoordinates_[1].x - triangleCoordinates_[0].x) * sin60 + triangleCoordinates_[0].y;
+	triangleCoordinates_[FIRSTTRIANGLECOORDINATE] = trianglePoint[FIRSTTRIANGLECOORDINATE];
+	triangleCoordinates_[SECONDTRIANGLECOORDINATE] = trianglePoint[SECONDTRIANGLECOORDINATE];
+	triangleCoordinates_[THIRDTRIANGLECOORDINATE].x = (triangleCoordinates_[SECONDTRIANGLECOORDINATE].x - triangleCoordinates_[FIRSTTRIANGLECOORDINATE].x) * cos60 - (triangleCoordinates_[SECONDTRIANGLECOORDINATE].y - triangleCoordinates_[FIRSTTRIANGLECOORDINATE].y) * sin60 + triangleCoordinates_[FIRSTTRIANGLECOORDINATE].x;
+	triangleCoordinates_[THIRDTRIANGLECOORDINATE].y = (triangleCoordinates_[SECONDTRIANGLECOORDINATE].y - triangleCoordinates_[FIRSTTRIANGLECOORDINATE].y) * cos60 + (triangleCoordinates_[SECONDTRIANGLECOORDINATE].x - triangleCoordinates_[FIRSTTRIANGLECOORDINATE].x) * sin60 + triangleCoordinates_[FIRSTTRIANGLECOORDINATE].y;
 	findCenterCoordinates();
 	auto it = connectionsCoordinates_.begin();
 	for (auto i = 0; i < place.size(); i++, it++) {
 		switch (place[i])
 		{
 		case 1:
-			it->second.x = (triangleCoordinates_[0].x + triangleCoordinates_[1].x) / 2;
-			it->second.y = (triangleCoordinates_[0].y + triangleCoordinates_[1].y) / 2;
+			it->second.x = (triangleCoordinates_[FIRSTTRIANGLECOORDINATE].x + triangleCoordinates_[SECONDTRIANGLECOORDINATE].x) / 2;
+			it->second.y = (triangleCoordinates_[FIRSTTRIANGLECOORDINATE].y + triangleCoordinates_[SECONDTRIANGLECOORDINATE].y) / 2;
 			break;
 		case 2:
-			it->second.x = (triangleCoordinates_[1].x + triangleCoordinates_[2].x) / 2;
-			it->second.y = (triangleCoordinates_[1].y + triangleCoordinates_[2].y) / 2;
+			it->second.x = (triangleCoordinates_[SECONDTRIANGLECOORDINATE].x + triangleCoordinates_[THIRDTRIANGLECOORDINATE].x) / 2;
+			it->second.y = (triangleCoordinates_[SECONDTRIANGLECOORDINATE].y + triangleCoordinates_[THIRDTRIANGLECOORDINATE].y) / 2;
 			break;
 		case 3:
-			it->second.x = (triangleCoordinates_[2].x + triangleCoordinates_[3].x) / 2;
-			it->second.y = (triangleCoordinates_[2].y + triangleCoordinates_[3].y) / 2;
+			it->second.x = (triangleCoordinates_[THIRDTRIANGLECOORDINATE].x + triangleCoordinates_[FIRSTTRIANGLECOORDINATE].x) / 2;
+			it->second.y = (triangleCoordinates_[THIRDTRIANGLECOORDINATE].y + triangleCoordinates_[FIRSTTRIANGLECOORDINATE].y) / 2;
 			break;
 		default:
 			break;
@@ -220,12 +226,12 @@ CPoint CMyPaintTriangle::findConnectionCoordinates(CPoint centerPoint, int conne
 	CPoint arrowPoint[4];
 	double length;
 	int pointNum;
-	arrowPoint[0].x = (triangleCoordinates_[0].x + triangleCoordinates_[1].x) / 2;
-	arrowPoint[0].y = (triangleCoordinates_[0].y + triangleCoordinates_[1].y) / 2;
-	arrowPoint[1].x = (triangleCoordinates_[1].x + triangleCoordinates_[2].x) / 2;
-	arrowPoint[1].y = (triangleCoordinates_[1].y + triangleCoordinates_[2].y) / 2;
-	arrowPoint[2].x = (triangleCoordinates_[2].x + triangleCoordinates_[0].x) / 2;
-	arrowPoint[2].y = (triangleCoordinates_[2].y + triangleCoordinates_[0].y) / 2;
+	arrowPoint[0].x = (triangleCoordinates_[FIRSTTRIANGLECOORDINATE].x + triangleCoordinates_[SECONDTRIANGLECOORDINATE].x) / 2;
+	arrowPoint[0].y = (triangleCoordinates_[FIRSTTRIANGLECOORDINATE].y + triangleCoordinates_[SECONDTRIANGLECOORDINATE].y) / 2;
+	arrowPoint[1].x = (triangleCoordinates_[SECONDTRIANGLECOORDINATE].x + triangleCoordinates_[THIRDTRIANGLECOORDINATE].x) / 2;
+	arrowPoint[1].y = (triangleCoordinates_[SECONDTRIANGLECOORDINATE].y + triangleCoordinates_[THIRDTRIANGLECOORDINATE].y) / 2;
+	arrowPoint[2].x = (triangleCoordinates_[THIRDTRIANGLECOORDINATE].x + triangleCoordinates_[FIRSTTRIANGLECOORDINATE].x) / 2;
+	arrowPoint[2].y = (triangleCoordinates_[THIRDTRIANGLECOORDINATE].y + triangleCoordinates_[FIRSTTRIANGLECOORDINATE].y) / 2;
 	length = sqrt(pow(arrowPoint[0].x - centerPoint.x, 2) + pow(arrowPoint[0].y - centerPoint.y, 2));
 	pointNum = 0;
 	if (length > sqrt(pow(arrowPoint[1].x - centerPoint.x, 2) + pow(arrowPoint[1].y - centerPoint.y, 2))) {
@@ -244,12 +250,12 @@ CPoint CMyPaintTriangle::findConnectionCoordinates(CPoint centerPoint, int conne
 }
 int CMyPaintTriangle::findConnectionPlace(int key) {
 	CPoint arrowPoint[4];
-	arrowPoint[0].x = (triangleCoordinates_[0].x + triangleCoordinates_[1].x) / 2;
-	arrowPoint[0].y = (triangleCoordinates_[0].y + triangleCoordinates_[1].y) / 2;
-	arrowPoint[1].x = (triangleCoordinates_[1].x + triangleCoordinates_[2].x) / 2;
-	arrowPoint[1].y = (triangleCoordinates_[1].y + triangleCoordinates_[2].y) / 2;
-	arrowPoint[2].x = (triangleCoordinates_[2].x + triangleCoordinates_[0].x) / 2;
-	arrowPoint[2].y = (triangleCoordinates_[2].y + triangleCoordinates_[0].y) / 2;
+	arrowPoint[0].x = (triangleCoordinates_[FIRSTTRIANGLECOORDINATE].x + triangleCoordinates_[SECONDTRIANGLECOORDINATE].x) / 2;
+	arrowPoint[0].y = (triangleCoordinates_[FIRSTTRIANGLECOORDINATE].y + triangleCoordinates_[SECONDTRIANGLECOORDINATE].y) / 2;
+	arrowPoint[1].x = (triangleCoordinates_[SECONDTRIANGLECOORDINATE].x + triangleCoordinates_[THIRDTRIANGLECOORDINATE].x) / 2;
+	arrowPoint[1].y = (triangleCoordinates_[SECONDTRIANGLECOORDINATE].y + triangleCoordinates_[THIRDTRIANGLECOORDINATE].y) / 2;
+	arrowPoint[2].x = (triangleCoordinates_[THIRDTRIANGLECOORDINATE].x + triangleCoordinates_[FIRSTTRIANGLECOORDINATE].x) / 2;
+	arrowPoint[2].y = (triangleCoordinates_[THIRDTRIANGLECOORDINATE].y + triangleCoordinates_[FIRSTTRIANGLECOORDINATE].y) / 2;
 	auto it = connectionsCoordinates_.find(key);
 	if (it->second == arrowPoint[0]) {
 		return 1;
@@ -277,20 +283,20 @@ void CMyPaintTriangle::properties(std::vector<int>ids, std::vector<CString> name
 	std::vector<int>place;
 	for (auto it = connectionsCoordinates_.begin(); it != connectionsCoordinates_.end(); it++) {
 		CPoint point;
-		point.x = (triangleCoordinates_[0].x + triangleCoordinates_[1].x) / 2;
-		point.y = (triangleCoordinates_[0].y + triangleCoordinates_[1].y) / 2;
+		point.x = (triangleCoordinates_[FIRSTTRIANGLECOORDINATE].x + triangleCoordinates_[SECONDTRIANGLECOORDINATE].x) / 2;
+		point.y = (triangleCoordinates_[FIRSTTRIANGLECOORDINATE].y + triangleCoordinates_[SECONDTRIANGLECOORDINATE].y) / 2;
 		if (it->second == point) {
 			place.push_back(1);
 			continue;
 		}
-		point.x = (triangleCoordinates_[1].x + triangleCoordinates_[2].x) / 2;
-		point.y = (triangleCoordinates_[1].y + triangleCoordinates_[2].y) / 2;
+		point.x = (triangleCoordinates_[SECONDTRIANGLECOORDINATE].x + triangleCoordinates_[THIRDTRIANGLECOORDINATE].x) / 2;
+		point.y = (triangleCoordinates_[SECONDTRIANGLECOORDINATE].y + triangleCoordinates_[THIRDTRIANGLECOORDINATE].y) / 2;
 		if (it->second == point) {
 			place.push_back(2);
 			continue;
 		}
-		point.x = (triangleCoordinates_[2].x + triangleCoordinates_[3].x) / 2;
-		point.y = (triangleCoordinates_[2].y + triangleCoordinates_[3].y) / 2;
+		point.x = (triangleCoordinates_[THIRDTRIANGLECOORDINATE].x + triangleCoordinates_[FIRSTTRIANGLECOORDINATE].x) / 2;
+		point.y = (triangleCoordinates_[THIRDTRIANGLECOORDINATE].y + triangleCoordinates_[FIRSTTRIANGLECOORDINATE].y) / 2;
 		if (it->second == point) {
 			place.push_back(3);
 			continue;
@@ -301,9 +307,9 @@ void CMyPaintTriangle::properties(std::vector<int>ids, std::vector<CString> name
 	dlg.getNames(names);
 	dlg.setName(name_);
 	dlg.setID(id_);
-	dlg.setFirstPoint(triangleCoordinates_[0]);
-	dlg.setSecondPoint(triangleCoordinates_[1]);
-	dlg.setThirdPoint(triangleCoordinates_[2]);
+	dlg.setFirstPoint(triangleCoordinates_[FIRSTTRIANGLECOORDINATE]);
+	dlg.setSecondPoint(triangleCoordinates_[SECONDTRIANGLECOORDINATE]);
+	dlg.setThirdPoint(triangleCoordinates_[THIRDTRIANGLECOORDINATE]);
 	dlg.setWidth(penWidth_);
 	dlg.setPenStyle(penStyle_);
 	dlg.setBrushStyle(brushStyle_);
@@ -312,9 +318,9 @@ void CMyPaintTriangle::properties(std::vector<int>ids, std::vector<CString> name
 	dlg.DoModal();
 	name_ = dlg.getName();
 	id_ = dlg.getID();
-	triangleCoordinates_[0] = dlg.getFirstPoint();
-	triangleCoordinates_[1] = dlg.getSecondPoint();
-	triangleCoordinates_[2] = dlg.getThirdPoint();
+	triangleCoordinates_[FIRSTTRIANGLECOORDINATE] = dlg.getFirstPoint();
+	triangleCoordinates_[SECONDTRIANGLECOORDINATE] = dlg.getSecondPoint();
+	triangleCoordinates_[THIRDTRIANGLECOORDINATE] = dlg.getThirdPoint();
 	penWidth_ = dlg.getWidth();
 	penStyle_ = dlg.getPenStyle();
 	brushStyle_ = dlg.getBrushStyle();
@@ -326,16 +332,16 @@ void CMyPaintTriangle::properties(std::vector<int>ids, std::vector<CString> name
 		switch (place[i])
 		{
 		case 1:
-			it->second.x = (triangleCoordinates_[0].x + triangleCoordinates_[1].x) / 2;
-			it->second.y = (triangleCoordinates_[0].y + triangleCoordinates_[1].y) / 2;
+			it->second.x = (triangleCoordinates_[FIRSTTRIANGLECOORDINATE].x + triangleCoordinates_[SECONDTRIANGLECOORDINATE].x) / 2;
+			it->second.y = (triangleCoordinates_[FIRSTTRIANGLECOORDINATE].y + triangleCoordinates_[SECONDTRIANGLECOORDINATE].y) / 2;
 			break;
 		case 2:
-			it->second.x = (triangleCoordinates_[1].x + triangleCoordinates_[2].x) / 2;
-			it->second.y = (triangleCoordinates_[1].y + triangleCoordinates_[2].y) / 2;
+			it->second.x = (triangleCoordinates_[SECONDTRIANGLECOORDINATE].x + triangleCoordinates_[THIRDTRIANGLECOORDINATE].x) / 2;
+			it->second.y = (triangleCoordinates_[SECONDTRIANGLECOORDINATE].y + triangleCoordinates_[THIRDTRIANGLECOORDINATE].y) / 2;
 			break;
 		case 3:
-			it->second.x = (triangleCoordinates_[2].x + triangleCoordinates_[3].x) / 2;
-			it->second.y = (triangleCoordinates_[2].y + triangleCoordinates_[3].y) / 2;
+			it->second.x = (triangleCoordinates_[THIRDTRIANGLECOORDINATE].x + triangleCoordinates_[FIRSTTRIANGLECOORDINATE].x) / 2;
+			it->second.y = (triangleCoordinates_[THIRDTRIANGLECOORDINATE].y + triangleCoordinates_[FIRSTTRIANGLECOORDINATE].y) / 2;
 			break;
 		default:
 			break;
@@ -344,15 +350,15 @@ void CMyPaintTriangle::properties(std::vector<int>ids, std::vector<CString> name
 }
 
 CPoint CMyPaintTriangle::getFirstCoordinate() {
-	return triangleCoordinates_[0];
+	return triangleCoordinates_[FIRSTTRIANGLECOORDINATE];
 }
 
 CPoint CMyPaintTriangle::getSecondCoordinate() {
-	return triangleCoordinates_[1];
+	return triangleCoordinates_[SECONDTRIANGLECOORDINATE];
 }
 
 CPoint CMyPaintTriangle::getThirdCoordinate() {
-	return triangleCoordinates_[2];
+	return triangleCoordinates_[THIRDTRIANGLECOORDINATE];
 }
 
 int CMyPaintTriangle::getFigureType() {
@@ -360,15 +366,15 @@ int CMyPaintTriangle::getFigureType() {
 }
 
 void CMyPaintTriangle::setFirstCoordinate(CPoint point) {
-	triangleCoordinates_[0] = point;
+	triangleCoordinates_[FIRSTTRIANGLECOORDINATE] = point;
 }
 
 void CMyPaintTriangle::setSecondCoordinate(CPoint point) {
-	triangleCoordinates_[1] = point;
+	triangleCoordinates_[SECONDTRIANGLECOORDINATE] = point;
 }
 
 void CMyPaintTriangle::setThirdCoordinate(CPoint point) {
-	triangleCoordinates_[2] = point;
+	triangleCoordinates_[THIRDTRIANGLECOORDINATE] = point;
 }
 void CMyPaintTriangle::changeOtherCoordinates() {
 
@@ -515,7 +521,7 @@ void CMyPaintTriangle::scrollFigure(CPoint point) {
 
 std::vector<CPoint> CMyPaintTriangle::getLeftCoordinate() {
 	CPoint temp;
-	temp = triangleCoordinates_[0];
+	temp = triangleCoordinates_[FIRSTTRIANGLECOORDINATE];
 	for (auto i = 1; i < 3; i++) {
 		if (triangleCoordinates_[i].x < temp.x) {
 			temp = triangleCoordinates_[i];
@@ -528,7 +534,7 @@ std::vector<CPoint> CMyPaintTriangle::getLeftCoordinate() {
 
 std::vector<CPoint> CMyPaintTriangle::getBottomCoordinate() {
 	CPoint temp;
-	temp = triangleCoordinates_[0];
+	temp = triangleCoordinates_[FIRSTTRIANGLECOORDINATE];
 	for (auto i = 1; i < 3; i++) {
 		if (triangleCoordinates_[i].y < temp.y) {
 			temp = triangleCoordinates_[i];
@@ -541,7 +547,7 @@ std::vector<CPoint> CMyPaintTriangle::getBottomCoordinate() {
 
 std::vector<CPoint> CMyPaintTriangle::getRightCoordinate() {
 	CPoint temp;
-	temp = triangleCoordinates_[0];
+	temp = triangleCoordinates_[FIRSTTRIANGLECOORDINATE];
 	for (auto i = 1; i < 3; i++) {
 		if (triangleCoordinates_[i].x > temp.x) {
 			temp = triangleCoordinates_[i];
@@ -554,7 +560,7 @@ std::vector<CPoint> CMyPaintTriangle::getRightCoordinate() {
 
 std::vector<CPoint> CMyPaintTriangle::getTopCoordinate() {
 	CPoint temp;
-	temp = triangleCoordinates_[0];
+	temp = triangleCoordinates_[FIRSTTRIANGLECOORDINATE];
 	for (auto i = 1; i < 3; i++) {
 		if (triangleCoordinates_[i].y > temp.y) {
 			temp = triangleCoordinates_[i];
@@ -567,8 +573,8 @@ std::vector<CPoint> CMyPaintTriangle::getTopCoordinate() {
 
 std::vector<LONG> CMyPaintTriangle::getMaxMinX() {
 	std::vector<LONG>MaxMin;
-	MaxMin.push_back(triangleCoordinates_[0].x);
-	MaxMin.push_back(triangleCoordinates_[0].x);
+	MaxMin.push_back(triangleCoordinates_[FIRSTTRIANGLECOORDINATE].x);
+	MaxMin.push_back(triangleCoordinates_[FIRSTTRIANGLECOORDINATE].x);
 	for (auto i = 1; i < 3; i++) {
 		if (triangleCoordinates_[i].x > MaxMin[0]) {
 			MaxMin[0] = triangleCoordinates_[i].x;
@@ -582,8 +588,8 @@ std::vector<LONG> CMyPaintTriangle::getMaxMinX() {
 
 std::vector<LONG> CMyPaintTriangle::getMaxMinY() {
 	std::vector<LONG>MaxMin;
-	MaxMin.push_back(triangleCoordinates_[0].y);
-	MaxMin.push_back(triangleCoordinates_[0].y);
+	MaxMin.push_back(triangleCoordinates_[FIRSTTRIANGLECOORDINATE].y);
+	MaxMin.push_back(triangleCoordinates_[FIRSTTRIANGLECOORDINATE].y);
 	for (auto i = 1; i < 3; i++) {
 		if (triangleCoordinates_[i].y > MaxMin[0]) {
 			MaxMin[0] = triangleCoordinates_[i].y;

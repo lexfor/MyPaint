@@ -6,6 +6,7 @@
 #include "CMyPaintWidthDialog.h"
 #include "afxdialogex.h"
 
+#define DEFAULTWIDTH 1
 
 // Диалоговое окно CMyPaintWidthDialog
 
@@ -13,7 +14,7 @@ IMPLEMENT_DYNAMIC(CMyPaintWidthDialog, CDialogEx)
 
 CMyPaintWidthDialog::CMyPaintWidthDialog(CWnd* pParent /*=nullptr*/)
 	: CDialogEx(IDD_DIALOG_WIDTH, pParent)
-	, penWidth_(1)
+	, penWidth_(DEFAULTWIDTH)
 {
 
 }
