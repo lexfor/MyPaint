@@ -1,40 +1,46 @@
 #include "pch.h"
 #include "CMyPaintRect.h"
+
+#define FIRSTRECTCOORDINATE 0
+#define SECONDRECTCOORDINATE 1
+#define THIRDRECTCOORDINATE 2
+#define FOURTHRECTCOORDINATE 3
+
 CMyPaintRect::CMyPaintRect() : CMyPaintFigure()
 {}
 CMyPaintRect::CMyPaintRect(unsigned int id, CString name, int penWidth, COLORREF penColor, int penStyle, COLORREF brushColor, int brushStyle, CRect rectCoordinates) : CMyPaintFigure(id, name, penWidth, penColor, penStyle, brushColor, brushStyle)
 {
-	rectCoordinates_[0].x = rectCoordinates.left;
-	rectCoordinates_[0].y = rectCoordinates.top;
-	rectCoordinates_[1].x = rectCoordinates.right;
-	rectCoordinates_[1].y = rectCoordinates.top;
-	rectCoordinates_[2].x = rectCoordinates.right;
-	rectCoordinates_[2].y = rectCoordinates.bottom;
-	rectCoordinates_[3].x = rectCoordinates.left;
-	rectCoordinates_[3].y = rectCoordinates.bottom;
+	rectCoordinates_[FIRSTRECTCOORDINATE].x = rectCoordinates.left;
+	rectCoordinates_[FIRSTRECTCOORDINATE].y = rectCoordinates.top;
+	rectCoordinates_[SECONDRECTCOORDINATE].x = rectCoordinates.right;
+	rectCoordinates_[SECONDRECTCOORDINATE].y = rectCoordinates.top;
+	rectCoordinates_[THIRDRECTCOORDINATE].x = rectCoordinates.right;
+	rectCoordinates_[THIRDRECTCOORDINATE].y = rectCoordinates.bottom;
+	rectCoordinates_[FOURTHRECTCOORDINATE].x = rectCoordinates.left;
+	rectCoordinates_[FOURTHRECTCOORDINATE].y = rectCoordinates.bottom;
 	findCenterCoordinates();
 }
 void CMyPaintRect::setCoordinates(CPoint point, bool isClickEnd) {
-	rectCoordinates_[1].x = point.x;
-	rectCoordinates_[1].y = rectCoordinates_[0].y;
-	rectCoordinates_[2].x = point.x;
-	rectCoordinates_[2].y = point.y;
-	rectCoordinates_[3].x = rectCoordinates_[0].x;
-	rectCoordinates_[3].y = point.y;
+	rectCoordinates_[SECONDRECTCOORDINATE].x = point.x;
+	rectCoordinates_[SECONDRECTCOORDINATE].y = rectCoordinates_[FIRSTRECTCOORDINATE].y;
+	rectCoordinates_[THIRDRECTCOORDINATE].x = point.x;
+	rectCoordinates_[THIRDRECTCOORDINATE].y = point.y;
+	rectCoordinates_[FOURTHRECTCOORDINATE].x = rectCoordinates_[FIRSTRECTCOORDINATE].x;
+	rectCoordinates_[FOURTHRECTCOORDINATE].y = point.y;
 	findCenterCoordinates();
 
 }
 void CMyPaintRect::findCenterCoordinates() {
-	rectCenter_.x = (rectCoordinates_[0].x + rectCoordinates_[2].x) / 2;
-	rectCenter_.y = (rectCoordinates_[0].y + rectCoordinates_[2].y) / 2;
+	rectCenter_.x = (rectCoordinates_[FIRSTRECTCOORDINATE].x + rectCoordinates_[THIRDRECTCOORDINATE].x) / 2;
+	rectCenter_.y = (rectCoordinates_[FIRSTRECTCOORDINATE].y + rectCoordinates_[THIRDRECTCOORDINATE].y) / 2;
 }
 
 bool CMyPaintRect::ifThisFigure(CPoint point) {
 	double MaxX, MaxY, MinX, MinY;
-	MinX = rectCoordinates_[0].x;
-	MinY = rectCoordinates_[0].y;
-	MaxX = rectCoordinates_[0].x;
-	MaxY = rectCoordinates_[0].y;
+	MinX = rectCoordinates_[FIRSTRECTCOORDINATE].x;
+	MinY = rectCoordinates_[FIRSTRECTCOORDINATE].y;
+	MaxX = rectCoordinates_[FIRSTRECTCOORDINATE].x;
+	MaxY = rectCoordinates_[FIRSTRECTCOORDINATE].y;
 	for (size_t i = 1; i < 4; i++) {
 		if (MinX > rectCoordinates_[i].x) {
 			MinX = rectCoordinates_[i].x;
@@ -108,55 +114,55 @@ void CMyPaintRect::normalize() {
 	std::vector<int>place;
 	for (auto it = connectionsCoordinates_.begin(); it != connectionsCoordinates_.end(); it++) {
 		CPoint point;
-		point.x = (rectCoordinates_[0].x + rectCoordinates_[1].x) / 2;
-		point.y = (rectCoordinates_[0].y + rectCoordinates_[1].y) / 2;
+		point.x = (rectCoordinates_[FIRSTRECTCOORDINATE].x + rectCoordinates_[SECONDRECTCOORDINATE].x) / 2;
+		point.y = (rectCoordinates_[FIRSTRECTCOORDINATE].y + rectCoordinates_[SECONDRECTCOORDINATE].y) / 2;
 		if (it->second == point) {
 			place.push_back(1);
 			continue;
 		}
-		point.x = (rectCoordinates_[1].x + rectCoordinates_[2].x) / 2;
-		point.y = (rectCoordinates_[1].y + rectCoordinates_[2].y) / 2;
+		point.x = (rectCoordinates_[SECONDRECTCOORDINATE].x + rectCoordinates_[THIRDRECTCOORDINATE].x) / 2;
+		point.y = (rectCoordinates_[SECONDRECTCOORDINATE].y + rectCoordinates_[THIRDRECTCOORDINATE].y) / 2;
 		if (it->second == point) {
 			place.push_back(2);
 			continue;
 		}
-		point.x = (rectCoordinates_[2].x + rectCoordinates_[3].x) / 2;
-		point.y = (rectCoordinates_[2].y + rectCoordinates_[3].y) / 2;
+		point.x = (rectCoordinates_[THIRDRECTCOORDINATE].x + rectCoordinates_[FOURTHRECTCOORDINATE].x) / 2;
+		point.y = (rectCoordinates_[THIRDRECTCOORDINATE].y + rectCoordinates_[FOURTHRECTCOORDINATE].y) / 2;
 		if (it->second == point) {
 			place.push_back(3);
 			continue;
 		}
-		point.x = (rectCoordinates_[3].x + rectCoordinates_[0].x) / 2;
-		point.y = (rectCoordinates_[3].y + rectCoordinates_[0].y) / 2;
+		point.x = (rectCoordinates_[FOURTHRECTCOORDINATE].x + rectCoordinates_[FIRSTRECTCOORDINATE].x) / 2;
+		point.y = (rectCoordinates_[FOURTHRECTCOORDINATE].y + rectCoordinates_[FIRSTRECTCOORDINATE].y) / 2;
 		if (it->second == point) {
 			place.push_back(4);
 			continue;
 		}
 	}
 	CPoint diffrence;
-	diffrence.y = rectCoordinates_[2].y - rectCoordinates_[0].y;
-	diffrence.x = rectCoordinates_[2].x - rectCoordinates_[0].x;
+	diffrence.y = rectCoordinates_[THIRDRECTCOORDINATE].y - rectCoordinates_[FIRSTRECTCOORDINATE].y;
+	diffrence.x = rectCoordinates_[THIRDRECTCOORDINATE].x - rectCoordinates_[FIRSTRECTCOORDINATE].x;
 	if ((diffrence.x > 0 && diffrence.y < 0) || (diffrence.y > 0 && diffrence.x < 0)) {
 		if (abs(diffrence.x) > abs(diffrence.y)) {
-			rectCoordinates_[2].x = rectCoordinates_[0].x - diffrence.y;
-			rectCoordinates_[2].y = rectCoordinates_[0].y + diffrence.y;
+			rectCoordinates_[THIRDRECTCOORDINATE].x = rectCoordinates_[FIRSTRECTCOORDINATE].x - diffrence.y;
+			rectCoordinates_[THIRDRECTCOORDINATE].y = rectCoordinates_[FIRSTRECTCOORDINATE].y + diffrence.y;
 			changeOtherCoordinates();
 		}
 		else {
-			rectCoordinates_[2].x = rectCoordinates_[0].x + diffrence.x;
-			rectCoordinates_[2].y = rectCoordinates_[0].y - diffrence.x;
+			rectCoordinates_[THIRDRECTCOORDINATE].x = rectCoordinates_[FIRSTRECTCOORDINATE].x + diffrence.x;
+			rectCoordinates_[THIRDRECTCOORDINATE].y = rectCoordinates_[FIRSTRECTCOORDINATE].y - diffrence.x;
 			changeOtherCoordinates();
 		}
 	}
 	if ((diffrence.x >= 0 && diffrence.y >= 0) || (diffrence.x < 0 && diffrence.y < 0)) {
 		if (abs(diffrence.x) > abs(diffrence.y)) {
-			rectCoordinates_[2].x = rectCoordinates_[0].x + diffrence.y;
-			rectCoordinates_[2].y = rectCoordinates_[0].y + diffrence.y;
+			rectCoordinates_[THIRDRECTCOORDINATE].x = rectCoordinates_[FIRSTRECTCOORDINATE].x + diffrence.y;
+			rectCoordinates_[THIRDRECTCOORDINATE].y = rectCoordinates_[FIRSTRECTCOORDINATE].y + diffrence.y;
 			changeOtherCoordinates();
 		}
 		else {
-			rectCoordinates_[2].x = rectCoordinates_[0].x + diffrence.x;
-			rectCoordinates_[2].y = rectCoordinates_[0].y + diffrence.x;
+			rectCoordinates_[THIRDRECTCOORDINATE].x = rectCoordinates_[FIRSTRECTCOORDINATE].x + diffrence.x;
+			rectCoordinates_[THIRDRECTCOORDINATE].y = rectCoordinates_[FIRSTRECTCOORDINATE].y + diffrence.x;
 			changeOtherCoordinates();
 		}
 	}
@@ -176,20 +182,20 @@ void CMyPaintRect::normalize() {
 		switch (place[i])
 		{
 		case 1:
-			it->second.x = (rectCoordinates_[0].x + rectCoordinates_[1].x) / 2;
-			it->second.y = (rectCoordinates_[0].y + rectCoordinates_[1].y) / 2;
+			it->second.x = (rectCoordinates_[FIRSTRECTCOORDINATE].x + rectCoordinates_[SECONDRECTCOORDINATE].x) / 2;
+			it->second.y = (rectCoordinates_[FIRSTRECTCOORDINATE].y + rectCoordinates_[SECONDRECTCOORDINATE].y) / 2;
 			break;
 		case 2:
-			it->second.x = (rectCoordinates_[1].x + rectCoordinates_[2].x) / 2;
-			it->second.y = (rectCoordinates_[1].y + rectCoordinates_[2].y) / 2;
+			it->second.x = (rectCoordinates_[SECONDRECTCOORDINATE].x + rectCoordinates_[THIRDRECTCOORDINATE].x) / 2;
+			it->second.y = (rectCoordinates_[SECONDRECTCOORDINATE].y + rectCoordinates_[THIRDRECTCOORDINATE].y) / 2;
 			break;
 		case 3:
-			it->second.x = (rectCoordinates_[2].x + rectCoordinates_[3].x) / 2;
-			it->second.y = (rectCoordinates_[2].y + rectCoordinates_[3].y) / 2;
+			it->second.x = (rectCoordinates_[THIRDRECTCOORDINATE].x + rectCoordinates_[FOURTHRECTCOORDINATE].x) / 2;
+			it->second.y = (rectCoordinates_[THIRDRECTCOORDINATE].y + rectCoordinates_[FOURTHRECTCOORDINATE].y) / 2;
 			break;
 		case 4:
-			it->second.x = (rectCoordinates_[3].x + rectCoordinates_[0].x) / 2;
-			it->second.y = (rectCoordinates_[3].y + rectCoordinates_[0].y) / 2;
+			it->second.x = (rectCoordinates_[FOURTHRECTCOORDINATE].x + rectCoordinates_[FIRSTRECTCOORDINATE].x) / 2;
+			it->second.y = (rectCoordinates_[FOURTHRECTCOORDINATE].y + rectCoordinates_[FIRSTRECTCOORDINATE].y) / 2;
 			break;
 		default:
 			break;
@@ -198,10 +204,10 @@ void CMyPaintRect::normalize() {
 }
 void CMyPaintRect::changeOtherCoordinates()
 {
-	rectCoordinates_[1].x = rectCoordinates_[2].x;
-	rectCoordinates_[1].y = rectCoordinates_[0].y;
-	rectCoordinates_[3].x = rectCoordinates_[0].x;
-	rectCoordinates_[3].y = rectCoordinates_[2].y;
+	rectCoordinates_[SECONDRECTCOORDINATE].x = rectCoordinates_[THIRDRECTCOORDINATE].x;
+	rectCoordinates_[SECONDRECTCOORDINATE].y = rectCoordinates_[FIRSTRECTCOORDINATE].y;
+	rectCoordinates_[FOURTHRECTCOORDINATE].x = rectCoordinates_[FIRSTRECTCOORDINATE].x;
+	rectCoordinates_[FOURTHRECTCOORDINATE].y = rectCoordinates_[THIRDRECTCOORDINATE].y;
 }
 bool CMyPaintRect::edit(CPoint editPoint, bool isEnd) {
 	setCoordinates(editPoint, true);
@@ -220,14 +226,14 @@ CPoint CMyPaintRect::findConnectionCoordinates(CPoint centerPoint, int connectio
 	CPoint arrowPoint[4];
 	double length;
 	int pointNum;
-	arrowPoint[0].x = (rectCoordinates_[0].x + rectCoordinates_[1].x) / 2;
-	arrowPoint[0].y = (rectCoordinates_[0].y + rectCoordinates_[1].y) / 2;
-	arrowPoint[1].x = (rectCoordinates_[1].x + rectCoordinates_[2].x) / 2;
-	arrowPoint[1].y = (rectCoordinates_[1].y + rectCoordinates_[2].y) / 2;
-	arrowPoint[2].x = (rectCoordinates_[2].x + rectCoordinates_[3].x) / 2;
-	arrowPoint[2].y = (rectCoordinates_[2].y + rectCoordinates_[3].y) / 2;
-	arrowPoint[3].x = (rectCoordinates_[3].x + rectCoordinates_[0].x) / 2;
-	arrowPoint[3].y = (rectCoordinates_[3].y + rectCoordinates_[0].y) / 2;
+	arrowPoint[0].x = (rectCoordinates_[FIRSTRECTCOORDINATE].x + rectCoordinates_[SECONDRECTCOORDINATE].x) / 2;
+	arrowPoint[0].y = (rectCoordinates_[FIRSTRECTCOORDINATE].y + rectCoordinates_[SECONDRECTCOORDINATE].y) / 2;
+	arrowPoint[1].x = (rectCoordinates_[SECONDRECTCOORDINATE].x + rectCoordinates_[THIRDRECTCOORDINATE].x) / 2;
+	arrowPoint[1].y = (rectCoordinates_[SECONDRECTCOORDINATE].y + rectCoordinates_[THIRDRECTCOORDINATE].y) / 2;
+	arrowPoint[2].x = (rectCoordinates_[THIRDRECTCOORDINATE].x + rectCoordinates_[FOURTHRECTCOORDINATE].x) / 2;
+	arrowPoint[2].y = (rectCoordinates_[THIRDRECTCOORDINATE].y + rectCoordinates_[FOURTHRECTCOORDINATE].y) / 2;
+	arrowPoint[3].x = (rectCoordinates_[FOURTHRECTCOORDINATE].x + rectCoordinates_[FIRSTRECTCOORDINATE].x) / 2;
+	arrowPoint[3].y = (rectCoordinates_[FOURTHRECTCOORDINATE].y + rectCoordinates_[FIRSTRECTCOORDINATE].y) / 2;
 	length = sqrt(pow(arrowPoint[0].x - centerPoint.x, 2) + pow(arrowPoint[0].y - centerPoint.y, 2));
 	pointNum = 0;
 	if (length > sqrt(pow(arrowPoint[1].x - centerPoint.x, 2) + pow(arrowPoint[1].y - centerPoint.y, 2))) {
@@ -250,14 +256,14 @@ CPoint CMyPaintRect::findConnectionCoordinates(CPoint centerPoint, int connectio
 }
 int CMyPaintRect::findConnectionPlace(int key) {
 	CPoint arrowPoint[4];
-	arrowPoint[0].x = (rectCoordinates_[0].x + rectCoordinates_[1].x) / 2;
-	arrowPoint[0].y = (rectCoordinates_[0].y + rectCoordinates_[1].y) / 2;
-	arrowPoint[1].x = (rectCoordinates_[1].x + rectCoordinates_[2].x) / 2;
-	arrowPoint[1].y = (rectCoordinates_[1].y + rectCoordinates_[2].y) / 2;
-	arrowPoint[2].x = (rectCoordinates_[2].x + rectCoordinates_[3].x) / 2;
-	arrowPoint[2].y = (rectCoordinates_[2].y + rectCoordinates_[3].y) / 2;
-	arrowPoint[3].x = (rectCoordinates_[3].x + rectCoordinates_[0].x) / 2;
-	arrowPoint[3].y = (rectCoordinates_[3].y + rectCoordinates_[0].y) / 2;
+	arrowPoint[0].x = (rectCoordinates_[FIRSTRECTCOORDINATE].x + rectCoordinates_[SECONDRECTCOORDINATE].x) / 2;
+	arrowPoint[0].y = (rectCoordinates_[FIRSTRECTCOORDINATE].y + rectCoordinates_[SECONDRECTCOORDINATE].y) / 2;
+	arrowPoint[1].x = (rectCoordinates_[SECONDRECTCOORDINATE].x + rectCoordinates_[THIRDRECTCOORDINATE].x) / 2;
+	arrowPoint[1].y = (rectCoordinates_[SECONDRECTCOORDINATE].y + rectCoordinates_[THIRDRECTCOORDINATE].y) / 2;
+	arrowPoint[2].x = (rectCoordinates_[THIRDRECTCOORDINATE].x + rectCoordinates_[FOURTHRECTCOORDINATE].x) / 2;
+	arrowPoint[2].y = (rectCoordinates_[THIRDRECTCOORDINATE].y + rectCoordinates_[FOURTHRECTCOORDINATE].y) / 2;
+	arrowPoint[3].x = (rectCoordinates_[FOURTHRECTCOORDINATE].x + rectCoordinates_[FIRSTRECTCOORDINATE].x) / 2;
+	arrowPoint[3].y = (rectCoordinates_[FOURTHRECTCOORDINATE].y + rectCoordinates_[FIRSTRECTCOORDINATE].y) / 2;
 	auto it = connectionsCoordinates_.find(key);
 	if (it->second == arrowPoint[0]) {
 		return 1;
@@ -288,26 +294,26 @@ void CMyPaintRect::properties(std::vector<int>ids, std::vector<CString> names) {
 	std::vector<int>place;
 	for (auto it = connectionsCoordinates_.begin(); it != connectionsCoordinates_.end(); it++) {
 		CPoint point;
-		point.x = (rectCoordinates_[0].x + rectCoordinates_[1].x) / 2;
-		point.y = (rectCoordinates_[0].y + rectCoordinates_[1].y) / 2;
+		point.x = (rectCoordinates_[FIRSTRECTCOORDINATE].x + rectCoordinates_[SECONDRECTCOORDINATE].x) / 2;
+		point.y = (rectCoordinates_[FIRSTRECTCOORDINATE].y + rectCoordinates_[SECONDRECTCOORDINATE].y) / 2;
 		if (it->second == point) {
 			place.push_back(1);
 			continue;
 		}
-		point.x = (rectCoordinates_[1].x + rectCoordinates_[2].x) / 2;
-		point.y = (rectCoordinates_[1].y + rectCoordinates_[2].y) / 2;
+		point.x = (rectCoordinates_[SECONDRECTCOORDINATE].x + rectCoordinates_[THIRDRECTCOORDINATE].x) / 2;
+		point.y = (rectCoordinates_[SECONDRECTCOORDINATE].y + rectCoordinates_[THIRDRECTCOORDINATE].y) / 2;
 		if (it->second == point) {
 			place.push_back(2);
 			continue;
 		}
-		point.x = (rectCoordinates_[2].x + rectCoordinates_[3].x) / 2;
-		point.y = (rectCoordinates_[2].y + rectCoordinates_[3].y) / 2;
+		point.x = (rectCoordinates_[THIRDRECTCOORDINATE].x + rectCoordinates_[FOURTHRECTCOORDINATE].x) / 2;
+		point.y = (rectCoordinates_[THIRDRECTCOORDINATE].y + rectCoordinates_[FOURTHRECTCOORDINATE].y) / 2;
 		if (it->second == point) {
 			place.push_back(3);
 			continue;
 		}
-		point.x = (rectCoordinates_[3].x + rectCoordinates_[0].x) / 2;
-		point.y = (rectCoordinates_[3].y + rectCoordinates_[0].y) / 2;
+		point.x = (rectCoordinates_[FOURTHRECTCOORDINATE].x + rectCoordinates_[FIRSTRECTCOORDINATE].x) / 2;
+		point.y = (rectCoordinates_[FOURTHRECTCOORDINATE].y + rectCoordinates_[FIRSTRECTCOORDINATE].y) / 2;
 		if (it->second == point) {
 			place.push_back(4);
 			continue;
@@ -318,9 +324,9 @@ void CMyPaintRect::properties(std::vector<int>ids, std::vector<CString> names) {
 	dlg.getNames(names);
 	dlg.setName(name_);
 	dlg.setID(id_);
-	dlg.setFirstPoint(rectCoordinates_[0]);
-	dlg.setSecondPoint(rectCoordinates_[2]);
-	dlg.setThirdPoint(rectCoordinates_[2]);
+	dlg.setFirstPoint(rectCoordinates_[FIRSTRECTCOORDINATE]);
+	dlg.setSecondPoint(rectCoordinates_[THIRDRECTCOORDINATE]);
+	dlg.setThirdPoint(rectCoordinates_[THIRDRECTCOORDINATE]);
 	dlg.setWidth(penWidth_);
 	dlg.setPenStyle(penStyle_);
 	dlg.setBrushStyle(brushStyle_);
@@ -343,20 +349,20 @@ void CMyPaintRect::properties(std::vector<int>ids, std::vector<CString> names) {
 		switch (place[i])
 		{
 		case 1:
-			it->second.x = (rectCoordinates_[0].x + rectCoordinates_[1].x) / 2;
-			it->second.y = (rectCoordinates_[0].y + rectCoordinates_[1].y) / 2;
+			it->second.x = (rectCoordinates_[FIRSTRECTCOORDINATE].x + rectCoordinates_[SECONDRECTCOORDINATE].x) / 2;
+			it->second.y = (rectCoordinates_[FIRSTRECTCOORDINATE].y + rectCoordinates_[SECONDRECTCOORDINATE].y) / 2;
 			break;
 		case 2:
-			it->second.x = (rectCoordinates_[1].x + rectCoordinates_[2].x) / 2;
-			it->second.y = (rectCoordinates_[1].y + rectCoordinates_[2].y) / 2;
+			it->second.x = (rectCoordinates_[SECONDRECTCOORDINATE].x + rectCoordinates_[THIRDRECTCOORDINATE].x) / 2;
+			it->second.y = (rectCoordinates_[SECONDRECTCOORDINATE].y + rectCoordinates_[THIRDRECTCOORDINATE].y) / 2;
 			break;
 		case 3:
-			it->second.x = (rectCoordinates_[2].x + rectCoordinates_[3].x) / 2;
-			it->second.y = (rectCoordinates_[2].y + rectCoordinates_[3].y) / 2;
+			it->second.x = (rectCoordinates_[THIRDRECTCOORDINATE].x + rectCoordinates_[FOURTHRECTCOORDINATE].x) / 2;
+			it->second.y = (rectCoordinates_[THIRDRECTCOORDINATE].y + rectCoordinates_[FOURTHRECTCOORDINATE].y) / 2;
 			break;
 		case 4:
-			it->second.x = (rectCoordinates_[3].x + rectCoordinates_[0].x) / 2;
-			it->second.y = (rectCoordinates_[3].y + rectCoordinates_[0].y) / 2;
+			it->second.x = (rectCoordinates_[FOURTHRECTCOORDINATE].x + rectCoordinates_[FIRSTRECTCOORDINATE].x) / 2;
+			it->second.y = (rectCoordinates_[FOURTHRECTCOORDINATE].y + rectCoordinates_[FIRSTRECTCOORDINATE].y) / 2;
 			break;
 		default:
 			break;
@@ -365,15 +371,15 @@ void CMyPaintRect::properties(std::vector<int>ids, std::vector<CString> names) {
 }
 
 CPoint CMyPaintRect::getFirstCoordinate() {
-	return rectCoordinates_[0];
+	return rectCoordinates_[FIRSTRECTCOORDINATE];
 }
 
 CPoint CMyPaintRect::getSecondCoordinate() {
-	return rectCoordinates_[2];
+	return rectCoordinates_[THIRDRECTCOORDINATE];
 }
 
 CPoint CMyPaintRect::getThirdCoordinate() {
-	return rectCoordinates_[2];
+	return rectCoordinates_[THIRDRECTCOORDINATE];
 }
 
 int CMyPaintRect::getFigureType() {
@@ -381,11 +387,11 @@ int CMyPaintRect::getFigureType() {
 }
 
 void CMyPaintRect::setFirstCoordinate(CPoint point) {
-	rectCoordinates_[0] = point;
+	rectCoordinates_[FIRSTRECTCOORDINATE] = point;
 }
 
 void CMyPaintRect::setSecondCoordinate(CPoint point) {
-	rectCoordinates_[2] = point;
+	rectCoordinates_[THIRDRECTCOORDINATE] = point;
 }
 
 void CMyPaintRect::setThirdCoordinate(CPoint point) {
@@ -530,7 +536,7 @@ void CMyPaintRect::scrollFigure(CPoint point) {
 
 std::vector<CPoint> CMyPaintRect::getLeftCoordinate() {
 	CPoint temp;
-	temp = rectCoordinates_[0];
+	temp = rectCoordinates_[FIRSTRECTCOORDINATE];
 	for (auto i = 1; i < 4; i++) {	
 		if (rectCoordinates_[i].x < temp.x) {
 			temp = rectCoordinates_[i];
@@ -549,7 +555,7 @@ std::vector<CPoint> CMyPaintRect::getLeftCoordinate() {
 
 std::vector<CPoint> CMyPaintRect::getBottomCoordinate() {
 	CPoint temp;
-	temp = rectCoordinates_[0];
+	temp = rectCoordinates_[FIRSTRECTCOORDINATE];
 	for (auto i = 1; i < 4; i++) {
 		if (rectCoordinates_[i].y < temp.y) {
 			temp = rectCoordinates_[i];
@@ -569,7 +575,7 @@ std::vector<CPoint> CMyPaintRect::getBottomCoordinate() {
 
 std::vector<CPoint> CMyPaintRect::getRightCoordinate() {
 	CPoint temp;
-	temp = rectCoordinates_[0];
+	temp = rectCoordinates_[FIRSTRECTCOORDINATE];
 	for (auto i = 1; i < 4; i++) {
 		if (rectCoordinates_[i].x > temp.x) {
 			temp = rectCoordinates_[i];
@@ -588,7 +594,7 @@ std::vector<CPoint> CMyPaintRect::getRightCoordinate() {
 
 std::vector<CPoint> CMyPaintRect::getTopCoordinate() {
 	CPoint temp;
-	temp = rectCoordinates_[0];
+	temp = rectCoordinates_[FIRSTRECTCOORDINATE];
 	for (auto i = 1; i < 4; i++) {
 		if (rectCoordinates_[i].y > temp.y) {
 			temp = rectCoordinates_[i];
@@ -607,8 +613,8 @@ std::vector<CPoint> CMyPaintRect::getTopCoordinate() {
 
 std::vector<LONG> CMyPaintRect::getMaxMinX() {
 	std::vector<LONG>MaxMin;
-	MaxMin.push_back(rectCoordinates_[0].x);
-	MaxMin.push_back(rectCoordinates_[0].x);
+	MaxMin.push_back(rectCoordinates_[FIRSTRECTCOORDINATE].x);
+	MaxMin.push_back(rectCoordinates_[FIRSTRECTCOORDINATE].x);
 	for (auto i = 1; i < 4; i++) {
 		if (rectCoordinates_[i].x > MaxMin[0]) {
 			MaxMin[0] = rectCoordinates_[i].x;
@@ -622,8 +628,8 @@ std::vector<LONG> CMyPaintRect::getMaxMinX() {
 
 std::vector<LONG> CMyPaintRect::getMaxMinY() {
 	std::vector<LONG>MaxMin;
-	MaxMin.push_back(rectCoordinates_[0].y);
-	MaxMin.push_back(rectCoordinates_[0].y);
+	MaxMin.push_back(rectCoordinates_[FIRSTRECTCOORDINATE].y);
+	MaxMin.push_back(rectCoordinates_[FIRSTRECTCOORDINATE].y);
 	for (auto i = 1; i < 4; i++) {
 		if (rectCoordinates_[i].y > MaxMin[0]) {
 			MaxMin[0] = rectCoordinates_[i].y;
